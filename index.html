@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Open Prices España — Comparador de Cesta con Foto de Prueba</title>
+<!-- Google Fonts: Public Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              vibrant: '#18E667',
+              deeptext: '#032612',
+              forest: '#0A3D22',
+              forestlight: '#135c34',
+              softbg: '#EAF7EE',
+              surface: '#F4F7F5',
+              cardbg: '#FFFFFF',
+              borderline: '#D2E3D8'
+            }
+          },
+          borderRadius: {
+            "DEFAULT": "0.5rem",
+            "lg": "1rem",
+            "xl": "1.5rem",
+            "2xl": "1.75rem",
+            "3xl": "2.25rem",
+            "full": "9999px"
+          },
+          fontFamily: {
+            headline: ["Public Sans", "sans-serif"],
+            display: ["Public Sans", "sans-serif"],
+            body: ["Public Sans", "sans-serif"],
+            label: ["Public Sans", "sans-serif"]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    body {
+      font-family: 'Public Sans', sans-serif;
+      background-color: #F8FAF9;
+      color: #111D15;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 20px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* OpenStreetMap Styled Grid & Canvas Elements */
+    .osm-tile-pattern {
+      background-color: #f2efe9;
+      background-image: 
+        linear-gradient(rgba(200, 195, 185, 0.45) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(200, 195, 185, 0.45) 1px, transparent 1px),
+        linear-gradient(rgba(255, 255, 255, 0.8) 4px, transparent 4px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.8) 4px, transparent 4px);
+      background-size: 40px 40px, 40px 40px, 120px 120px, 120px 120px;
+      background-position: -1px -1px, -1px -1px, -1px -1px, -1px -1px;
+    }
+
+    .osm-park-1 {
+      position: absolute;
+      background: #c8e6c9;
+      border-radius: 12px;
+      opacity: 0.85;
+      border: 1px solid #a5d6a7;
+    }
+
+    .osm-road-primary {
+      position: absolute;
+      background: #fedbb4;
+      height: 10px;
+      border-top: 1px solid #e09855;
+      border-bottom: 1px solid #e09855;
+      transform: rotate(-12deg);
+    }
+    
+    .osm-road-secondary {
+      position: absolute;
+      background: #ffffff;
+      height: 7px;
+      border-top: 1px solid #cfcfcf;
+      border-bottom: 1px solid #cfcfcf;
+    }
+
+    /* Force specific mandatory inline button styling */
+    .btn-action-green, a.go, button.go {
+      background-color: #18E667 !important;
+      color: #032612 !important;
+      font-weight: 700 !important;
+    }
+    .tema { position: relative; width: 3.5rem; height: 1.85rem; border-radius: 999px; border: 1px solid #0A3D22; background: #EAF7EE; padding: 0; cursor: pointer; }
+    .tema .material-symbols-outlined { position: absolute; top: 50%; transform: translateY(-50%); font-size: 16px; color: #032612; }
+    .tema .sun { left: 3px; }
+    .tema .moon { right: 3px; }
+    .tema-thumb { position: absolute; top: 2px; left: 2px; width: 1.5rem; height: 1.5rem; border-radius: 999px; background: #18E667; border: 1px solid #032612; z-index: 1; }
+    html.dark .tema-thumb { left: calc(100% - 1.5rem - 2px); }
+    html, body { overflow-x: clip; }
+    h1, h2, h3, p { overflow-wrap: break-word; }
+    #mapa, .leaflet-container { max-width: 100%; }
+    html.dark body { background: #0e1a14; color: #e8f6ee; }
+    html.dark header, html.dark nav.fixed { background: #102018 !important; }
+    html.dark .bg-white,
+    html.dark .bg-\[\#F3F6F4\],
+    html.dark .bg-\[\#F0F5F2\],
+    html.dark .bg-\[\#F8FAF9\],
+    html.dark .bg-\[\#FBFDFB\],
+    html.dark .bg-\[\#EEF5F0\],
+    html.dark .bg-\[\#EAF7EE\],
+    html.dark .bg-\[\#E2F5E9\] { background: #163024 !important; color: #e7f6ec; }
+    html.dark input { background: #0e1a14 !important; color: #e7f6ec !important; }
+    html.dark .text-\[\#032612\], html.dark .text-\[\#0A3D22\], html.dark .text-\[\#14231A\], html.dark .text-\[\#223B2B\], html.dark .text-\[\#32453A\], html.dark .text-\[\#293B30\] { color: #e7f6ec; }
+    html.dark .text-\[\#324D3E\], html.dark .text-\[\#385343\], html.dark .text-\[\#4E6E5A\], html.dark .text-\[\#4E705C\], html.dark .text-\[\#52705E\], html.dark .text-\[\#52735F\], html.dark .text-\[\#557662\], html.dark .text-\[\#3C5747\], html.dark .text-\[\#5B7364\] { color: #b7d4c4; }
+    html.dark .border-\[\#D2E3D8\], html.dark .border-\[\#CCE0D3\], html.dark .border-\[\#BDD3C5\], html.dark .border-\[\#BCD3C4\] { border-color: #24543a; }
+    html.dark article[style*="18E667"], html.dark article[style*="18E667"] * { color: #032612; }
+    .reveal.in { animation: enter .45s ease; }
+    @keyframes enter { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+    .reveal.in :is(h1, h2) { animation: rise .45s ease; }
+    @keyframes rise { from { transform: scale(.96); } to { transform: none; } }
+    .is-on { box-shadow: inset 0 0 0 2px #18E667; }
+    #mapa { min-height: 20rem; background: #e7efe9; }
+    .leaflet-popup-content { margin: 10px 12px; }
+    .name-jump { background: none; border: 0; padding: 0; font: inherit; font-weight: 900; color: inherit; cursor: pointer; text-align: left; }
+    :focus-visible { outline: 2px solid #0A3D22; outline-offset: 2px; }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal.in, .reveal.in :is(h1, h2), .animate-pulse, .tema-thumb { animation: none; transition: none; }
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-[#F8FAF9] text-[#14231A] min-h-screen pb-24 md:pb-12 antialiased">
+<!-- TOP APP BAR (Shared Component Anchor) -->
+<header class="sticky top-0 z-40 flex items-center justify-between px-4 sm:px-8 py-3 w-full bg-white/95 backdrop-blur-md border-b border-[#D2E3D8]/40 shadow-sm">
+<div class="flex items-center gap-2.5">
+<span class="p-2 rounded-xl bg-[#18E667]/20 text-[#0A3D22] flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="shopping_basket">shopping_basket</span>
+</span>
+<div>
+<div class="font-headline text-lg font-black tracking-tight text-[#0A3D22]">Open Prices España</div>
+<p class="text-[11px] leading-tight text-[#476352] hidden sm:block">Datos colaborativos con prueba de lineal y ticket</p>
+</div>
+</div>
+<!-- Desktop Navigation Anchors -->
+<nav class="hidden md:flex items-center gap-7 text-sm font-semibold text-[#385343]">
+<a class="text-[#0A3D22] font-bold flex items-center gap-1.5 transition-colors" href="#cesta">
+<span class="material-symbols-outlined text-[18px]" data-icon="shopping_cart">shopping_cart</span>
+        Cesta
+      </a>
+<a class="hover:text-[#0A3D22] flex items-center gap-1.5 transition-colors" href="#comparar">
+<span class="material-symbols-outlined text-[18px]" data-icon="bar_chart">bar_chart</span>
+        Comparar
+      </a>
+<a class="hover:text-[#0A3D22] flex items-center gap-1.5 transition-colors" href="#supermercados">
+<span class="material-symbols-outlined text-[18px]" data-icon="storefront">storefront</span>
+        Supermercados
+      </a>
+<a class="hover:text-[#0A3D22] flex items-center gap-1.5 transition-colors" href="#pie">
+<span class="material-symbols-outlined text-[18px]" data-icon="insights">insights</span>
+        Histórico
+      </a>
+</nav>
+<div class="flex items-center gap-2">
+<button id="tema" class="tema" type="button" role="switch" aria-checked="false" aria-label="Tema claro u oscuro">
+<span class="material-symbols-outlined sun" aria-hidden="true">sunny</span>
+<span class="material-symbols-outlined moon" aria-hidden="true">dark_mode</span>
+<span class="tema-thumb"></span>
+</button>
+</div>
+</header>
+<main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10 space-y-12">
+<!-- 1) CABECERA Y HALLAZGO DISPLAY -->
+<section class="space-y-4 reveal" id="cabecera">
+<div class="flex flex-wrap items-center gap-2 sm:gap-3">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold tracking-wider uppercase bg-[#E2F5E9] text-[#0A3D22]">
+<span class="w-2 h-2 rounded-full bg-[#18E667]"></span>
+          España · lista de la compra
+        </span>
+<div class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#0A3D22] text-[#18E667] text-xs font-semibold shadow-xs">
+<span class="material-symbols-outlined text-sm" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="text-white font-bold tracking-wide">Open Prices</span>
+<span class="text-[#D0FADF] hidden sm:inline text-[11px] font-normal border-l border-[#1b5837] pl-2">Datos abiertos con foto de ticket y lineal</span>
+</div>
+</div>
+<h1 id="hallazgo" class="font-headline text-3xl sm:text-5xl lg:text-6xl font-black text-[#032612] tracking-tight leading-[1.08] max-w-4xl">
+        La cesta sale más barata donde hay precio con prueba
+      </h1>
+<p class="text-base sm:text-lg text-[#324D3E] max-w-2xl font-normal leading-relaxed">
+        El importe es el de un ticket o una foto de lineal subidos a Open Prices. Si en 8 km no hay prueba, sale sin dato.
+      </p>
+</section>
+<!-- 2) FILA DE MÉTRICAS CLAVE (Bento Layout) -->
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Cifra 1: Hero Principal (#18E667) -->
+<article class="sm:col-span-2 lg:col-span-1 rounded-3xl p-6 sm:p-7 flex flex-col justify-between shadow-md transition-all hover:shadow-lg" style="background-color: #18E667; color: #032612;">
+<div>
+<div class="flex items-center justify-between mb-2">
+<span id="hero-tag" class="text-xs font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#032612]/10 inline-block">
+              Cesta
+            </span>
+<span class="material-symbols-outlined text-[#032612]" data-icon="receipt_long">receipt_long</span>
+</div>
+<div id="hero-n" class="font-headline text-5xl sm:text-6xl font-black tracking-tight leading-none mt-2">
+            —
+          </div>
+</div>
+<p id="hero-cap" class="text-xs sm:text-sm font-semibold leading-snug mt-6 border-t border-[#032612]/15 pt-3">
+          Pulsa el botón para buscar la cesta en los supermercados de 8 km
+        </p>
+</article>
+<!-- Cifra 2: Tiendas verificadas -->
+<article class="bg-white rounded-3xl p-6 border border-[#D2E3D8] shadow-sm flex flex-col justify-between hover:border-[#18E667] transition-colors">
+<div>
+<div class="flex items-center justify-between text-[#0A3D22] mb-3">
+<span class="text-xs font-bold uppercase tracking-wider text-[#456854]">Disponibilidad</span>
+<span class="p-1.5 rounded-xl bg-[#EAF7EE] flex items-center justify-center">
+<span class="material-symbols-outlined text-[#0A3D22]" data-icon="storefront">storefront</span>
+</span>
+</div>
+<div id="kpi-tiendas" class="font-headline text-4xl sm:text-5xl font-black text-[#032612] tracking-tight">
+            —
+          </div>
+</div>
+<div class="mt-4 pt-3 border-t border-slate-100">
+<p id="kpi-tiendas-cap" class="text-xs font-semibold text-[#032612]">Supermercados en 8 km</p>
+<p class="text-[11px] text-[#557662] mt-0.5">Los que tienen un precio de Open Prices para tu lista</p>
+</div>
+</article>
+<!-- Cifra 3: Distancia tienda más cercana -->
+<article class="bg-white rounded-3xl p-6 border border-[#D2E3D8] shadow-sm flex flex-col justify-between hover:border-[#18E667] transition-colors">
+<div>
+<div class="flex items-center justify-between text-[#0A3D22] mb-3">
+<span class="text-xs font-bold uppercase tracking-wider text-[#456854]">Proximidad</span>
+<span class="p-1.5 rounded-xl bg-[#EAF7EE] flex items-center justify-center">
+<span class="material-symbols-outlined text-[#0A3D22]" data-icon="directions_walk">directions_walk</span>
+</span>
+</div>
+<div id="kpi-km" class="font-headline text-4xl sm:text-5xl font-black text-[#032612] tracking-tight">
+            —
+          </div>
+</div>
+<div class="mt-4 pt-3 border-t border-slate-100">
+<p id="kpi-km-cap" class="text-xs font-semibold text-[#032612]">A la tienda más cercana</p>
+<p class="text-[11px] text-[#557662] mt-0.5">Distancia en línea recta desde tu ubicación</p>
+</div>
+</article>
+<!-- Cifra 4: Transparencia / Sin dato -->
+<article class="bg-[#F3F6F4] rounded-3xl p-6 border border-[#D5DDD7] shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between text-[#687D70] mb-3">
+<span class="text-xs font-bold uppercase tracking-wider">Transparencia</span>
+<span class="p-1.5 rounded-xl bg-[#E4ECE7] text-[#42594C] flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="rule">rule</span>
+</span>
+</div>
+<div id="kpi-falta" class="font-headline text-4xl sm:text-5xl font-black text-[#32453A] tracking-tight">
+            —
+          </div>
+</div>
+<div class="mt-4 pt-3 border-t border-slate-200">
+<p id="kpi-falta-cap" class="text-xs font-semibold text-[#293B30]">Productos de la lista sin precio cerca</p>
+<p class="text-[11px] text-[#5B7364] mt-0.5">Sin dato si nadie subió una prueba a Open Prices</p>
+</div>
+</article>
+</section>
+<!-- 3) CONTROL DE BÚSQUEDA Y CESTA (Con el único botón de acción principal) -->
+<section id="cesta" class="bg-white rounded-3xl p-5 sm:p-7 border border-[#CCE0D3] shadow-sm space-y-6 reveal">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+<div>
+<h2 class="font-headline text-xl sm:text-2xl font-black text-[#032612]">Configura tu cesta de prueba</h2>
+<p id="estado" class="text-xs sm:text-sm text-[#4E6E5A]">Escribe uno o varios productos. Se compara un envase de cada uno en los supermercados a 8 km.</p>
+</div>
+<span id="n-items" class="self-start md:self-auto inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#EAF7EE] text-[#0A3D22]">
+<span class="material-symbols-outlined text-[16px]" data-icon="photo_camera">photo_camera</span>
+          3 productos seleccionados
+        </span>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+<!-- Input de la cesta (visible y relleno) -->
+<div class="lg:col-span-5 relative">
+<label class="block text-xs font-bold uppercase tracking-wider text-[#355241] mb-1.5" for="cesta-input">
+            Cesta activa
+          </label>
+<div class="relative flex items-center">
+<span class="absolute left-3.5 text-[#5B7D68] flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-[20px]" data-icon="shopping_basket">shopping_basket</span>
+</span>
+<input class="w-full pl-10 pr-4 py-3.5 rounded-2xl border-2 border-[#BCD3C4] focus:border-[#0A3D22] focus:ring-2 focus:ring-[#18E667] text-base font-bold text-[#032612] bg-[#FBFDFB] transition-all" id="cesta-input" placeholder="Ej: aceite, huevos, patatas" type="text" value="aceite, huevos, patatas"/>
+</div>
+</div>
+<!-- Selector Segmentado: Cualquier marca vs Solo marca blanca -->
+<div class="lg:col-span-3">
+<span class="block text-xs font-bold uppercase tracking-wider text-[#355241] mb-1.5">
+            Tipo de producto
+          </span>
+<div class="flex p-1 bg-[#EEF5F0] rounded-2xl border border-[#CCE0D3]">
+<button id="marca-cualquier" aria-pressed="true" class="flex-1 py-2.5 px-3 text-xs font-extrabold rounded-xl bg-white text-[#0A3D22] shadow-xs transition-all text-center" type="button">
+              Cualquier marca
+            </button>
+<button id="marca-blanca" aria-pressed="false" class="flex-1 py-2.5 px-3 text-xs font-medium text-[#4B6856] hover:text-[#0A3D22] rounded-xl transition-all text-center" type="button">
+              Solo marca blanca
+            </button>
+</div>
+</div>
+<!-- Único Botón de Acción Principal de la Pantalla: fondo #0A3D22 y texto claro -->
+<div class="lg:col-span-4 lg:self-end">
+<button id="buscar" class="w-full py-3.5 px-6 rounded-2xl flex items-center justify-center gap-2.5 text-base font-extrabold tracking-tight transition-transform duration-150 active:scale-95 shadow-md hover:shadow-lg hover:brightness-110 cursor-pointer" style="background-color: #0A3D22; color: #FFFFFF;" type="button">
+<span>Ver dónde sale más barata</span>
+<span class="p-1 rounded-full bg-[#18E667] text-[#032612] flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px] font-black" data-icon="arrow_forward">arrow_forward</span>
+</span>
+</button>
+</div>
+</div>
+</section>
+<!-- 4) DOS GRÁFICOS ANALÍTICOS -->
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-6 reveal" id="comparar">
+<!-- Gráfico 1: Barras horizontales del total de la cesta -->
+<article class="bg-white rounded-3xl p-6 sm:p-7 border border-[#CCE0D3] shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-1.5">
+<span class="text-xs font-bold uppercase tracking-wider text-[#4E705C]">Comparativa de importe</span>
+<span id="chart-base" class="px-2 py-0.5 rounded-md text-[11px] font-bold bg-[#EAF7EE] text-[#0A3D22]">Lista</span>
+</div>
+<h3 id="chart-title" class="font-headline text-lg sm:text-xl font-black text-[#032612] leading-snug">
+            El total de la cesta, tienda a tienda
+          </h3>
+<div id="bars" class="mt-6 space-y-4"></div>
+</div>
+<p id="chart-cap" class="text-xs text-[#52735F] mt-5 pt-3 border-t border-slate-100 italic">
+          Suma de un envase por producto, el más barato cuyo nombre contiene lo que escribiste.
+        </p>
+</article>
+<!-- Gráfico 2: Comparativa de la cesta frente a la media del área local -->
+<article class="bg-[#0A3D22] text-white rounded-3xl p-6 sm:p-7 shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-1.5">
+<span class="text-xs font-bold uppercase tracking-wider text-[#A2E3B9]">Análisis territorial</span>
+<span id="cmp-chip" class="px-2 py-0.5 rounded-md text-[11px] font-bold bg-[#18E667] text-[#032612]">8 km</span>
+</div>
+<h3 id="cmp-title" class="font-headline text-lg sm:text-xl font-black text-white leading-snug">
+            La cesta más barata frente a la media de las tiendas con precio
+          </h3>
+<div id="cmp" class="mt-6 bg-[#032612]/60 rounded-2xl p-5 border border-[#195634] space-y-4">
+<p class="text-xs text-[#E1EFE7]">Hace falta al menos una tienda con precio de toda la lista.</p>
+</div>
+<p id="cmp-cap" class="text-xs text-[#A0C4AF] mt-5 pt-3 border-t border-white/10">
+          Solo entran tiendas con un precio de Open Prices para cada producto de la lista.
+        </p>
+</article>
+</section>
+<!-- 5) RANKING DE SUPERMERCADOS CERCANOS -->
+<section class="space-y-4" id="supermercados">
+<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+<div>
+<h2 class="font-headline text-2xl sm:text-3xl font-black text-[#032612] tracking-tight">
+            Ranking de supermercados cercanos
+          </h2>
+<p class="text-sm text-[#4E705C]">
+            Desglose unitario de productos y estado de la evidencia fotográfica comunitaria.
+          </p>
+</div>
+<span class="text-xs font-semibold text-[#3B5A47]">Ordenado por: Menor importe total</span>
+</div>
+<div id="ranking" class="space-y-4"></div>
+</section>
+<!-- 6) BLOQUE DE MAPA INTEGRADO (ESTILO OPENSTREETMAP) -->
+<section class="bg-white rounded-3xl p-5 sm:p-7 border border-[#CCE0D3] shadow-sm space-y-4">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[#0A3D22]" data-icon="map">map</span>
+<h2 class="font-headline text-xl sm:text-2xl font-black text-[#032612]">Mapa de ubicaciones OpenStreetMap</h2>
+</div>
+<p class="text-xs sm:text-sm text-[#4E705C]">
+            Visualización comunitaria basada en capas vectoriales abiertas de OpenStreetMap y coordenadas geolocalizadas.
+          </p>
+</div>
+<div class="flex items-center gap-2 text-xs font-bold text-[#0A3D22]">
+<span class="w-2.5 h-2.5 rounded-full bg-[#18E667]"></span>
+<span id="mapa-n">Los puntos salen al buscar</span>
+</div>
+</div>
+<div id="mapa" class="w-full h-80 sm:h-96 rounded-2xl overflow-hidden border border-[#BDD3C5]" role="region" aria-label="Mapa de supermercados"></div>
+</section>
+<!-- 7) PIE DE PÁGINA METODOLÓGICO Y TRANSPARENTE -->
+<footer id="pie" class="bg-[#F0F5F2] rounded-3xl p-6 sm:p-8 border border-[#CCE0D3] space-y-6">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Bloque 1: Fuentes -->
+<div class="space-y-2">
+<div class="flex items-center gap-1.5 text-[#0A3D22] font-black text-sm">
+<span class="material-symbols-outlined text-base" data-icon="database">database</span>
+<span>Fuente de datos</span>
+</div>
+<p class="text-xs text-[#3C5747] leading-relaxed">
+            Plataforma colaborativa ciudadana impulsada por <strong>Open Prices</strong> (iniciativa de datos abiertos de <em>Open Food Facts</em>) y cartografía base de <strong>OpenStreetMap</strong>.
+          </p>
+</div>
+<!-- Bloque 2: Sincronización -->
+<div class="space-y-2">
+<div class="flex items-center gap-1.5 text-[#0A3D22] font-black text-sm">
+<span class="material-symbols-outlined text-base" data-icon="update">update</span>
+<span>Última sincronización</span>
+</div>
+<p class="text-xs text-[#3C5747] leading-relaxed">
+            <span id="sync">Cada precio lleva la fecha del ticket que alguien subió a Open Prices. Si no hay prueba, sale sin dato.</span>
+          </p>
+</div>
+<!-- Bloque 3: Exclusiones rigurosas -->
+<div class="space-y-2">
+<div class="flex items-center gap-1.5 text-[#883515] font-black text-sm">
+<span class="material-symbols-outlined text-base" data-icon="shield">shield</span>
+<span>Criterio de exclusión</span>
+</div>
+<p class="text-xs text-[#3C5747] leading-relaxed">
+<strong>Qué no entra:</strong> tiendas sin precio con prueba fotográfica de ticket o lineal. No se admiten precios introducidos manualmente sin imagen de respaldo verificable.
+          </p>
+</div>
+</div>
+<div class="pt-5 border-t border-[#D5E5DA] flex flex-col sm:flex-row items-center justify-between text-xs text-[#52705E] gap-3">
+<div>
+          Open Prices España · Licencia abierta Open Database License (ODbL).
+        </div>
+<div class="flex items-center gap-4 font-semibold text-[#0A3D22]">
+<a class="hover:underline" href="https://openfoodfacts.github.io/documentation/docs/Open-prices/">Metodología</a>
+<a class="hover:underline" href="https://prices.openfoodfacts.org/">Añadir precio</a>
+<a class="hover:underline" href="https://prices.openfoodfacts.org/api/docs">API Open Prices</a>
+</div>
+</div>
+</footer>
+</main>
+<!-- BOTTOM NAVBAR (Shared Component Anchor - Responsive Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex items-center justify-around px-2 py-2.5 bg-white/95 backdrop-blur-md shadow-[0_-4px_12px_rgba(0,0,0,0.05)] border-t border-[#D2E3D8]/30">
+<!-- Destino 1: Cesta (ACTIVA por intención de compra y canasta de ejemplo) -->
+<a class="flex flex-col items-center justify-center text-[#0A3D22] font-bold gap-1 transition-transform active:scale-95" href="#cesta">
+<span class="material-symbols-outlined text-2xl text-[#0A3D22]" data-icon="shopping_cart" style="font-variation-settings: 'FILL' 1;">shopping_cart</span>
+<span class="font-label text-[11px] font-bold text-[#0A3D22]">Cesta</span>
+</a>
+<!-- Destino 2: Comparar -->
+<a class="flex flex-col items-center justify-center text-[#557361] hover:text-[#0A3D22] gap-1 transition-transform active:scale-95" href="#comparar">
+<span class="material-symbols-outlined text-2xl" data-icon="bar_chart">bar_chart</span>
+<span class="font-label text-[11px] font-semibold">Comparar</span>
+</a>
+<!-- Destino 3: Supermercados -->
+<a class="flex flex-col items-center justify-center text-[#557361] hover:text-[#0A3D22] gap-1 transition-transform active:scale-95" href="#supermercados">
+<span class="material-symbols-outlined text-2xl" data-icon="storefront">storefront</span>
+<span class="font-label text-[11px] font-semibold">Supermercados</span>
+</a>
+<!-- Destino 4: Histórico -->
+<a class="flex flex-col items-center justify-center text-[#557361] hover:text-[#0A3D22] gap-1 transition-transform active:scale-95" href="#pie">
+<span class="material-symbols-outlined text-2xl" data-icon="insights">insights</span>
+<span class="font-label text-[11px] font-semibold">Histórico</span>
+</a>
+</nav>
+<!-- Lightweight inline JS for interactivity without 3D/WebGL -->
+<script>
+const STOP = new Set(["de","la","el","los","las","un","una","y","con","en","del","al","para","por"]);
+const OWN = ["hacendado","deliplus","bosque verde","compy","consum","eroski","aliada","auchan","carrefour","simpl","dia","milbona","alesto","freshona","dulano","milsani","seleqtia","bonpreu","bonarea","nixe","sondey","crownfield","chef select","freeway","grandessa","lacura","coviran","alimerka","gadis","froiz","corte ingles","nuestra tierra"];
+const SITES = {
+  mercadona: "https://www.mercadona.es",
+  carrefour: "https://www.carrefour.es",
+  lidl: "https://www.lidl.es",
+  aldi: "https://www.aldi.es",
+  dia: "https://www.dia.es",
+  alcampo: "https://www.alcampo.es",
+  eroski: "https://www.eroski.es",
+  consum: "https://www.consum.es",
+  ahorramas: "https://www.ahorramas.com",
+  bonpreu: "https://www.bonpreu.cat",
+  caprabo: "https://www.caprabo.com",
+  condis: "https://www.condis.es",
+  coviran: "https://www.coviran.es",
+  gadis: "https://www.gadis.es",
+  alimerka: "https://www.alimerka.es",
+  froiz: "https://www.froiz.com",
+  hipercor: "https://www.hipercor.es",
+  bonarea: "https://www.bonarea.com",
+  veritas: "https://www.veritas.es"
+};
+const eur = (n) => n.toLocaleString("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " \u20ac";
+const kmf = (n) => n.toLocaleString("es-ES", { maximumFractionDigits: 1 }) + " km";
+const fold = (s) => (s || "").normalize("NFD").replace(/\p{M}/gu, "").toLowerCase();
+const $ = (id) => document.getElementById(id);
+
+function tokens(q) {
+  return fold(q).split(/[^a-z0-9]+/).filter((t) => t.length > 2 && !STOP.has(t));
+}
+function matches(name, toks) {
+  const n = fold(name);
+  return toks.length > 0 && toks.every((t) => {
+    if (n.includes(t)) return true;
+    const stem = t.endsWith("es") ? t.slice(0, -2) : t.endsWith("s") ? t.slice(0, -1) : t;
+    return stem.length > 3 && n.includes(stem);
+  });
+}
+function isOwn(brand, store) {
+  const b = " " + fold(brand) + " ";
+  const s = fold(store);
+  if (s.length > 3 && b.includes(s)) return true;
+  return OWN.some((w) => b.includes(w));
+}
+function siteFor(name, explicit) {
+  if (explicit && /^https?:\/\//i.test(explicit)) return explicit;
+  const n = fold(name);
+  for (const [k, url] of Object.entries(SITES)) if (n.includes(k)) return url;
+  return "";
+}
+function dist(a, b, c, d) {
+  const R = 6371, p = Math.PI / 180, x = (c - a) * p, y = (d - b) * p;
+  const h = Math.sin(x / 2) ** 2 + Math.cos(a * p) * Math.cos(c * p) * Math.sin(y / 2) ** 2;
+  return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
+}
+function itemsOf(text) {
+  return text.split(/[,;\n]|(\s+y\s+)/).map((s) => (s || "").trim()).filter((s) => s && !/^\s*y\s*$/.test(s)).slice(0, 8);
+}
+
+let map, layer, markers = {};
+
+function ensureMap(lat, lon) {
+  if (!map) {
+    map = L.map("mapa", { scrollWheelZoom: false }).setView([lat, lon], 14);
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+    layer = L.layerGroup().addTo(map);
+  } else {
+    map.setView([lat, lon], 14);
+    layer.clearLayers();
+  }
+  markers = {};
+  setTimeout(() => map.invalidateSize(), 250);
+}
+
+function showOnMap(id) {
+  const m = markers[id];
+  if (!m) return;
+  $("mapa").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center" });
+  m.openPopup();
+  document.querySelectorAll(".is-on").forEach((n) => n.classList.remove("is-on"));
+  const row = $("row-" + id);
+  if (row) row.classList.add("is-on");
+}
+
+function goBtn(label, click) {
+  const b = document.createElement(click ? "button" : "a");
+  b.className = "go px-4 py-2 rounded-xl text-xs inline-flex items-center gap-1";
+  b.style.backgroundColor = "#18E667";
+  b.style.color = "#032612";
+  b.style.fontWeight = "700";
+  b.textContent = label;
+  if (click) { b.type = "button"; b.addEventListener("click", click); }
+  return b;
+}
+
+function nameNode(store) {
+  if (store.web) {
+    const a = document.createElement("a");
+    a.href = store.web;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    a.className = "hover:underline";
+    a.textContent = store.name;
+    return a;
+  }
+  const b = document.createElement("button");
+  b.type = "button";
+  b.className = "name-jump";
+  b.textContent = store.name;
+  b.addEventListener("click", () => showOnMap(store.id));
+  return b;
+}
+
+function rowOf(store, best) {
+  const art = document.createElement("article");
+  art.id = "row-" + store.id;
+  art.className = "bg-white rounded-3xl p-5 sm:p-6 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-5 border " + (store.full ? "border-2 border-[#18E667]" : "border-[#CCE0D3]");
+  const left = document.createElement("div");
+  left.className = "flex flex-col sm:flex-row items-start gap-4 flex-1";
+  const thumb = document.createElement("div");
+  thumb.className = "relative shrink-0";
+  const pic = store.picks.find((p) => p && p.image);
+  if (pic) {
+    const img = document.createElement("img");
+    img.className = "w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover border border-emerald-100";
+    img.alt = pic.name;
+    img.src = pic.image;
+    thumb.appendChild(img);
+  } else {
+    const ph = document.createElement("div");
+    ph.className = "w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-[#E8EFEA] flex items-center justify-center text-[#5E7969] text-xs font-bold";
+    ph.textContent = "Sin foto";
+    thumb.appendChild(ph);
+  }
+  const body = document.createElement("div");
+  body.className = "space-y-1.5 flex-1";
+  const meta = document.createElement("div");
+  meta.className = "text-xs text-[#52705E] font-medium";
+  meta.textContent = kmf(store.km) + (store.full && store.id === best ? " · la más barata" : "");
+  const h = document.createElement("h3");
+  h.className = "font-headline text-lg sm:text-xl font-black text-[#032612]";
+  h.appendChild(nameNode(store));
+  const desc = document.createElement("p");
+  desc.className = "text-xs sm:text-sm text-[#385343] font-medium leading-relaxed";
+  const bits = store.picks.map((p, i) => {
+    if (!p) return store.items[i] + ": sin dato";
+    return p.name + " [" + eur(p.price) + ", " + p.date + "]";
+  });
+  desc.textContent = bits.join(" · ");
+  body.append(meta, h, desc);
+  left.append(thumb, body);
+  const right = document.createElement("div");
+  right.className = "flex sm:flex-col items-center sm:items-end justify-between gap-3";
+  const tot = document.createElement("div");
+  tot.className = "text-left sm:text-right";
+  const lab = document.createElement("div");
+  lab.className = "text-xs text-[#52705E] font-bold";
+  lab.textContent = store.full ? "Total cesta" : "Cesta";
+  const num = document.createElement("div");
+  num.className = "font-headline text-3xl font-black text-[#0A3D22]";
+  num.textContent = store.full ? eur(store.total) : "Incompleta";
+  tot.append(lab, num);
+  const acts = document.createElement("div");
+  acts.className = "flex items-center gap-2";
+  acts.appendChild(goBtn("Ver mapa", () => showOnMap(store.id)));
+  const ruta = goBtn("Ruta");
+  ruta.href = "https://www.google.com/maps/dir/?api=1&destination=" + store.lat + "," + store.lon;
+  ruta.target = "_blank";
+  ruta.rel = "noopener noreferrer";
+  acts.appendChild(ruta);
+  right.append(tot, acts);
+  art.append(left, right);
+  return art;
+}
+
+function paint(stores, items, note) {
+  const full = stores.filter((s) => s.full).sort((a, b) => a.total - b.total);
+  const rest = stores.filter((s) => !s.full).sort((a, b) => b.got - a.got || a.km - b.km);
+  const ranked = full.concat(rest).slice(0, 12);
+  const best = full[0];
+  $("hallazgo").textContent = best
+    ? "La cesta sale a " + eur(best.total) + " en " + best.name
+    : "Ninguna tienda a 8 km tiene precio de toda la cesta";
+  $("hero-n").textContent = best ? eur(best.total) : "Sin dato";
+  $("hero-tag").textContent = best ? "La más barata" : "Sin dato";
+  $("hero-cap").textContent = best
+    ? "Un envase de cada producto, el más barato cuyo nombre contiene lo escrito. " + note
+    : "Open Prices no tiene prueba de toda la lista en este radio. " + note;
+  $("kpi-tiendas").textContent = full.length + (full.length === 1 ? " tienda" : " tiendas");
+  $("kpi-tiendas-cap").textContent = "Con precio de toda la lista";
+  const nearest = stores.slice().sort((a, b) => a.km - b.km)[0];
+  $("kpi-km").textContent = nearest ? kmf(nearest.km) : "—";
+  $("kpi-km-cap").textContent = nearest ? nearest.name : "Sin supermercados en 8 km";
+  const missing = items.filter((it) => !stores.some((s) => s.picks[items.indexOf(it)]));
+  $("kpi-falta").textContent = missing.length + (missing.length === 1 ? " producto" : " productos");
+  $("kpi-falta-cap").textContent = missing.length ? "Sin dato: " + missing.join(", ") : "Hay precio de cada producto en alguna tienda";
+  $("n-items").lastChild.textContent = " " + items.length + (items.length === 1 ? " producto" : " productos");
+
+  const bars = $("bars");
+  bars.replaceChildren();
+  if (!full.length) {
+    $("chart-title").textContent = "No hay dos totales que comparar";
+    const p = document.createElement("p");
+    p.className = "text-sm text-[#385343]";
+    p.textContent = "Hace falta una tienda con precio de cada producto de la lista.";
+    bars.appendChild(p);
+  } else {
+    const max = Math.max(...full.map((s) => s.total));
+    const gap = full.length > 1 ? full[full.length - 1].total - full[0].total : 0;
+    $("chart-title").textContent = full.length > 1
+      ? "Hay " + eur(gap) + " entre la más barata y la más cara"
+      : "Solo " + full[0].name + " tiene precio de toda la cesta";
+    full.slice(0, 6).forEach((s, i) => {
+      const wrap = document.createElement("div");
+      const top = document.createElement("div");
+      top.className = "flex justify-between text-xs font-bold mb-1 text-[#032612]";
+      const nm = document.createElement("span");
+      nm.textContent = s.name;
+      const pr = document.createElement("span");
+      pr.textContent = eur(s.total);
+      top.append(nm, pr);
+      const track = document.createElement("div");
+      track.className = "w-full h-7 bg-[#EEF5F0] rounded-xl overflow-hidden p-0.5";
+      const bar = document.createElement("div");
+      bar.className = "h-full rounded-lg";
+      bar.style.width = Math.max(12, (s.total / max) * 100) + "%";
+      bar.style.background = i === 0 ? "#18E667" : "#0A3D22";
+      bar.style.color = i === 0 ? "#032612" : "#E7F6EC";
+      track.appendChild(bar);
+      wrap.append(top, track);
+      bars.appendChild(wrap);
+    });
+  }
+  $("chart-cap").textContent = "Suma de un envase por producto. No es el precio de hoy del lineal si el ticket es anterior.";
+  $("chart-base").textContent = items.length + (items.length === 1 ? " producto" : " productos");
+
+  const cmp = $("cmp");
+  cmp.replaceChildren();
+  if (full.length) {
+    const mean = full.reduce((a, s) => a + s.total, 0) / full.length;
+    const min = full[0].total, max = full[full.length - 1].total;
+    const pct = mean ? Math.round((1 - min / mean) * 100) : 0;
+    $("cmp-title").textContent = full.length > 1
+      ? (pct > 0 ? "La más barata queda un " + pct + " % bajo la media de estas tiendas" : "La más barata está en la media de estas tiendas")
+      : "Con una sola tienda no hay media";
+    const row = document.createElement("div");
+    row.className = "flex items-center justify-between gap-3";
+    const a = document.createElement("div");
+    a.innerHTML = '<div class="text-xs text-[#B2D8C1]">Media de las cestas completas</div>';
+    const av = document.createElement("div");
+    av.className = "text-2xl font-black text-white";
+    av.textContent = eur(mean);
+    a.appendChild(av);
+    const b = document.createElement("div");
+    b.className = "text-right";
+    const bl = document.createElement("div");
+    bl.className = "text-xs text-[#18E667] font-bold";
+    bl.textContent = "Más barata";
+    const bv = document.createElement("div");
+    bv.className = "text-2xl font-black text-[#18E667]";
+    bv.textContent = eur(min);
+    b.append(bl, bv);
+    row.append(a, b);
+    const scale = document.createElement("p");
+    scale.className = "text-xs text-[#E1EFE7]";
+    scale.textContent = "Mínimo " + eur(min) + " · media " + eur(mean) + " · máximo " + eur(max) + ". " + full.length + " tiendas con la lista completa.";
+    cmp.append(row, scale);
+  } else {
+    $("cmp-title").textContent = "Sin media: ninguna tienda cubre la lista";
+    const p = document.createElement("p");
+    p.className = "text-xs text-[#E1EFE7]";
+    p.textContent = "La media solo se calcula entre tiendas con precio de cada producto.";
+    cmp.appendChild(p);
+  }
+
+  const box = $("ranking");
+  box.replaceChildren();
+  if (!ranked.length) {
+    const p = document.createElement("p");
+    p.className = "text-sm text-[#385343]";
+    p.textContent = "No hay supermercados de OpenStreetMap en 8 km.";
+    box.appendChild(p);
+  } else ranked.forEach((s) => box.appendChild(rowOf(s, best && best.id)));
+
+  ensureMap(stores.lat, stores.lon);
+  ranked.forEach((s) => {
+    const icon = L.divIcon({
+      className: "",
+      html: '<div style="width:16px;height:16px;border-radius:99px;background:' + (s.full && best && s.id === best.id ? "#18E667" : "#0A3D22") + ';border:2px solid #032612"></div>',
+      iconSize: [16, 16],
+      iconAnchor: [8, 8]
+    });
+    const popup = document.createElement("div");
+    const title = nameNode(s);
+    title.style.fontWeight = "700";
+    popup.appendChild(title);
+    const ruta = goBtn("Ruta");
+    ruta.href = "https://www.google.com/maps/dir/?api=1&destination=" + s.lat + "," + s.lon;
+    ruta.target = "_blank";
+    ruta.rel = "noopener noreferrer";
+    ruta.style.display = "inline-block";
+    ruta.style.marginTop = "8px";
+    popup.appendChild(document.createElement("br"));
+    popup.appendChild(ruta);
+    const m = L.marker([s.lat, s.lon], { icon }).addTo(layer).bindPopup(popup);
+    markers[s.id] = m;
+  });
+  if (ranked.length) {
+    const g = L.featureGroup(Object.values(markers));
+    map.fitBounds(g.getBounds().pad(0.2));
+  }
+  $("mapa-n").textContent = ranked.length + " supermercados en el mapa";
+  const dates = stores.flatMap((s) => s.picks.filter(Boolean).map((p) => p.date));
+  $("sync").textContent = dates.length
+    ? "El precio más reciente de esta búsqueda es del " + dates.sort().slice(-1)[0] + ". Open Prices publica lo que sube la comunidad, no el lineal de esta hora."
+    : "En este radio no hay un precio de Open Prices que coincida con la lista.";
+}
+
+async function jget(url) {
+  const r = await fetch(url, { headers: { Accept: "application/json" } });
+  if (!r.ok) throw new Error(String(r.status));
+  return r.json();
+}
+
+async function loadPrices(lat, lon) {
+  const out = [];
+  let page = 1, pages = 1;
+  while (page <= pages && page <= 3) {
+    const d = await jget("https://prices.openfoodfacts.org/api/v1/prices?lat=" + lat + "&lon=" + lon + "&radius_km=8&currency=EUR&size=100&page=" + page + "&order_by=-date");
+    pages = d.pages || 1;
+    out.push(...(d.items || []));
+    page += 1;
+  }
+  return out;
+}
+
+async function loadShops(lat, lon) {
+  const q = `[out:json][timeout:25];(node["shop"="supermarket"](around:8000,${lat},${lon});way["shop"="supermarket"](around:8000,${lat},${lon}););out center tags 80;`;
+  const r = await fetch("https://overpass-api.de/api/interpreter", { method: "POST", body: q, headers: { "Content-Type": "text/plain" } });
+  if (!r.ok) throw new Error(String(r.status));
+  const d = await r.json();
+  return (d.elements || []).map((el) => {
+    const lat2 = el.lat || (el.center && el.center.lat);
+    const lon2 = el.lon || (el.center && el.center.lon);
+    const t = el.tags || {};
+    return {
+      id: (el.type || "node") + ":" + el.id,
+      name: t.name || t.brand || "Supermercado",
+      lat: lat2, lon: lon2,
+      web: siteFor(t.brand || t.name || "", t.website || t["contact:website"] || ""),
+      km: dist(lat, lon, lat2, lon2)
+    };
+  }).filter((s) => Number.isFinite(s.lat)).sort((a, b) => a.km - b.km).slice(0, 40);
+}
+
+async function buscar() {
+  const btn = $("buscar");
+  btn.disabled = true;
+  $("estado").textContent = "Buscando supermercados y precios…";
+  const blanca = $("marca-blanca").getAttribute("aria-pressed") === "true";
+  const items = itemsOf($("cesta-input").value);
+  if (!items.length) {
+    $("estado").textContent = "Escribe al menos un producto.";
+    btn.disabled = false;
+    return;
+  }
+  const toks = items.map(tokens);
+  try {
+    const here = await locate();
+    const [prices, shops] = await Promise.all([
+      loadPrices(here.lat, here.lon).catch(() => []),
+      loadShops(here.lat, here.lon).catch(() => [])
+    ]);
+    const byStore = new Map(shops.map((s) => [s.id, s]));
+    const latest = new Map();
+    prices.forEach((it) => {
+      const loc = it.location || {};
+      const prod = it.product || {};
+      const name = it.product_name || prod.product_name || "";
+      if (!name || loc.osm_lat == null) return;
+      const id = (loc.osm_type || "NODE").toLowerCase() + ":" + loc.osm_id;
+      if (!byStore.has(id) && (loc.osm_tag_value === "supermarket" || /mercadona|carrefour|lidl|aldi|dia|alcampo|eroski|consum|ahorram/i.test(loc.osm_name || ""))) {
+        byStore.set(id, {
+          id,
+          name: loc.osm_name || "Supermercado",
+          lat: loc.osm_lat,
+          lon: loc.osm_lon,
+          web: siteFor(loc.osm_name || "", loc.website_url || ""),
+          km: dist(here.lat, here.lon, loc.osm_lat, loc.osm_lon)
+        });
+      }
+      const store = byStore.get(id);
+      if (!store || store.km > 8) return;
+      const code = it.product_code || prod.code || name;
+      const key = id + "|" + code;
+      const prev = latest.get(key);
+      if (!prev || String(prev.date) < String(it.date)) {
+        const proof = it.proof || {};
+        const thumb = prod.image_url || (proof.image_thumb_path ? "https://prices.openfoodfacts.org/img/" + proof.image_thumb_path : "");
+        latest.set(key, {
+          store: id, name, brand: prod.brands || "", price: Number(it.price), date: it.date || "",
+          image: thumb, code: it.product_code || prod.code || ""
+        });
+      }
+    });
+    const pool = [...latest.values()];
+    const stores = [...byStore.values()].filter((s) => s.km <= 8).map((s) => {
+      const picks = toks.map((tk) => {
+        const hits = pool.filter((p) => p.store === s.id && matches(p.name, tk) && (!blanca || isOwn(p.brand, s.name)) && Number.isFinite(p.price));
+        hits.sort((a, b) => a.price - b.price);
+        return hits[0] || null;
+      });
+      const got = picks.filter(Boolean).length;
+      return { ...s, items, picks, got, full: got === items.length && got > 0, total: picks.reduce((a, p) => a + (p ? p.price : 0), 0) };
+    });
+    stores.lat = here.lat;
+    stores.lon = here.lon;
+    $("estado").textContent = noteLine(here.note, blanca, prices.length);
+    paint(stores, items, here.note);
+  } catch (err) {
+    $("hallazgo").textContent = "No se han podido leer los precios";
+    $("estado").textContent = "Fallo de red al hablar con Open Prices u OpenStreetMap.";
+    $("hero-n").textContent = "Sin dato";
+  }
+  btn.disabled = false;
+}
+
+function noteLine(note, blanca, n) {
+  return note + " · " + n + " precios de Open Prices en 8 km" + (blanca ? " · solo marca blanca" : " · cualquier marca") + ".";
+}
+
+function locate() {
+  const q = new URLSearchParams(location.search);
+  if (q.get("lat") && q.get("lon")) return Promise.resolve({ lat: +q.get("lat"), lon: +q.get("lon"), note: "Punto indicado en la dirección" });
+  return new Promise((res) => {
+    if (!navigator.geolocation) { res({ lat: 40.4168, lon: -3.7038, note: "Sin GPS: Madrid centro" }); return; }
+    navigator.geolocation.getCurrentPosition(
+      (p) => res({ lat: p.coords.latitude, lon: p.coords.longitude, note: "Desde tu ubicación" }),
+      () => res({ lat: 40.4168, lon: -3.7038, note: "Sin GPS: Madrid centro" }),
+      { enableHighAccuracy: false, timeout: 8000, maximumAge: 120000 }
+    );
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const saved = localStorage.getItem("tema");
+  const dark = saved ? saved === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  document.documentElement.classList.toggle("dark", dark);
+  $("tema").setAttribute("aria-checked", dark ? "true" : "false");
+  $("tema").addEventListener("click", () => {
+    const on = !document.documentElement.classList.contains("dark");
+    document.documentElement.classList.toggle("dark", on);
+    localStorage.setItem("tema", on ? "dark" : "light");
+    $("tema").setAttribute("aria-checked", on ? "true" : "false");
+  });
+  const segs = [$("marca-cualquier"), $("marca-blanca")];
+  segs.forEach((btn) => btn.addEventListener("click", () => {
+    segs.forEach((b) => {
+      b.setAttribute("aria-pressed", "false");
+      b.className = "flex-1 py-2.5 px-3 text-xs font-medium text-[#4B6856] hover:text-[#0A3D22] rounded-xl transition-all text-center";
+    });
+    btn.setAttribute("aria-pressed", "true");
+    btn.className = "flex-1 py-2.5 px-3 text-xs font-extrabold rounded-xl bg-white text-[#0A3D22] shadow-xs transition-all text-center";
+  }));
+    $("buscar").addEventListener("click", buscar);
+  $("cesta-input").addEventListener("keydown", (e) => { if (e.key === "Enter") buscar(); });
+  const params = new URLSearchParams(location.search);
+  if (params.get("lista")) $("cesta-input").value = params.get("lista");
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches && "IntersectionObserver" in window) {
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) e.target.classList.add("in"); }), { threshold: 0.12 });
+    document.querySelectorAll("main > section, main > footer").forEach((n) => { n.classList.add("reveal"); io.observe(n); });
+  }
+  buscar();
+});
+
+</script>
+</body></html>
