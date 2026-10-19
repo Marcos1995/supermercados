@@ -287,6 +287,18 @@
       "source_location": "L1"
     },
     {
+      "id": "start",
+      "label": "START.md",
+      "_origin": "ast",
+      "community": 15,
+      "community_name": "START.md",
+      "file_type": "document",
+      "node_kind": "page",
+      "norm_label": "start.md",
+      "source_file": "START.md",
+      "source_location": "L1"
+    },
+    {
       "id": "cursor_skills_web_design_dashboard",
       "label": "dashboard.md",
       "_origin": "ast",
@@ -1215,5 +1227,6 @@
       "weight": 1.0
     }
   ],
-  "hyperedges": []
+  "hyperedges": [],
+  "built_at_commit": "a18448a0a3368dcb0ea7474ae05592c9338a02f0"
 }
