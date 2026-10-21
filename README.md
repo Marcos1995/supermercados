@@ -1,7 +1,7 @@
 <!-- managed-by-telegram-cursor-bot:agent-kit -->
 # Project
 
-Lista de productos: al buscar, salen las fichas de Mercadona, Carrefour, Lidl y Aldi para marcar; el mapa suma solo lo marcado.
+Compra semanal fija: marcas tipos, y en cada súper se elige sola la ficha más barata por litro, kilo o docena.
 
 ## Setup
 
