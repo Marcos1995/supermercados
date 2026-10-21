@@ -282,6 +282,37 @@ const SEMANAL = [
   "detergente", "lavavajillas", "papel de cocina", "papel higiénico", "jabón", "champú",
   "fruta", "verdura", "patatas", "cebolla", "tomate"
 ];
+const QUERY = {
+  yogurt: "yogur natural",
+  verdura: "lechuga",
+  legumbres: "garbanzos",
+  "carne picada": "picada",
+  "papel higiénico": "papel higienico",
+  "aceite de girasol": "aceite de girasol",
+  detergente: "detergente",
+  lavavajillas: "lavavajillas",
+  fruta: "manzana",
+  jabón: "jabon de manos",
+  champú: "champu",
+  leche: "leche semidesnatada",
+  arroz: "arroz"
+};
+const FALLBACKS = {
+  "carne picada": ["carne picada", "burger meat"],
+  lavavajillas: ["lavavajillas a mano"],
+  "aceite de oliva": ["aceite oliva virgen"],
+  detergente: ["detergente ropa"],
+  pollo: ["pechuga de pollo"],
+  pasta: ["espagueti"],
+  tomate: ["tomate pera", "tomate ensalada"],
+  patatas: ["patatas freir", "patata"],
+  café: ["cafe molido", "cafe en grano"]
+};
+const EXPECT = {
+  "aceite de oliva": "l", "aceite de girasol": "l", huevos: "dz", leche: "l",
+  mantequilla: "kg", yogurt: "kg", arroz: "kg", pasta: "kg", azúcar: "kg",
+  agua: "l", "carne picada": "kg", pollo: "kg"
+};
 let map, layer, markers = {}, here = null, catalogs = null, moving = false;
 let shopsNow = [], linesNow = [], selected = new Set(SEMANAL);
 
@@ -555,8 +586,13 @@ async function searchCarrefour(q) {
     };
   });
 }
-async function searchLidl(q) {
-  const toks = tokens(q);
+const LIDL_HOGAR = new Set(["detergente", "lavavajillas", "papel de cocina", "papel higiénico", "jabón", "champú"]);
+function lidlCatOk(cat, line) {
+  const c = fold(cat || "");
+  if (c === "food" || c === "f+v" || c.startsWith("food") || c.startsWith("f+v")) return true;
+  return LIDL_HOGAR.has(line);
+}
+async function searchLidl(q, line) {
   return collect(async (page) => {
     const d = await jget("https://www.lidl.es/q/api/search?assortment=ES&locale=es_ES&version=2.1.0&q=" + encodeURIComponent(q) + "&fetchsize=40&offset=" + (page * 40), { Accept: "application/mindshift.search+json;version=2" });
     const raw = d.items || [];
@@ -564,9 +600,9 @@ async function searchLidl(q) {
       items: raw.map((it) => {
         const data = it.gridbox && it.gridbox.data;
         if (!data || !data.fullTitle || !data.price) return null;
-        const titled = matches(data.fullTitle, toks);
-        if (data.category && data.category !== "Food" && !titled) return null;
+        if (!lidlCatOk(data.category, line || "")) return null;
         const price = Number(data.price.price);
+        if (!(price > 0)) return null;
         return { name: data.fullTitle, brand: "", price, unit: price, unitRaw: "", unitLabel: "", image: data.image || "", url: data.canonicalUrl ? "https://www.lidl.es" + data.canonicalUrl : "" };
       }).filter(Boolean),
       done: raw.length < 40
@@ -637,33 +673,129 @@ const LABEL = { mercadona: "Mercadona", carrefour: "Carrefour", lidl: "Lidl", al
 function selectedLines() {
   return SEMANAL.filter((line) => selected.has(line));
 }
-function searchLine(chain, q, lat, lon) {
+function searchLine(chain, q, lat, lon, line) {
   if (chain === "mercadona") return searchMercadona(q, lat, lon);
   if (chain === "carrefour") return searchCarrefour(q);
-  if (chain === "lidl") return searchLidl(q);
+  if (chain === "lidl") return searchLidl(q, line);
   return searchAldi(q, lat, lon);
+}
+function queriesFor(line) {
+  const main = QUERY[line] || line;
+  return [...new Set([main, line, ...(FALLBACKS[line] || [])])];
+}
+async function searchLineMerged(chain, line, lat, lon) {
+  const seen = new Set();
+  const out = [];
+  for (const q of queriesFor(line)) {
+    const hits = await searchLine(chain, q, lat, lon, line);
+    for (const h of hits) {
+      const k = fold(h.name) + "|" + h.price;
+      if (seen.has(k)) continue;
+      seen.add(k);
+      out.push(h);
+      if (out.length >= 100) return out;
+    }
+  }
+  return out;
 }
 async function searchCatalogs(lines, lat, lon, fail) {
   const cats = { mercadona: {}, carrefour: {}, lidl: {}, aldi: {} };
-  await Promise.all(lines.flatMap((line) => CHAINS.map((chain) =>
-    searchLine(chain, line, lat, lon).then((hits) => { cats[chain][line] = hits; }).catch(() => {
-      cats[chain][line] = [];
-      if (!fail.includes(LABEL[chain])) fail.push(LABEL[chain]);
-    })
-  )));
+  const jobs = [];
+  lines.forEach((line) => {
+    CHAINS.forEach((chain) => {
+      jobs.push({ chain, line });
+    });
+  });
+  const limit = 8;
+  for (let i = 0; i < jobs.length; i += limit) {
+    await Promise.all(jobs.slice(i, i + limit).map(({ chain, line }) =>
+      searchLineMerged(chain, line, lat, lon).then((hits) => { cats[chain][line] = hits; }).catch(() => {
+        cats[chain][line] = [];
+        if (!fail.includes(LABEL[chain])) fail.push(LABEL[chain]);
+      })
+    ));
+  }
   return cats;
 }
 function blancaOn() {
   return $("opt-blanca").getAttribute("aria-pressed") === "true";
 }
-const NOISE = ["corporal","cabello","facial","bronceador","masaje","utensilio","espumador","chocolate","nidos","codorniz","claras","liquida","flan","clipsaurio","juguete","dinosaur","silvercrest","cebador","cazo","freidora","maquina","robot","sarten"];
+const NOISE = [
+  "corporal","cabello","facial","bronceador","masaje","utensilio","espumador","chocolate","nidos",
+  "codorniz","claras","liquida","flan","clipsaurio","juguete","dinosaur","silvercrest","cebador",
+  "cazo","freidora","maquina","robot","sarten","croquetas","perro","gato","helado","tagliatelle",
+  "helado","bombones","calendario","guirnalda","aspirador","tapicer","cafetera","batidora","mancuerna"
+];
 function noisy(name, toks) {
   const n = fold(name);
-  return NOISE.some((w) => n.includes(w) && !toks.some((t) => t.includes(w)));
+  return NOISE.some((w) => n.includes(w) && !toks.some((t) => t.includes(w) || w.includes(t)));
+}
+function wordsOf(name) {
+  return fold(name).split(/[^a-z0-9]+/).filter(Boolean);
+}
+function hitWord(w, t) {
+  return w === t || (t.length > 3 && w.startsWith(t)) || (w.length > 3 && t.startsWith(w));
+}
+function primaryOk(name, toks) {
+  if (!toks.length) return false;
+  const words = wordsOf(name);
+  const primary = toks[0];
+  const idx = words.findIndex((w) => hitWord(w, primary));
+  if (idx < 0 || idx > 3) return false;
+  return toks.every((t) => words.some((w) => hitWord(w, t)));
+}
+function matchToks(line) {
+  if (line === "yogurt") return ["yogur"];
+  if (line === "verdura") return ["lechuga"];
+  if (line === "legumbres") return ["garbanzos"];
+  if (line === "fruta") return ["manzana"];
+  if (line === "carne picada") return ["picada"];
+  return tokens(line);
+}
+/* Criterio unificado: docs/EMPAREJADO.md — no improvisar reglas nuevas aquí sin actualizar ese doc. */
+function lineBan(name, line) {
+  const n = fold(name);
+  if (line === "leche") {
+    if (/(leche|bebida) de (coco|almendra|soja|avena|arroz|avellana)/.test(n)) return true;
+    if (/(solar|corporal|crema|limpiador|friegasuelos|fermentada|condensada|evaporada)/.test(n)) return true;
+  }
+  if (line === "arroz" && /(arroz con|croqueta|perro|gato)/.test(n)) return true;
+  if (line === "huevos" && /(chocolate|flan|pasta|tagliatelle)/.test(n)) return true;
+  if (line === "aceite de oliva") {
+    if (!/aceite de oliva/.test(n)) return true;
+    if (/(atun|sardina|sardinillas|pota|bonito|ventresca)/.test(n)) return true;
+  }
+  if (line === "aceite de girasol") {
+    if (!/aceite de girasol/.test(n)) return true;
+    if (/(atun|sardina|sardinillas|pota|bonito|ventresca)/.test(n)) return true;
+  }
+  if (line === "carne picada") {
+    if (/(cebolla|chocolate|avellana|girasoli)/.test(n)) return true;
+    if (!/(vacuno|cerdo|pollo|pavo|ternera|burger meat|carne|mixto)/.test(n)) return true;
+  }
+  if (line === "jamón" && /(jamoncitos|croqueta|pavo|york|cocido de pavo)/.test(n)) return true;
+  if (line === "pan" && /(panettone|empanado)/.test(n)) return true;
+  if (line === "pollo" && /(croqueta|nugget|crispies|perro|gato|caldo|sopa|stock|curry|empanado|relleno|pate|paté)/.test(n)) return true;
+  if (line === "lavavajillas" && /(sal para|abrillantador)/.test(n)) return true;
+  if (line === "jabón" && /(dispensador|vaso|organizador|jabonera)/.test(n)) return true;
+  if (line === "azúcar" && !/^azucar\b/.test(n)) return true;
+  if (line === "fruta" && /(friegasuelos|limpiador|ambientador|gel|jabon|champu|zumo|smoothie)/.test(n)) return true;
+  if (line === "patatas" && /(fritas|chips|snack|congelad|bacon|gajo|especiad|queso|american|cocidas)/.test(n)) return true;
+  if (line === "tomate" && /(frito|salsa|ketchup|concentrado|triturado|fideos|troceado|pelado|siciliana)/.test(n)) return true;
+  if (line === "café" && /(cappuccino|capuccino|helado|bombon|con leche|puleva|latte)/.test(n)) return true;
+  if (line === "papel de cocina" && /(vegetal|horno|aluminio)/.test(n)) return true;
+  return false;
 }
 function visibleHits(list, blanca, chain, line) {
-  const toks = tokens(line);
-  return (list || []).filter((p) => p.price > 0 && matches(p.name, toks) && !noisy(p.name, toks) && (!blanca || isOwn(p, chain)));
+  const toks = matchToks(line);
+  return (list || []).filter((p) =>
+    p.price > 0 &&
+    matches(p.name, toks) &&
+    primaryOk(p.name, toks) &&
+    !noisy(p.name, toks) &&
+    !lineBan(p.name, line) &&
+    (!blanca || isOwn(p, chain))
+  );
 }
 function normUnit(value, raw) {
   const u = fold(raw);
@@ -675,28 +807,33 @@ function normUnit(value, raw) {
   return { family: "pack", value: value };
 }
 function pick(list, query, blanca, chain) {
-  const toks = tokens(query);
+  const toks = matchToks(query);
   let hits = visibleHits(list, blanca, chain, query);
-  const named = hits.filter((p) => {
-    const n = fold(p.name);
-    return toks.some((t) => n.startsWith(t) || n.includes(" " + t + " ") || n.includes(" " + t));
-  });
+  if (!hits.length) return null;
   const lead = hits.filter((p) => toks.some((t) => fold(p.name).startsWith(t)));
   if (lead.length) hits = lead;
-  else if (named.length) hits = named;
   hits.forEach((p) => {
     const n = normUnit(p.unit, p.unitRaw);
     p.family = n.family;
     p.cmp = n.value;
   });
-  const order = ["l", "kg", "dz", "ud", "pack"];
+  const want = EXPECT[query];
+  const order = want ? [want, "l", "kg", "dz", "ud", "pack"] : ["l", "kg", "dz", "ud", "pack"];
   const counts = {};
   hits.forEach((p) => { counts[p.family] = (counts[p.family] || 0) + 1; });
-  const fam = Object.keys(counts).sort((a, b) => counts[b] - counts[a] || order.indexOf(a) - order.indexOf(b))[0] || "pack";
-  const pool = hits.filter((p) => p.family === fam);
+  let fam = order.find((f) => hits.some((p) => p.family === f));
+  if (!fam) {
+    fam = Object.keys(counts).sort((a, b) => counts[b] - counts[a] || order.indexOf(a) - order.indexOf(b))[0] || "pack";
+  }
+  let pool = hits.filter((p) => p.family === fam);
+  if (query === "pan") {
+    const bread = pool.filter((p) => !fold(p.name).includes("rallado"));
+    if (bread.length) pool = bread;
+  }
   pool.sort((a, b) => a.cmp - b.cmp || a.price - b.price);
   return pool[0] || null;
 }
+
 function paintSemanal() {
   const box = $("semanal-grid");
   box.replaceChildren();

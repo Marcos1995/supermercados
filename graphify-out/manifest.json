@@ -72,33 +72,51 @@
     "semantic_hash": ""
   },
   "PROJECT.md": {
-    "mtime": 1792612372.1429102,
-    "seen": 1792612502.0232205,
-    "ast_hash": "9767f1b9a7ea066c15da1f965d70800d",
+    "mtime": 1792615001.3028507,
+    "seen": 1792615013.953556,
+    "ast_hash": "4cb7d3d3931277e7a1c9066589f32ede",
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1792612373.436282,
-    "seen": 1792612502.0232205,
-    "ast_hash": "70fcd42b0cff7f6e3fb0c18f7db79de7",
+    "mtime": 1792615003.5670047,
+    "seen": 1792615013.953556,
+    "ast_hash": "aa5c74479678d227104c20b3aeb3592c",
     "semantic_hash": ""
   },
   "docs/DECISIONES.md": {
-    "mtime": 1792612376.520176,
-    "seen": 1792612502.0232205,
-    "ast_hash": "9c998a4750c07929bc4bd7c1f8ef7cc2",
+    "mtime": 1792615006.4388604,
+    "seen": 1792615013.953556,
+    "ast_hash": "804efb50ec9ffaf736710177af5bfe01",
     "semantic_hash": ""
   },
   "index.html": {
-    "mtime": 1792612469.11654,
-    "seen": 1792612502.0232205,
-    "ast_hash": "0ecb61a8a6c14fcdefbee343b69777de",
+    "mtime": 1792614914.3129342,
+    "seen": 1792615013.953556,
+    "ast_hash": "3d534f67712d405e8cec36886f62001e",
     "semantic_hash": ""
   },
   "START.md": {
-    "mtime": 1792431680.9198985,
-    "seen": 1792432070.7024477,
-    "ast_hash": "bcfe3a344eb2f495e821cd3dae85d0cc",
+    "mtime": 1792614997.4997437,
+    "seen": 1792615013.953556,
+    "ast_hash": "9671bd35f3c014392d6aa641c0f6ab60",
+    "semantic_hash": ""
+  },
+  "docs/EJECUTAR.md": {
+    "mtime": 1792614998.4814906,
+    "seen": 1792615013.953556,
+    "ast_hash": "1cc16aafbf12f5f0de289dec709e2a4c",
+    "semantic_hash": ""
+  },
+  "docs/EMPAREJADO.md": {
+    "mtime": 1792615004.1684566,
+    "seen": 1792615013.953556,
+    "ast_hash": "e815dd166561d68fe870643f795baced",
+    "semantic_hash": ""
+  },
+  "docs/PRECIOS.md": {
+    "mtime": 1792615004.7687576,
+    "seen": 1792615013.953556,
+    "ast_hash": "5a485eb4133cca5cd6c564a446b03111",
     "semantic_hash": ""
   }
 }

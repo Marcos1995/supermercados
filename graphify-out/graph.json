@@ -113,7 +113,7 @@
       "node_kind": "heading",
       "norm_label": "comandos utiles",
       "source_file": "PROJECT.md",
-      "source_location": "L21"
+      "source_location": "L19"
     },
     {
       "id": "project_contexto_del_proyecto",
@@ -149,7 +149,7 @@
       "node_kind": "heading",
       "norm_label": "notas para el agente",
       "source_file": "PROJECT.md",
-      "source_location": "L26"
+      "source_location": "L25"
     },
     {
       "id": "project_produccion",
@@ -173,7 +173,7 @@
       "node_kind": "heading",
       "norm_label": "stack",
       "source_file": "PROJECT.md",
-      "source_location": "L18"
+      "source_location": "L16"
     },
     {
       "id": "cursor_skills_tablas_skill",
@@ -287,16 +287,208 @@
       "source_location": "L1"
     },
     {
-      "id": "start",
-      "label": "START.md",
+      "id": "docs_emparejado_apis_no_scrape",
+      "label": "APIs (no scrape)",
       "_origin": "ast",
       "community": 15,
-      "community_name": "START.md",
+      "community_name": "Criterio unificado de emparejado",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "apis (no scrape)",
+      "source_file": "docs/EMPAREJADO.md",
+      "source_location": "L47"
+    },
+    {
+      "id": "docs_emparejado_conteos_esperados_madrid_28_tipos",
+      "label": "Conteos esperados (Madrid, 28 tipos)",
+      "_origin": "ast",
+      "community": 15,
+      "community_name": "Criterio unificado de emparejado",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "conteos esperados (madrid, 28 tipos)",
+      "source_file": "docs/EMPAREJADO.md",
+      "source_location": "L58"
+    },
+    {
+      "id": "docs_emparejado_criterio_unificado_de_emparejado",
+      "label": "Criterio unificado de emparejado",
+      "_origin": "ast",
+      "community": 15,
+      "community_name": "Criterio unificado de emparejado",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "criterio unificado de emparejado",
+      "source_file": "docs/EMPAREJADO.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_emparejado_objetivo",
+      "label": "Objetivo",
+      "_origin": "ast",
+      "community": 15,
+      "community_name": "Criterio unificado de emparejado",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "objetivo",
+      "source_file": "docs/EMPAREJADO.md",
+      "source_location": "L5"
+    },
+    {
+      "id": "docs_emparejado_pipeline_orden_fijo",
+      "label": "Pipeline (orden fijo)",
+      "_origin": "ast",
+      "community": 15,
+      "community_name": "Criterio unificado de emparejado",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "pipeline (orden fijo)",
+      "source_file": "docs/EMPAREJADO.md",
+      "source_location": "L11"
+    },
+    {
+      "id": "docs_emparejado_qu\u00e9_cuenta_como_producto_base",
+      "label": "Qu\u00e9 cuenta como \u201cproducto base\u201d",
+      "_origin": "ast",
+      "community": 15,
+      "community_name": "Criterio unificado de emparejado",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "que cuenta como \u201cproducto base\u201d",
+      "source_file": "docs/EMPAREJADO.md",
+      "source_location": "L26"
+    },
+    {
+      "id": "docs_precios",
+      "label": "PRECIOS.md",
+      "_origin": "ast",
+      "community": 16,
+      "community_name": "Precios: fuentes y l\u00edmites",
       "file_type": "document",
       "node_kind": "page",
-      "norm_label": "start.md",
+      "norm_label": "precios.md",
+      "source_file": "docs/PRECIOS.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_precios_causas_resuelto_aceptado",
+      "label": "Causas (resuelto / aceptado)",
+      "_origin": "ast",
+      "community": 16,
+      "community_name": "Precios: fuentes y l\u00edmites",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "causas (resuelto / aceptado)",
+      "source_file": "docs/PRECIOS.md",
+      "source_location": "L19"
+    },
+    {
+      "id": "docs_precios_conteos_de_referencia_madrid_28_tipos",
+      "label": "Conteos de referencia (Madrid, 28 tipos)",
+      "_origin": "ast",
+      "community": 16,
+      "community_name": "Precios: fuentes y l\u00edmites",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "conteos de referencia (madrid, 28 tipos)",
+      "source_file": "docs/PRECIOS.md",
+      "source_location": "L26"
+    },
+    {
+      "id": "docs_precios_c\u00f3mo_se_obtienen",
+      "label": "C\u00f3mo se obtienen",
+      "_origin": "ast",
+      "community": 16,
+      "community_name": "Precios: fuentes y l\u00edmites",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "como se obtienen",
+      "source_file": "docs/PRECIOS.md",
+      "source_location": "L6"
+    },
+    {
+      "id": "docs_precios_precios_fuentes_y_l\u00edmites",
+      "label": "Precios: fuentes y l\u00edmites",
+      "_origin": "ast",
+      "community": 16,
+      "community_name": "Precios: fuentes y l\u00edmites",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "precios: fuentes y limites",
+      "source_file": "docs/PRECIOS.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_precios_qu\u00e9_no_se_promete",
+      "label": "Qu\u00e9 no se promete",
+      "_origin": "ast",
+      "community": 16,
+      "community_name": "Precios: fuentes y l\u00edmites",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "que no se promete",
+      "source_file": "docs/PRECIOS.md",
+      "source_location": "L35"
+    },
+    {
+      "id": "start_arrancar_a_mano",
+      "label": "Arrancar a mano",
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "Arrancar a mano",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "arrancar a mano",
       "source_file": "START.md",
       "source_location": "L1"
+    },
+    {
+      "id": "start_comprobar_conteos_devtools",
+      "label": "Comprobar conteos (DevTools)",
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "Arrancar a mano",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "comprobar conteos (devtools)",
+      "source_file": "START.md",
+      "source_location": "L28"
+    },
+    {
+      "id": "start_criterio_de_fichas_no_reinventar",
+      "label": "Criterio de fichas (no reinventar)",
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "Arrancar a mano",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "criterio de fichas (no reinventar)",
+      "source_file": "START.md",
+      "source_location": "L5"
+    },
+    {
+      "id": "start_local",
+      "label": "Local",
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "Arrancar a mano",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "local",
+      "source_file": "START.md",
+      "source_location": "L18"
+    },
+    {
+      "id": "start_producci\u00f3n",
+      "label": "Producci\u00f3n",
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "Arrancar a mano",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "produccion",
+      "source_file": "START.md",
+      "source_location": "L9"
     },
     {
       "id": "cursor_skills_web_design_dashboard",
@@ -704,11 +896,47 @@
       "source_location": "L7"
     },
     {
+      "id": "docs_ejecutar",
+      "label": "EJECUTAR.md",
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "EMPAREJADO.md",
+      "file_type": "document",
+      "node_kind": "page",
+      "norm_label": "ejecutar.md",
+      "source_file": "docs/EJECUTAR.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_ejecutar_ejecutar_a_mano",
+      "label": "Ejecutar a mano",
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "EMPAREJADO.md",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "ejecutar a mano",
+      "source_file": "docs/EJECUTAR.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_emparejado",
+      "label": "EMPAREJADO.md",
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "EMPAREJADO.md",
+      "file_type": "document",
+      "node_kind": "page",
+      "norm_label": "emparejado.md",
+      "source_file": "docs/EMPAREJADO.md",
+      "source_location": "L1"
+    },
+    {
       "id": "readme",
       "label": "README.md",
       "_origin": "ast",
       "community": 9,
-      "community_name": "Project",
+      "community_name": "EMPAREJADO.md",
       "file_type": "document",
       "node_kind": "page",
       "norm_label": "readme.md",
@@ -720,36 +948,48 @@
       "label": "Docs",
       "_origin": "ast",
       "community": 9,
-      "community_name": "Project",
+      "community_name": "EMPAREJADO.md",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "docs",
       "source_file": "README.md",
-      "source_location": "L12"
-    },
-    {
-      "id": "readme_project",
-      "label": "Project",
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "Project",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "project",
-      "source_file": "README.md",
-      "source_location": "L2"
+      "source_location": "L20"
     },
     {
       "id": "readme_setup",
       "label": "Setup",
       "_origin": "ast",
       "community": 9,
-      "community_name": "Project",
+      "community_name": "EMPAREJADO.md",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "setup",
       "source_file": "README.md",
-      "source_location": "L6"
+      "source_location": "L10"
+    },
+    {
+      "id": "readme_supermercados",
+      "label": "supermercados",
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "EMPAREJADO.md",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "supermercados",
+      "source_file": "README.md",
+      "source_location": "L2"
+    },
+    {
+      "id": "start",
+      "label": "START.md",
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "EMPAREJADO.md",
+      "file_type": "document",
+      "node_kind": "page",
+      "norm_label": "start.md",
+      "source_file": "START.md",
+      "source_location": "L1"
     }
   ],
   "links": [
@@ -1128,6 +1368,138 @@
       "weight": 1.0
     },
     {
+      "source": "docs_ejecutar",
+      "target": "docs_ejecutar_ejecutar_a_mano",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/EJECUTAR.md",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_emparejado",
+      "target": "docs_emparejado_criterio_unificado_de_emparejado",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/EMPAREJADO.md",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_emparejado_criterio_unificado_de_emparejado",
+      "target": "docs_emparejado_pipeline_orden_fijo",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/EMPAREJADO.md",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_emparejado_criterio_unificado_de_emparejado",
+      "target": "docs_emparejado_qu\u00e9_cuenta_como_producto_base",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/EMPAREJADO.md",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_emparejado_criterio_unificado_de_emparejado",
+      "target": "docs_emparejado_apis_no_scrape",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/EMPAREJADO.md",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_emparejado_criterio_unificado_de_emparejado",
+      "target": "docs_emparejado_objetivo",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/EMPAREJADO.md",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_emparejado_criterio_unificado_de_emparejado",
+      "target": "docs_emparejado_conteos_esperados_madrid_28_tipos",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/EMPAREJADO.md",
+      "source_location": "L58",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_precios",
+      "target": "docs_precios_precios_fuentes_y_l\u00edmites",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRECIOS.md",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_precios_precios_fuentes_y_l\u00edmites",
+      "target": "docs_precios_causas_resuelto_aceptado",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRECIOS.md",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_precios_precios_fuentes_y_l\u00edmites",
+      "target": "docs_precios_conteos_de_referencia_madrid_28_tipos",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRECIOS.md",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_precios_precios_fuentes_y_l\u00edmites",
+      "target": "docs_precios_qu\u00e9_no_se_promete",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRECIOS.md",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_precios_precios_fuentes_y_l\u00edmites",
+      "target": "docs_precios_c\u00f3mo_se_obtienen",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRECIOS.md",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
       "source": "project",
       "target": "project_contexto_del_proyecto",
       "relation": "contains",
@@ -1146,7 +1518,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "PROJECT.md",
-      "source_location": "L18",
+      "source_location": "L16",
       "weight": 1.0
     },
     {
@@ -1157,7 +1529,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "PROJECT.md",
-      "source_location": "L21",
+      "source_location": "L19",
       "weight": 1.0
     },
     {
@@ -1168,7 +1540,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "PROJECT.md",
-      "source_location": "L26",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -1195,7 +1567,7 @@
     },
     {
       "source": "readme",
-      "target": "readme_project",
+      "target": "readme_supermercados",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -1205,28 +1577,138 @@
       "weight": 1.0
     },
     {
-      "source": "readme_project",
-      "target": "readme_docs",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "README.md",
-      "source_location": "L12",
-      "weight": 1.0
-    },
-    {
-      "source": "readme_project",
+      "source": "readme_supermercados",
       "target": "readme_setup",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "README.md",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "readme_supermercados",
+      "target": "readme_docs",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "start",
+      "target": "start_arrancar_a_mano",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "START.md",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "start_arrancar_a_mano",
+      "target": "start_local",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "START.md",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "start_arrancar_a_mano",
+      "target": "start_comprobar_conteos_devtools",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "START.md",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "start_arrancar_a_mano",
+      "target": "start_criterio_de_fichas_no_reinventar",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "START.md",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "start_arrancar_a_mano",
+      "target": "start_producci\u00f3n",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "START.md",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_ejecutar",
+      "target": "start",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/EJECUTAR.md",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_ejecutar",
+      "target": "docs_emparejado",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/EJECUTAR.md",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "readme",
+      "target": "start",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
       "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "readme",
+      "target": "docs_emparejado",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "start",
+      "target": "docs_emparejado",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "START.md",
+      "source_location": "L7",
       "weight": 1.0
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "fa79546485322e0c15f83ae6b9dd9746a80120d4"
+  "built_at_commit": "08fe2e7e0430a7a7159c7622fd6a6f56232db7df"
 }

@@ -7,22 +7,21 @@
 - Vista local: `index.html` (con red: catálogos de las cadenas y OpenStreetMap)
 
 ## Estado
-- Lista fija de **compra semanal** (`SEMANAL` en `index.html`): tipos unificados (aceite de oliva, aceite de girasol, huevos, leche, papel de cocina, papel higiénico, etc.). Casillas para marcar qué entra. Filtro cualquier marca / solo marca blanca. Botón Ver precios.
-- Al buscar, el navegador pide el JSON de la propia web solo de los tipos marcados (hasta ~100 fichas por cadena y palabra). Por cada tipo y cadena se elige **sola** la ficha más barata por litro, kilo o docena. No se mezclan SKUs entre súpers. Debajo, “qué eligió” en solo lectura.
-  - Mercadona: Algolia `products_prod_*_es` (almacén mad3, bcn1, vlc1 o svq1).
-  - Carrefour: Empathy, catálogo food.
-  - Lidl: `lidl.es/q/api/search`, surtido ES.
-  - Aldi: Algolia `an_prd_es_es_*_products2`.
-- El mapa (8 km) ordena por el total de esos packs. Sin GPS, Madrid centro. Dia y Alcampo sin precio. Sin folletos ni Gemini. No se archiva el catálogo.
+- Lista fija **SEMANAL** (28 tipos). Una ficha por tipo y cadena = más barata por unidad.
+- Criterio de emparejado **fijo y documentado**: `docs/EMPAREJADO.md` (código = ese doc). Cómo lanzarlo a mano: `START.md`.
+- JSON en vivo (no HTML). Fuentes/huecos: `docs/PRECIOS.md`.
+- Mercadona/Carrefour ~28/28; Aldi sin huevos ni girasol en Algolia; Lidl indexa pocos básicos. Dia/Alcampo/Eroski: solo mapa.
+- Concurrencia 8. Sin GPS → Madrid centro. Sin folletos ni Gemini.
 
 ## Stack
 - Un `index.html` (CSS y JS dentro). Leaflet 1.9.4 y teselas de OpenStreetMap. Sin build y sin API de pago.
 
 ## Comandos utiles
 - Instalar: nada
-- Test: abrir `index.html?lat=40.4168&lon=-3.7038`, dejar aceite de oliva / huevos / leche, Ver precios, comprobar un total
-- Dev: abrir el archivo en Chrome
+- Local: `python -m http.server 8766` → http://127.0.0.1:8766/index.html?lat=40.4168&lon=-3.7038
+- Manual: `START.md`
+- Criterio: `docs/EMPAREJADO.md`
 
 ## Notas para el agente
-- Supuesto: España. Tiendas = Overpass. Precios = búsquedas JSON; criterio = menor €/unidad por tipo y cadena. No inventar importes.
-- No cachear precios en el repo. Lean kit (ver AGENTS.md)
+- Emparejado = `docs/EMPAREJADO.md`. No reinventar filtros en cada sesión; si hace falta una regla, se añade al doc y a `lineBan`/`QUERY` en el mismo cambio.
+- No inventar importes. No cachear precios en el repo. Lean kit (ver AGENTS.md).
