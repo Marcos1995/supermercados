@@ -184,8 +184,18 @@
 </div>
 <p class="text-[11px] leading-snug text-[#4F6E5A] px-1">Marca los tipos de la lista. En cada súper se elige sola la ficha más barata por litro, kilo o docena. No se mezclan productos entre cadenas.</p>
 </section>
-<section id="fichas" class="space-y-2" aria-label="Qué eligió cada cadena"></section>
-<!-- 3. EL MAPA (ELEMENTO PROTAGONISTA, GRANDE Y ALTO) -->
+<!-- 3. LISTA DE SÚPERS: más completos primero, luego precio -->
+<section class="space-y-2.5">
+<div class="flex items-center justify-between px-1">
+<h2 class="font-display text-sm font-black uppercase tracking-wider text-[#476652]">
+          <span id="cuenta">Supermercados</span>
+        </h2>
+<span class="text-xs font-bold text-[#0A3D22]">Completos · luego más barato</span>
+</div>
+<div id="lista" class="space-y-2.5"></div>
+<p id="nota" class="text-[11px] text-[#4F6E5A] px-1"></p>
+</section>
+<!-- 4. MAPA -->
 <section class="bg-white rounded-2xl sm:rounded-3xl p-3 border border-[#D2E3D8] shadow-sm space-y-2">
 <div class="flex items-center justify-between px-1">
 <div class="flex items-center gap-1.5 font-display font-black text-sm text-[#032612]">
@@ -196,17 +206,8 @@
 </div>
 <div id="mapa" role="region" aria-label="Mapa de supermercados"></div>
 </section>
-<!-- 4. LISTA DE RESULTADOS (MÁXIMO 4 SUPERMERCADOS CERCANOS) -->
-<section class="space-y-2.5">
-<div class="flex items-center justify-between px-1">
-<h2 class="font-display text-sm font-black uppercase tracking-wider text-[#476652]">
-          <span id="cuenta">Supermercados cercanos</span>
-        </h2>
-<span class="text-xs font-bold text-[#0A3D22]">Orden: más barato</span>
-</div>
-<div id="lista" class="space-y-2.5"></div>
-<p id="nota" class="text-[11px] text-[#4F6E5A] px-1"></p>
-</section>
+<!-- 5. PRODUCTO A PRODUCTO (abajo): 4/4 → 0/4 -->
+<section id="fichas" class="space-y-2" aria-label="Qué eligió cada cadena"></section>
 <!-- Script interactivo simple para alternar el control segmentado -->
 <script>
 const STOP = new Set(["de","la","el","los","las","un","una","y","con","en","del","al","para"]);
@@ -401,7 +402,8 @@ function rowOf(store, bestId) {
   h.appendChild(nameNode(store));
   const p = document.createElement("p");
   p.className = "text-xs text-[#415C4B]";
-  const bits = [eur(b.total)];
+  const cov = b.items.length + "/" + (b.items.length + b.missing.length);
+  const bits = [cov + " tipos", eur(b.total)];
   if (!store.catalogOnly) bits.push(kmf(store.km));
   p.textContent = bits.join(" · ");
   const ul = document.createElement("ul");
@@ -447,22 +449,32 @@ function paint(shops, lines) {
     if (!by.has(key)) by.set(key, s);
   });
   const ranked = [...by.values()];
-  const withItems = ranked.filter((s) => s.basket.items.length).sort((a, b) => a.basket.total - b.basket.total || a.km - b.km);
-  const without = ranked.filter((s) => !s.basket.items.length).sort((a, b) => a.km - b.km);
-  const shown = withItems.concat(without);
-  const best = withItems[0];
+  const need = lines.length;
+  const shown = ranked.slice().sort((a, b) => {
+    const am = (a.basket.missing && a.basket.missing.length) || 0;
+    const bm = (b.basket.missing && b.basket.missing.length) || 0;
+    const ai = (a.basket.items && a.basket.items.length) || 0;
+    const bi = (b.basket.items && b.basket.items.length) || 0;
+    // Más artículos cubiertos arriba; a igualdad, precio menor; luego distancia
+    if (bi !== ai) return bi - ai;
+    if (am !== bm) return am - bm;
+    if (ai && bi && a.basket.total !== b.basket.total) return a.basket.total - b.basket.total;
+    return (a.km || 0) - (b.km || 0);
+  });
+  const complete = shown.filter((s) => s.basket.items.length === need && need > 0);
+  const best = complete[0] || shown.find((s) => s.basket.items.length) || null;
   const title = lines.length > 1 ? "La cesta" : lines[0].charAt(0).toUpperCase() + lines[0].slice(1);
   $("hallazgo").textContent = best
-    ? title + " sale a " + eur(best.basket.total) + " en " + best.name
+    ? title + " sale a " + eur(best.basket.total) + " en " + best.name + (best.basket.missing.length ? " (" + best.basket.items.length + "/" + need + ")" : "")
     : "Elige tipos y pulsa Ver precios";
   $("hero-n").textContent = best ? eur(best.basket.total) : "—";
-  $("hero-tag").textContent = best ? "La más barata" : "Sin dato";
+  $("hero-tag").textContent = best ? (best.basket.missing.length ? best.basket.items.length + "/" + need : "Completa") : "Sin dato";
   $("hero-cap").textContent = best
-    ? best.basket.items.map((it) => it.name + (it.unitLabel ? " (" + it.unitLabel + ")" : "")).join(" · ") + (best.basket.missing.length ? ". No trae: " + best.basket.missing.join(", ") + "." : ". ") + "Una ficha por tipo (la más barata por unidad). No es el lineal."
+    ? best.basket.items.map((it) => it.name + (it.unitLabel ? " (" + it.unitLabel + ")" : "")).join(" · ") + (best.basket.missing.length ? ". No trae: " + best.basket.missing.join(", ") + "." : ". ") + "Orden: más tipos cubiertos, luego precio. No es el lineal."
     : "Marca la compra semanal y pulsa Ver precios.";
   const box = $("lista");
   box.replaceChildren();
-  $("cuenta").textContent = best ? "La cadena más barata arriba (" + shown.length + ")" : "Sin cesta todavía";
+  $("cuenta").textContent = best ? "Más completos arriba, luego más baratos (" + shown.length + ")" : "Sin cesta todavía";
   shown.forEach((s) => box.appendChild(rowOf(s, best && best.id)));
   if (!shown.length) {
     const p = document.createElement("p");
@@ -859,27 +871,38 @@ function paintFichas(lines) {
   box.replaceChildren();
   if (!catalogs || !lines.length) return;
   const blanca = blancaOn();
-  lines.forEach((line) => {
+  const head = document.createElement("h2");
+  head.className = "font-display text-sm font-black uppercase tracking-wider text-[#476652] px-1";
+  head.textContent = "Producto a producto";
+  box.appendChild(head);
+  const rows = lines.map((line) => {
+    const picks = {};
+    let ok = 0;
+    CHAINS.forEach((chain) => {
+      const p = pick((catalogs[chain] && catalogs[chain][line]) || [], line, blanca, chain);
+      picks[chain] = p;
+      if (p) ok += 1;
+    });
+    return { line, picks, ok };
+  });
+  rows.sort((a, b) => b.ok - a.ok || a.line.localeCompare(b.line, "es"));
+  rows.forEach(({ line, picks, ok }) => {
     const det = document.createElement("details");
     det.className = "ficha bg-white rounded-2xl border border-[#CCE0D3] shadow-sm";
     const sum = document.createElement("summary");
     sum.className = "px-3 py-2.5 font-display font-black text-sm text-[#032612]";
+    sum.textContent = line.charAt(0).toUpperCase() + line.slice(1) + " · " + ok + "/4 cadenas";
     const scroll = document.createElement("div");
     scroll.className = "hit-scroll px-3 pb-3 space-y-1";
-    let ok = 0;
     CHAINS.forEach((chain) => {
-      const p = pick((catalogs[chain] && catalogs[chain][line]) || [], line, blanca, chain);
+      const p = picks[chain];
       const row = document.createElement("p");
       row.className = "text-xs leading-snug break-words " + (p ? "line-name text-[#415C4B]" : "line-miss text-[#0A3D22] font-bold");
-      if (p) {
-        ok += 1;
-        row.textContent = LABEL[chain] + " · " + p.name + " · " + eur(p.price) + (p.unitLabel ? " · " + p.unitLabel : "");
-      } else {
-        row.textContent = LABEL[chain] + " · no trae " + line;
-      }
+      row.textContent = p
+        ? LABEL[chain] + " · " + p.name + " · " + eur(p.price) + (p.unitLabel ? " · " + p.unitLabel : "")
+        : LABEL[chain] + " · no trae " + line;
       scroll.appendChild(row);
     });
-    sum.textContent = line.charAt(0).toUpperCase() + line.slice(1) + " · " + ok + "/4 cadenas";
     det.append(sum, scroll);
     box.appendChild(det);
   });
