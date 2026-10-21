@@ -1623,7 +1623,7 @@
       "node_kind": "heading",
       "norm_label": "comprobar conteos (devtools)",
       "source_file": "START.md",
-      "source_location": "L28"
+      "source_location": "L26"
     },
     {
       "id": "start_criterio_de_fichas_no_reinventar",
@@ -1647,7 +1647,7 @@
       "node_kind": "heading",
       "norm_label": "local",
       "source_file": "START.md",
-      "source_location": "L18"
+      "source_location": "L16"
     },
     {
       "id": "start_producci\u00f3n",
@@ -1671,11 +1671,12 @@
       "node_kind": "heading",
       "norm_label": "volcar json + tabla de cobertura",
       "source_file": "START.md",
-      "source_location": "L49"
+      "source_location": "L47"
     },
     {
       "id": "json",
       "label": "json",
+      "_origin": "semantic",
       "community": 18,
       "community_name": "dump_cobertura.py",
       "external": true,
@@ -1687,6 +1688,7 @@
     {
       "id": "pathlib",
       "label": "pathlib",
+      "_origin": "semantic",
       "community": 18,
       "community_name": "dump_cobertura.py",
       "external": true,
@@ -1698,6 +1700,7 @@
     {
       "id": "re",
       "label": "re",
+      "_origin": "semantic",
       "community": 18,
       "community_name": "dump_cobertura.py",
       "external": true,
@@ -1709,6 +1712,7 @@
     {
       "id": "time",
       "label": "time",
+      "_origin": "semantic",
       "community": 18,
       "community_name": "dump_cobertura.py",
       "external": true,
@@ -1720,6 +1724,7 @@
     {
       "id": "unicodedata",
       "label": "unicodedata",
+      "_origin": "semantic",
       "community": 18,
       "community_name": "dump_cobertura.py",
       "external": true,
@@ -1731,6 +1736,7 @@
     {
       "id": "urllib_parse",
       "label": "urllib_parse",
+      "_origin": "semantic",
       "community": 18,
       "community_name": "dump_cobertura.py",
       "external": true,
@@ -1742,6 +1748,7 @@
     {
       "id": "urllib_request",
       "label": "urllib_request",
+      "_origin": "semantic",
       "community": 18,
       "community_name": "dump_cobertura.py",
       "external": true,
@@ -3463,7 +3470,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "START.md",
-      "source_location": "L18",
+      "source_location": "L16",
       "weight": 1.0
     },
     {
@@ -3474,7 +3481,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "START.md",
-      "source_location": "L28",
+      "source_location": "L26",
       "weight": 1.0
     },
     {
@@ -3485,7 +3492,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "START.md",
-      "source_location": "L49",
+      "source_location": "L47",
       "weight": 1.0
     },
     {
@@ -3602,5 +3609,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "feff402c91e875a3d2bd6efa9ca0bbc939965b8a"
+  "built_at_commit": "b4b37113bbfe8786f6d2efbed8a053f1f4539b6b"
 }

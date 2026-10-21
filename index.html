@@ -952,9 +952,14 @@ async function buscar() {
   $("buscar").disabled = false;
 }
 
-function locate() {
+function pointFromUrl() {
   const params = new URLSearchParams(location.search);
-  if (params.get("lat") && params.get("lon")) return Promise.resolve({ lat: +params.get("lat"), lon: +params.get("lon"), note: "Punto de la dirección" });
+  if (params.get("lat") && params.get("lon")) return { lat: +params.get("lat"), lon: +params.get("lon"), note: "Punto de la dirección" };
+  return null;
+}
+function locate() {
+  const fromUrl = pointFromUrl();
+  if (fromUrl) return Promise.resolve(fromUrl);
   return new Promise((res) => {
     if (!navigator.geolocation) { res({ lat: 40.4168, lon: -3.7038, note: "Sin GPS: Madrid centro" }); return; }
     navigator.geolocation.getCurrentPosition(
@@ -1000,7 +1005,16 @@ document.addEventListener("DOMContentLoaded", () => {
   $("hallazgo").textContent = "Elige la compra semanal y compara";
   $("hero-cap").textContent = "Una ficha por tipo: la más barata por litro, kilo o docena";
   $("estado").textContent = "Cargando mapa y precios…";
-  locate().then((pos) => { here = pos; return buscar(); });
+  // No esperar al GPS (el permiso puede colgarse): arrancar ya como Ver precios.
+  here = pointFromUrl() || { lat: 40.4168, lon: -3.7038, note: "Sin GPS: Madrid centro" };
+  buscar();
+  if (!pointFromUrl() && navigator.geolocation) {
+    locate().then((pos) => {
+      if (!here || (Math.abs(pos.lat - here.lat) < 0.001 && Math.abs(pos.lon - here.lon) < 0.001)) return;
+      here = pos;
+      buscar();
+    });
+  }
 });
 
 </script>

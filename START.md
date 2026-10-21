@@ -10,10 +10,8 @@ Sin install. Hace falta red (APIs de las cadenas + mapa).
 
 https://marcos1995.github.io/supermercados/?lat=40.4168&lon=-3.7038
 
-1. **Todo** (o marca tipos).
-2. Marca: **Cualquier marca** o **Solo marca blanca**.
-3. **Ver precios**.
-4. Mira ranking + mapa.
+Al abrir (con tipos marcados, por defecto todos) **carga sola** mapa y precios, sin pulsar Ver precios.
+Puedes cambiar tipos/marca y pulsar **Ver precios** de nuevo.
 
 ## Local
 

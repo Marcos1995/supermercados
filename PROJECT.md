@@ -7,7 +7,7 @@
 - Vista local: `index.html` (con red: catálogos de las cadenas y OpenStreetMap)
 
 ## Estado
-- Lista fija **SEMANAL** (28 tipos). Al abrir (con tipos marcados) **carga sola** mapa + precios.
+- Lista fija **SEMANAL** (28 tipos). Al abrir **dispara sola** la búsqueda (como Ver precios); no espera al GPS.
 - Criterio: `docs/EMPAREJADO.md`. Manual: `START.md`. Cobertura: `python scripts/dump_cobertura.py` → `docs/COBERTURA.md` + `tmp-precios/`.
 - JSON en vivo (no HTML). Fuentes/huecos: `docs/PRECIOS.md`.
 - Mercadona/Carrefour ~28/28; Aldi sin huevos ni girasol en Algolia; Lidl indexa pocos básicos. Dia/Alcampo/Eroski: solo mapa.

@@ -1,7 +1,7 @@
-# Graph Report - supermercados  (2026-10-21)
+# Graph Report - supermercados  (2026-10-22)
 
 ## Corpus Check
-- 21 files · ~13,640 words
+- 21 files · ~13,742 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 4 file(s) not represented in the graph (top: .mdc 2, (none) 2)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `feff402c`
+- Built from commit: `b4b37113`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
