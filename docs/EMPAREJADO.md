@@ -67,3 +67,5 @@ No son un objetivo a forzar inventando fichas:
 | Lidl | ~6/28 | El buscador online no indexa la mayoría de básicos |
 
 Verificación paso a paso: `START.md`.
+
+Tabla de cobertura regenerable: `python scripts/dump_cobertura.py` → `docs/COBERTURA.md` + JSON en `tmp-precios/` (local).

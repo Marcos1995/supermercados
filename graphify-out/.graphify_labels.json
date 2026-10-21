@@ -8,7 +8,7 @@
   "6": "Build judgments with Laya",
   "7": "Laya",
   "8": "Review",
-  "9": "EMPAREJADO.md",
+  "9": "Arrancar a mano",
   "10": "tablas/SKILL.md",
   "11": "DESIGN.md",
   "12": "DECISIONES.md",
@@ -16,5 +16,6 @@
   "14": "implementar.md",
   "15": "Criterio unificado de emparejado",
   "16": "Precios: fuentes y límites",
-  "17": "Arrancar a mano"
+  "17": "Ficha elegida (si hay X)",
+  "18": "dump_cobertura.py"
 }

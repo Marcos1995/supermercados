@@ -45,3 +45,13 @@ Object.fromEntries(
 ```
 
 Esperado (Madrid, 28 tipos): Mercadona/Carrefour 28; Aldi ~24–26 (sin huevos ni girasol); Lidl ~6 (límite del buscador). Detalle: `docs/EMPAREJADO.md`.
+
+## Volcar JSON + tabla de cobertura
+
+Desde la raíz del repo (deja los JSON en `tmp-precios/` para inspección):
+
+```bash
+python scripts/dump_cobertura.py
+```
+
+Salida: `tmp-precios/<cadena>/<producto>.json` y tabla `docs/COBERTURA.md` (X = ficha válida al 100% según `docs/EMPAREJADO.md`).

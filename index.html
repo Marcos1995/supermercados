@@ -306,7 +306,8 @@ const FALLBACKS = {
   pasta: ["espagueti"],
   tomate: ["tomate pera", "tomate ensalada"],
   patatas: ["patatas freir", "patata"],
-  café: ["cafe molido", "cafe en grano"]
+  café: ["cafe molido", "cafe en grano"],
+  yogurt: ["yogur", "yogurt natural", "yogur natural"]
 };
 const EXPECT = {
   "aceite de oliva": "l", "aceite de girasol": "l", huevos: "dz", leche: "l",
@@ -992,14 +993,14 @@ document.addEventListener("DOMContentLoaded", () => {
   $("todo-off").addEventListener("click", () => { selected = new Set(); paintSemanal(); });
   $("buscar").addEventListener("click", buscar);
   paintSemanal();
-  locate().then((pos) => { here = pos; });
   if (!matchMedia("(prefers-reduced-motion: reduce)").matches && "IntersectionObserver" in window) {
     const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) e.target.classList.add("in"); }), { threshold: 0.15 });
     document.querySelectorAll("section").forEach((n) => { n.classList.add("reveal"); io.observe(n); });
   }
   $("hallazgo").textContent = "Elige la compra semanal y compara";
   $("hero-cap").textContent = "Una ficha por tipo: la más barata por litro, kilo o docena";
-  $("estado").textContent = "Marca tipos y pulsa Ver precios";
+  $("estado").textContent = "Cargando mapa y precios…";
+  locate().then((pos) => { here = pos; return buscar(); });
 });
 
 </script>

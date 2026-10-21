@@ -1,0 +1,6 @@
+tmp-precios/
+.env
+.bot.lock
+.bot_state.json
+*.pyc
+__pycache__/
