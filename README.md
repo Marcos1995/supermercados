@@ -1,7 +1,7 @@
 <!-- managed-by-telegram-cursor-bot:agent-kit -->
 # Project
 
-Lista de la compra y supermercados cercanos: mapa con filtros y el precio de catálogo más barato. Tiendas de OpenStreetMap. Precios en vivo de Mercadona, Carrefour, Lidl y Aldi.
+Lista de varios productos y la tienda cercana de la cadena más barata. Al buscar, el navegador pide el JSON de Mercadona, Carrefour, Lidl y Aldi; no se guarda el catálogo.
 
 ## Setup
 

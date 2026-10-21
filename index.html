@@ -95,6 +95,8 @@
     html.dark div[style*="18E667"], html.dark div[style*="18E667"] p { color: #032612; }
     html.dark #brand-selector .bg-white { background: #fff !important; color: #032612 !important; }
     html.dark #brand-selector button[aria-pressed="false"] { color: #d7f5e4 !important; }
+    html.dark .line-name { color: #b7d4c4; }
+    html.dark .line-miss { color: #c9ecd6; }
     @media (prefers-reduced-motion: reduce) { .reveal.in, .tema-thumb { animation: none; } }
   </style>
 </head>
@@ -152,7 +154,7 @@
 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-[#4E705C] flex items-center pointer-events-none">
 <span class="material-symbols-outlined text-[18px]" data-icon="search">search</span>
 </span>
-<input class="w-full pl-9 pr-3 py-2.5 bg-[#F6F8F7] border border-[#BCD3C4] rounded-xl text-sm font-bold text-[#032612] focus:ring-2 focus:ring-[#18E667] focus:border-[#0A3D22]" id="product-input" placeholder="aceite, huevos o patatas" type="text" value="aceite"/>
+<input class="w-full pl-9 pr-3 py-2.5 bg-[#F6F8F7] border border-[#BCD3C4] rounded-xl text-sm font-bold text-[#032612] focus:ring-2 focus:ring-[#18E667] focus:border-[#0A3D22]" id="product-input" placeholder="aceite, huevos, leche" type="text" value="aceite, huevos, leche"/>
 </div>
 <!-- Selector Segmentado: Cualquier marca vs Solo marca blanca -->
 <div class="sm:col-span-4">
@@ -173,6 +175,7 @@
 </button>
 </div>
 </div>
+<p class="text-[11px] leading-snug text-[#4F6E5A] px-1">Cada búsqueda pide el precio online de Mercadona, Carrefour, Lidl y Aldi en ese momento. No se guarda el catálogo ni se lee el folleto.</p>
 </section>
 <!-- 3. EL MAPA (ELEMENTO PROTAGONISTA, GRANDE Y ALTO) -->
 <section class="bg-white rounded-2xl sm:rounded-3xl p-3 border border-[#D2E3D8] shadow-sm space-y-2">
@@ -199,7 +202,7 @@
 <!-- Script interactivo simple para alternar el control segmentado -->
 <script>
 const STOP = new Set(["de","la","el","los","las","un","una","y","con","en","del","al","para"]);
-const NOISE = ["chocolate","utensilio","cebador","sarten","maquina","robot","freidora","johnson","bebe","corporal","cabello","masaje","bronceador"];
+const NOISE = ["chocolate","utensilio","cebador","sarten","maquina","robot","freidora","johnson","bebe","corporal","cabello","masaje","bronceador","codorniz","claras","liquida","camel","pato","espumador"];
 const OWN = {
   mercadona: ["hacendado","deliplus","bosque verde","compy"],
   carrefour: ["carrefour","simpl"],
@@ -276,22 +279,26 @@ function normUnit(value, raw) {
   if (u === "l" || u.includes("litro")) return { family: "l", value: value };
   if (u.includes("100-g") || u.includes("100 g") || u.includes("100g")) return { family: "kg", value: value * 10 };
   if (u === "kg" || u.includes("kilo")) return { family: "kg", value: value };
-  if (u === "dz" || u.includes("docena")) return { family: "dz", value: value };
+  if (u === "dz" || u === "dc" || u.includes("docena")) return { family: "dz", value: value };
   return { family: "pack", value: value };
 }
 function pick(list, query, blanca, chain) {
   const toks = tokens(query);
-  const hits = list.filter((p) => matches(p.name, toks) && !noisy(p.name, toks) && (!blanca || isOwn(p, chain)) && p.price > 0);
+  let hits = list.filter((p) => matches(p.name, toks) && !noisy(p.name, toks) && (!blanca || isOwn(p, chain)) && p.price > 0);
+  const named = hits.filter((p) => toks.some((t) => fold(p.name).startsWith(t)));
+  if (named.length) hits = named;
   hits.forEach((p) => {
     const n = normUnit(p.unit, p.unitRaw);
     p.family = n.family;
     p.cmp = n.value;
   });
   const order = ["l", "kg", "dz", "ud", "pack"];
-  const fam = order.find((f) => hits.some((p) => p.family === f)) || "pack";
-  const same = hits.filter((p) => p.family === fam);
-  same.sort((a, b) => a.cmp - b.cmp || a.price - b.price);
-  return same[0] || null;
+  const counts = {};
+  hits.forEach((p) => { counts[p.family] = (counts[p.family] || 0) + 1; });
+  const fam = Object.keys(counts).sort((a, b) => counts[b] - counts[a] || order.indexOf(a) - order.indexOf(b))[0] || "pack";
+  const pool = hits.filter((p) => p.family === fam);
+  pool.sort((a, b) => a.cmp - b.cmp || a.price - b.price);
+  return pool[0] || null;
 }
 
 let map, layer, markers = {}, here = null, catalogs = null, moving = false;
@@ -355,16 +362,18 @@ function showOnMap(id) {
 }
 
 function rowOf(store, bestId) {
+  const b = store.basket;
   const art = document.createElement("article");
   art.id = "row-" + store.id;
   art.className = "bg-white rounded-2xl p-3 sm:p-4 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 " + (store.id === bestId ? "border-2 border-[#18E667]" : "border border-[#CCE0D3]");
   const left = document.createElement("div");
-  left.className = "flex items-center gap-3 min-w-0";
-  if (store.product.image) {
+  left.className = "flex items-start gap-3 min-w-0";
+  const shot = b.items.find((it) => it.image);
+  if (shot) {
     const img = document.createElement("img");
     img.className = "w-11 h-11 rounded-xl object-cover shrink-0 border border-emerald-200";
-    img.alt = store.product.name;
-    img.src = store.product.image;
+    img.alt = shot.name;
+    img.src = shot.image;
     left.appendChild(img);
   } else {
     const ph = document.createElement("div");
@@ -378,12 +387,24 @@ function rowOf(store, bestId) {
   h.appendChild(nameNode(store));
   const p = document.createElement("p");
   p.className = "text-xs text-[#415C4B]";
-  const bits = [eur(store.product.price)];
-  if (store.product.unitLabel) bits.push(store.product.unitLabel);
-  bits.push(store.product.name);
+  const bits = [eur(b.total)];
   if (!store.catalogOnly) bits.push(kmf(store.km));
   p.textContent = bits.join(" · ");
-  body.append(h, p);
+  const ul = document.createElement("ul");
+  ul.className = "mt-1 space-y-0.5";
+  b.items.forEach((it) => {
+    const li = document.createElement("li");
+    li.className = "line-name text-xs text-[#415C4B] leading-snug break-words";
+    li.textContent = it.name + " · " + eur(it.price) + (it.unitLabel ? " · " + it.unitLabel : "");
+    ul.appendChild(li);
+  });
+  if (b.missing.length) {
+    const li = document.createElement("li");
+    li.className = "line-miss text-xs font-bold text-[#0A3D22] leading-snug break-words";
+    li.textContent = "Fuera del total: " + b.missing.join(", ");
+    ul.appendChild(li);
+  }
+  body.append(h, p, ul);
   left.appendChild(body);
   const acts = document.createElement("div");
   acts.className = "flex items-center gap-2 shrink-0 self-end sm:self-center";
@@ -399,34 +420,42 @@ function rowOf(store, bestId) {
   return art;
 }
 
-function paint(shops, query) {
-  const priced = shops.filter((s) => s.product);
-  const fam = ["l", "kg", "dz", "ud", "pack"].find((f) => priced.some((s) => s.product.family === f)) || "pack";
-  priced.sort((a, b) => (a.product.family === fam ? 0 : 1) - (b.product.family === fam ? 0 : 1) || a.product.cmp - b.product.cmp || a.km - b.km);
-  const best = priced[0];
+function paint(shops, lines) {
+  const priced = shops.filter((s) => s.basket);
+  const by = new Map();
+  priced.filter((s) => !s.catalogOnly).forEach((s) => {
+    const key = s.chain || s.id;
+    const prev = by.get(key);
+    if (!prev || s.km < prev.km) by.set(key, s);
+  });
+  priced.filter((s) => s.catalogOnly).forEach((s) => {
+    const key = s.chain || s.id;
+    if (!by.has(key)) by.set(key, s);
+  });
+  const shown = [...by.values()].sort((a, b) =>
+    a.basket.missing.length - b.basket.missing.length || a.basket.total - b.basket.total || a.km - b.km);
+  const best = shown[0];
+  const title = lines.length > 1 ? "La lista" : lines[0].charAt(0).toUpperCase() + lines[0].slice(1);
   $("hallazgo").textContent = best
-    ? (query.charAt(0).toUpperCase() + query.slice(1) + " sale a " + eur(best.product.price) + " en " + best.name)
-    : "Ninguna de las cuatro cadenas tiene ese producto ahora";
-  $("hero-n").textContent = best ? eur(best.product.price) : "Sin dato";
-  $("hero-tag").textContent = best ? "La más barata" : "Sin dato";
+    ? title + " sale a " + eur(best.basket.total) + " en " + best.name
+    : "Ninguna de las cuatro cadenas tiene esa lista ahora";
+  $("hero-n").textContent = best ? eur(best.basket.total) : "Sin dato";
+  $("hero-tag").textContent = best ? (best.basket.missing.length ? "Lista a medias" : "La más barata") : "Sin dato";
   $("hero-cap").textContent = best
-    ? best.product.name + (best.product.unitLabel ? " · " + best.product.unitLabel : "") + ". Catálogo online, el mismo en las tiendas de esa cadena."
-    : "Mercadona, Carrefour, Lidl y Aldi no devuelven ese nombre. Dia y Alcampo no tienen catálogo aquí.";
+    ? best.basket.items.map((it) => it.name).join(" · ") + (best.basket.missing.length ? ". Fuera del total: " + best.basket.missing.join(", ") + "." : ". ") + "Mismo precio en las tiendas de esa cadena, no el del lineal."
+    : "Mercadona, Carrefour, Lidl y Aldi no devuelven esos nombres. Dia y Alcampo no tienen catálogo aquí.";
   const box = $("lista");
   box.replaceChildren();
-  const shown = priced.slice(0, 8);
-  $("cuenta").textContent = shown.length ? "Supermercados con precio (" + shown.length + ")" : "Sin precio en el catálogo";
+  $("cuenta").textContent = shown.length ? "La cadena más barata arriba (" + shown.length + ")" : "Sin precio en el catálogo";
   shown.forEach((s) => box.appendChild(rowOf(s, best.id)));
   if (!shown.length) {
     const p = document.createElement("p");
     p.className = "text-sm text-[#415C4B] px-1";
-    p.textContent = "Las tiendas siguen en el mapa. No hay un producto con ese nombre.";
+    p.textContent = "Las tiendas siguen en el mapa. No hay productos con esos nombres.";
     box.appendChild(p);
   }
-  const sin = shops.length - priced.length;
-  $("nota").textContent = sin
-    ? sin + " supermercados del mapa no tienen este catálogo (Dia, Alcampo y otras). El precio no es el del lineal."
-    : "Precio del catálogo online de hoy. No es el del lineal de esa tienda.";
+  const sin = shops.filter((s) => !s.basket && !s.catalogOnly).length;
+  $("nota").textContent = (sin ? sin + " supermercados del mapa no tienen este catálogo (Dia, Alcampo y otras). " : "") + "El total suma la búsqueda online de hoy. No es el precio del lineal.";
 
   try {
   ensureMap(here.lat, here.lon);
@@ -435,7 +464,7 @@ function paint(shops, query) {
     const hot = best && s.id === best.id;
     const icon = L.divIcon({
       className: "",
-      html: '<div style="width:14px;height:14px;border-radius:99px;background:' + (hot ? "#18E667" : s.product ? "#0A3D22" : "#94a89c") + ';border:2px solid #032612"></div>',
+      html: '<div style="width:14px;height:14px;border-radius:99px;background:' + (hot ? "#18E667" : s.basket ? "#0A3D22" : "#94a89c") + ';border:2px solid #032612"></div>',
       iconSize: [14, 14], iconAnchor: [7, 7]
     });
     const pop = document.createElement("div");
@@ -443,7 +472,9 @@ function paint(shops, query) {
     title.style.fontWeight = "700";
     pop.appendChild(title);
     const line = document.createElement("div");
-    line.textContent = s.product ? s.product.name + " · " + eur(s.product.price) : "Sin catálogo";
+    line.textContent = s.basket
+      ? eur(s.basket.total) + " · " + s.basket.items.map((it) => it.name).join(" · ") + (s.basket.missing.length ? " · falta " + s.basket.missing.join(", ") : "")
+      : "Sin catálogo";
     pop.appendChild(line);
     const ruta = goBtn("Ruta");
     ruta.href = "https://www.google.com/maps/dir/?api=1&destination=" + s.lat + "," + s.lon;
@@ -480,7 +511,9 @@ async function searchMercadona(q, lat, lon) {
     const pi = h.price_instructions || {};
     const price = Number(pi.unit_price);
     const ref = Number(pi.reference_price);
-    return { name: h.display_name || "", brand: h.brand || "", price, unit: Number.isFinite(ref) && ref > 0 ? ref : price, unitRaw: pi.reference_format || "", unitLabel: Number.isFinite(ref) && pi.reference_format ? eur(ref) + "/" + pi.reference_format : "", image: h.thumbnail || "", url: h.share_url || "" };
+    const rawFmt = pi.reference_format || "";
+    const fmt = rawFmt === "dc" || rawFmt === "dz" ? "docena" : rawFmt;
+    return { name: h.display_name || "", brand: h.brand || "", price, unit: Number.isFinite(ref) && ref > 0 ? ref : price, unitRaw: fmt, unitLabel: Number.isFinite(ref) && fmt ? eur(ref) + "/" + fmt : "", image: h.thumbnail || "", url: h.share_url || "" };
   });
 }
 async function searchCarrefour(q) {
@@ -518,7 +551,7 @@ async function searchAldi(q, lat, lon) {
 }
 
 async function loadShops(lat, lon) {
-  const q = `[out:json][timeout:12];(node["shop"="supermarket"](around:8000,${lat},${lon});way["shop"="supermarket"](around:8000,${lat},${lon}););out center tags 40;`;
+  const q = `[out:json][timeout:12];(node["shop"="supermarket"](around:8000,${lat},${lon});way["shop"="supermarket"](around:8000,${lat},${lon}););out center tags 120;`;
   const urls = [
     "https://overpass-api.de/api/interpreter",
     "https://overpass.openstreetmap.fr/api/interpreter"
@@ -534,7 +567,7 @@ async function loadShops(lat, lon) {
     finally { clearTimeout(timer); ctrl.abort(); }
   }
   if (!d) throw new Error("overpass");
-  return (d.elements || []).map((el) => {
+  const all = (d.elements || []).map((el) => {
     const lat2 = el.lat || (el.center && el.center.lat);
     const lon2 = el.lon || (el.center && el.center.lon);
     const t = el.tags || {};
@@ -546,35 +579,71 @@ async function loadShops(lat, lon) {
       web: siteFor(chain, t.website || t["contact:website"] || ""),
       km: dist(lat, lon, lat2, lon2)
     };
-  }).filter((s) => Number.isFinite(s.lat) && s.km <= 8).sort((a, b) => a.km - b.km).slice(0, 40);
+  }).filter((s) => Number.isFinite(s.lat) && s.km <= 8).sort((a, b) => a.km - b.km);
+  const capped = all.slice(0, 40);
+  const have = new Set(capped.map((s) => s.chain));
+  all.forEach((s) => {
+    if (s.chain && !have.has(s.chain)) { capped.push(s); have.add(s.chain); }
+  });
+  return capped;
 }
 
-function chosenOf(cats, query, blanca) {
-  return {
-    mercadona: pick(cats.mercadona, query, blanca, "mercadona"),
-    carrefour: pick(cats.carrefour, query, blanca, "carrefour"),
-    lidl: pick(cats.lidl, query, blanca, "lidl"),
-    aldi: pick(cats.aldi, query, blanca, "aldi")
-  };
+const CHAINS = ["mercadona", "carrefour", "lidl", "aldi"];
+const LABEL = { mercadona: "Mercadona", carrefour: "Carrefour", lidl: "Lidl", aldi: "Aldi" };
+
+function linesOf(q) {
+  return q.split(/[,;\n]+/).map((s) => s.trim()).filter(Boolean).slice(0, 8);
 }
-function attach(shops, cats, query, blanca, lat, lon) {
-  const chosen = chosenOf(cats, query, blanca);
-  const placed = shops.map((s) => ({ ...s, product: chosen[s.chain] || null }));
-  if (placed.length) return placed;
-  const label = { mercadona: "Mercadona", carrefour: "Carrefour", lidl: "Lidl", aldi: "Aldi" };
-  return Object.keys(label).filter((k) => chosen[k]).map((k) => ({
-    id: "chain-" + k, name: label[k], chain: k, web: WEB[k],
-    lat, lon, km: 0, product: chosen[k], catalogOnly: true
+function searchLine(chain, q, lat, lon) {
+  if (chain === "mercadona") return searchMercadona(q, lat, lon);
+  if (chain === "carrefour") return searchCarrefour(q);
+  if (chain === "lidl") return searchLidl(q);
+  return searchAldi(q, lat, lon);
+}
+async function searchCatalogs(lines, lat, lon, fail) {
+  const cats = { mercadona: {}, carrefour: {}, lidl: {}, aldi: {} };
+  await Promise.all(lines.flatMap((line) => CHAINS.map((chain) =>
+    searchLine(chain, line, lat, lon).then((hits) => { cats[chain][line] = hits; }).catch(() => {
+      cats[chain][line] = [];
+      if (!fail.includes(LABEL[chain])) fail.push(LABEL[chain]);
+    })
+  )));
+  return cats;
+}
+function basketOf(cats, lines, blanca) {
+  const out = {};
+  CHAINS.forEach((chain) => {
+    const items = [];
+    const missing = [];
+    lines.forEach((line) => {
+      const p = pick(cats[chain][line] || [], line, blanca, chain);
+      if (p) items.push(p);
+      else missing.push(line);
+    });
+    out[chain] = items.length ? { items, missing, total: items.reduce((sum, p) => sum + p.price, 0) } : null;
+  });
+  return out;
+}
+function attach(shops, cats, lines, blanca, lat, lon) {
+  const chosen = basketOf(cats, lines, blanca);
+  const placed = shops.map((s) => ({ ...s, basket: chosen[s.chain] || null }));
+  const present = new Set(placed.map((s) => s.chain));
+  const extra = CHAINS.filter((k) => chosen[k] && !present.has(k)).map((k) => ({
+    id: "chain-" + k, name: LABEL[k], chain: k, web: WEB[k],
+    lat, lon, km: 0, basket: chosen[k], catalogOnly: true
   }));
+  return placed.concat(extra);
 }
 
 async function reloadShops() {
   if (!catalogs || !here) return;
+  const lines = linesOf($("product-input").value);
+  if (!lines.length) return;
   $("estado").textContent = "Actualizando el mapa…";
   try {
     const shops = await loadShops(here.lat, here.lon);
     const blanca = $("opt-blanca").getAttribute("aria-pressed") === "true";
-    paint(attach(shops, catalogs, $("product-input").value.trim(), blanca, here.lat, here.lon), $("product-input").value.trim());
+    paint(attach(shops, catalogs, lines, blanca, here.lat, here.lon), lines);
     $("estado").textContent = here.note + " · " + shops.length + " supermercados";
   } catch (e) {
     $("estado").textContent = "No se ha podido leer el mapa.";
@@ -582,25 +651,21 @@ async function reloadShops() {
 }
 
 async function buscar() {
-  const q = $("product-input").value.trim();
-  if (!q) { $("estado").textContent = "Escribe un producto."; return; }
+  const lines = linesOf($("product-input").value);
+  if (!lines.length) { $("estado").textContent = "Escribe un producto."; return; }
   $("buscar").disabled = true;
   $("estado").textContent = "Buscando catálogos…";
   const blanca = $("opt-blanca").getAttribute("aria-pressed") === "true";
   try {
     if (!here) here = await locate();
     const fail = [];
-    const guard = (name, p) => p.catch(() => { fail.push(name); return []; });
-    const [shops, mercadona, carrefour, lidl, aldi] = await Promise.all([
-      guard("mapa", loadShops(here.lat, here.lon)),
-      guard("Mercadona", searchMercadona(q, here.lat, here.lon)),
-      guard("Carrefour", searchCarrefour(q)),
-      guard("Lidl", searchLidl(q)),
-      guard("Aldi", searchAldi(q, here.lat, here.lon))
+    const [shops, cats] = await Promise.all([
+      loadShops(here.lat, here.lon).catch(() => { fail.push("mapa"); return []; }),
+      searchCatalogs(lines, here.lat, here.lon, fail)
     ]);
-    catalogs = { mercadona, carrefour, lidl, aldi };
-    paint(attach(shops, catalogs, q, blanca, here.lat, here.lon), q);
-    $("estado").textContent = here.note + (fail.length ? " · sin " + fail.join(", ") : " · catálogo online, casi en vivo");
+    catalogs = cats;
+    paint(attach(shops, catalogs, lines, blanca, here.lat, here.lon), lines);
+    $("estado").textContent = here.note + (fail.length ? " · sin " + fail.join(", ") : " · búsqueda online, en ese momento");
   } catch (e) {
     $("hallazgo").textContent = "No se han podido leer los catálogos";
     $("hero-n").textContent = "Sin dato";
