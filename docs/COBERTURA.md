@@ -3,7 +3,7 @@
 Generado por `python scripts/dump_cobertura.py`.
 Criterio: `docs/EMPAREJADO.md`. JSON crudos: carpeta `tmp-precios/` (local, no subir).
 
-**Yogurt:** Mercadona / Carrefour / Aldi → X. Lidl → sin X: su API de búsqueda no devuelve ningún título con “yogur” (ni con `milbona`); los JSON están en `tmp-precios/lidl/yogurt.json` para comprobarlo.
+**Yogurt / arroz / pasta / leche (Lidl):** sin X a propósito. En `lidl.es` buscar «arroz» no saca arroz comestible (sí arroceras y pienso). Queso/jamón/pollo sí están en el índice → por eso hay X ahí. Prueba escrita: `tmp-precios/lidl/_PROOF_arroz_vs_queso.md`. JSON: `tmp-precios/lidl/arroz.json`, `pasta.json`, `yogurt.json`.
 
 | Producto | Mercadona | Carrefour | Lidl | Aldi |
 |----------|:---------:|:---------:|:----:|:----:|

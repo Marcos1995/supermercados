@@ -50,7 +50,7 @@ Lidl hogar (detergente, lavavajillas, papeles, jabón, champú): se admiten cate
 |--------|----------|-------------|
 | Mercadona | Algolia `products_prod_*_es` | Estable |
 | Carrefour | Empathy `api.empathy.co` …/carrefour/search | Estable; CORS OK |
-| Lidl | `lidl.es/q/api/search` (mindshift) | Indexa mal lácteos/huevos/azúcar; muchos básicos no salen |
+| Lidl | `lidl.es/q/api/search` (mindshift) | Indexa frescos/carne/queso a menudo; **no indexa despensa** (arroz, pasta, leche, yogur, azúcar…). Comprobado en la web: buscar «arroz» = arroceras + croquetas de perro. Prueba: `tmp-precios/lidl/_PROOF_arroz_vs_queso.md` |
 | Aldi | Algolia `an_prd_es_es_*_products2` | Sin huevos frescos ni aceite de girasol embotellado en el índice |
 
 Dia / Alcampo / Eroski: solo mapa (Overpass), sin conector de precios.
