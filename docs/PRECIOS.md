@@ -16,21 +16,24 @@ No hay scraping de HTML ni folletos. El navegador pide JSON público:
 
 Dia, Alcampo, Eroski, Consum, Hipercor, BM, etc. **solo mapa** (Overpass/OSM). Sin conector de precios en `index.html`.
 
-### Investigación 2026-10-22 (precios de cadenas extra)
+### Dump terminal 2026-10-22 (sin CORS)
 
-La app es solo navegador + CORS. Hace falta JSON público con `Access-Control-Allow-Origin` usable desde `github.io` (como Mercadona/Carrefour/Lidl/Aldi). Resultado de pruebas reales:
+Script: `python scripts/dump_all_precios.py` → [`data/precios-2026-10-22.json`](../data/precios-2026-10-22.json) (lista SEMANAL × cadenas; solo `price > 0`).
 
-| Cadena | Qué hay | ¿Usable en la web? | Notas |
-|--------|---------|-------------------|--------|
-| **Consum** | REST JSON `tienda.consum.es/api/rest/V1.0/catalog/product?q=` | **No** | 200 + precios reales (p.ej. leche 0,83 €); **sin header CORS** → el navegador bloquea desde github.io |
-| **Dia** | Endpoints `/api/v1/...` | **No** | **403** desde este entorno; scrapers de terceros / Playwright; no API pública CORS |
-| **Alcampo** | HTML SSR `compraonline.alcampo.es`; API producto con `regionId` | **No** | Búsqueda = HTML (~1,5 MB); API búsqueda 404/403; hace falta tienda/CP |
-| **Eroski** | HTML `supermercado.eroski.es` | **No** | Sin JSON de búsqueda; scrapers HTML |
-| **Ahorramas** | Suggest HTML Demandware | **No** | No catálogo JSON CORS |
-| **Gadis / Caprabo / Bonpreu** | — | **No** | Sin endpoint JSON CORS verificado |
-| **Hipercor / BM / resto mapa** | Solo OSM | **No** | Sin conector de catálogo |
+| Cadena | Productos | Plan usado |
+|--------|----------:|------------|
+| Mercadona | 1031 | A: Algolia |
+| Carrefour | 1443 | A: Empathy |
+| Lidl | 376 | A: lidl.es/q/api |
+| Aldi | 671 | A: Algolia |
+| Consum | 2306 | A: REST `tienda.consum.es` (sin CORS en browser) |
+| Eroski | 737 | B: HTML `supermercado.eroski.es` |
+| Dia | 1619 | B: `search-back/search` en **páginas pequeñas** + cookies (el endpoint `standard_search` 404; requests grandes → 403) |
+| Ahorramas | 774 | B: HTML Demandware `Search-UpdateGrid` |
+| **Alcampo** | **0** | A search 202 vacío; B home con `retailerProductId` (también `73514-FILETES`); C API `bop` 202 vacío — **sin precios tras agotar** |
+| Resto mapa (Hipercor, BM, Gadis…) | 0 | Sin fuente JSON/HTML usable conocida |
 
-Mapa (Madrid, radio 8 km, Overpass): ~72 Dia, ~13 Mercadona/Carrefour/Lidl, ~10 Alcampo, etc. Esas tiendas **sí** salen en el mapa; el panel las marca «solo mapa · sin catálogo online». No es un fallo de Overpass: **nunca se implementó la fase de precios** para ellas.
+**Browser (`index.html`)**: sigue solo Mercadona/Carrefour/Lidl/Aldi (CORS). El dump en `data/` es para uso offline / despliegue posterior.
 
 ## Caché en el navegador
 

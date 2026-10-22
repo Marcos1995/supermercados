@@ -1,17 +1,17 @@
 # Graph Report - supermercados  (2026-10-22)
 
 ## Corpus Check
-- 21 files · ~15,484 words
+- 24 files · ~232,365 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 4 file(s) not represented in the graph (top: .mdc 2, (none) 2)
 
 ## Summary
-- 146 nodes · 167 edges · 19 communities (14 shown, 5 thin omitted)
+- 174 nodes · 225 edges · 20 communities (15 shown, 5 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 2 edges (avg confidence: 0.95)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `36f7a647`
+- Built from commit: `5c3ae11a`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -25,26 +25,27 @@
 - Build judgments with Laya
 - Laya
 - Review
-- Arrancar a mano
+- Criterio unificado de emparejado
 - tablas/SKILL.md
 - DESIGN.md
 - DECISIONES.md
-- Criterio unificado de emparejado
+- dump_all_precios.py
 - Precios: fuentes y límites
 - Ficha elegida (si hay X)
 - dump_cobertura.py
+- Arrancar a mano
 
 ## God Nodes (most connected - your core abstractions)
 1. `Ficha elegida (si hay X)` - 29 edges
 2. `fold()` - 10 edges
-3. `visible()` - 8 edges
-4. `fetch_line()` - 8 edges
-5. `pick()` - 7 edges
-6. `Arrancar a mano` - 7 edges
-7. `Criterio unificado de emparejado` - 7 edges
-8. `main()` - 6 edges
-9. `Debug` - 6 edges
-10. `Contexto del proyecto` - 6 edges
+3. `http_json()` - 8 edges
+4. `visible()` - 8 edges
+5. `fetch_line()` - 8 edges
+6. `pick()` - 7 edges
+7. `Arrancar a mano` - 7 edges
+8. `Criterio unificado de emparejado` - 7 edges
+9. `fold()` - 6 edges
+10. `http_text()` - 6 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Pipeline (orden fijo)` --references--> `pick()`  [INFERRED]
@@ -55,7 +56,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (19 total, 5 thin omitted)
+## Communities (20 total, 5 thin omitted)
 
 ### Community 0 - "Debug"
 Cohesion: 0.29
@@ -93,17 +94,17 @@ Nodes (3): Laya, Reply (decision-only requests), Steps
 Cohesion: 0.50
 Nodes (3): Check, Do, Review
 
-### Community 9 - "Arrancar a mano"
-Cohesion: 0.15
-Nodes (11): Ejecutar a mano, Docs, Setup, supermercados, Arrancar a mano, Comprobar conteos (DevTools), Criterio de fichas (no reinventar), Local (+3 more)
+### Community 9 - "Criterio unificado de emparejado"
+Cohesion: 0.16
+Nodes (11): Ejecutar a mano, APIs (no scrape), Conteos esperados (Madrid, 28 tipos), Criterio unificado de emparejado, Objetivo, Pipeline (orden fijo), Qué cuenta como “producto base”, Docs (+3 more)
 
-### Community 15 - "Criterio unificado de emparejado"
-Cohesion: 0.33
-Nodes (6): APIs (no scrape), Conteos esperados (Madrid, 28 tipos), Criterio unificado de emparejado, Objetivo, Pipeline (orden fijo), Qué cuenta como “producto base”
+### Community 15 - "dump_all_precios.py"
+Cohesion: 0.13
+Nodes (27): datetime, http_cookiejar, dia_session(), extract_alcampo_ids(), fold(), http_json(), http_text(), lidl_cat_ok() (+19 more)
 
 ### Community 16 - "Precios: fuentes y límites"
 Cohesion: 0.25
-Nodes (7): Caché en el navegador, Causas (resuelto / aceptado), Conteos de referencia (Madrid, 28 tipos), Cómo se obtienen, Investigación 2026-10-22 (precios de cadenas extra), Precios: fuentes y límites, Qué no se promete
+Nodes (7): Caché en el navegador, Causas (resuelto / aceptado), Conteos de referencia (Madrid, 28 tipos), Cómo se obtienen, Dump terminal 2026-10-22 (sin CORS), Precios: fuentes y límites, Qué no se promete
 
 ### Community 17 - "Ficha elegida (si hay X)"
 Cohesion: 0.06
@@ -111,25 +112,29 @@ Nodes (30): aceite de girasol, aceite de oliva, agua, arroz, azúcar, café, car
 
 ### Community 18 - "dump_cobertura.py"
 Cohesion: 0.13
-Nodes (31): json, pathlib, re, fetch_line(), fold(), hit_word(), http_get(), http_post() (+23 more)
+Nodes (30): json, pathlib, re, fetch_line(), fold(), hit_word(), http_get(), http_post() (+22 more)
+
+### Community 19 - "Arrancar a mano"
+Cohesion: 0.29
+Nodes (7): Arrancar a mano, Comprobar conteos (DevTools), Criterio de fichas (no reinventar), Local, Producción, UI, Volcar JSON + tabla de cobertura
 
 ## Knowledge Gaps
 - **77 isolated node(s):** `1. Root cause`, `2. Compare`, `3. Hypothesis`, `4. Fix`, `Red flags → back to step 1` (+72 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 101 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 102 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **5 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Criterio unificado de emparejado` connect `Criterio unificado de emparejado` to `Arrancar a mano`, `dump_cobertura.py`?**
-  _High betweenness centrality (0.066) - this node is a cross-community bridge._
-- **Why does `pick()` connect `dump_cobertura.py` to `Criterio unificado de emparejado`?**
-  _High betweenness centrality (0.062) - this node is a cross-community bridge._
-- **Are the 2 inferred relationships involving `pick()` (e.g. with `Criterio unificado de emparejado` and `Pipeline (orden fijo)`) actually correct?**
-  _`pick()` has 2 INFERRED edges - model-reasoned connections that need verification._
+- **Why does `pick()` connect `Criterio unificado de emparejado` to `dump_cobertura.py`?**
+  _High betweenness centrality (0.083) - this node is a cross-community bridge._
+- **Why does `Arrancar a mano` connect `Arrancar a mano` to `Criterio unificado de emparejado`?**
+  _High betweenness centrality (0.031) - this node is a cross-community bridge._
 - **What connects `1. Root cause`, `2. Compare`, `3. Hypothesis` to the rest of the system?**
   _77 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `dump_all_precios.py` be split into smaller, more focused modules?**
+  _Cohesion score 0.1349206349206349 - nodes in this community are weakly interconnected._
 - **Should `Ficha elegida (si hay X)` be split into smaller, more focused modules?**
   _Cohesion score 0.06451612903225806 - nodes in this community are weakly interconnected._
 - **Should `dump_cobertura.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.13306451612903225 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.13118279569892474 - nodes in this community are weakly interconnected._

@@ -8,3 +8,5 @@ index.html:algolia-api-key:555
 index.html:algolia-api-key:615
 scripts/dump_cobertura.py:algolia-api-key:243
 scripts/dump_cobertura.py:algolia-api-key:311
+scripts/dump_all_precios.py:algolia-api-key:146
+scripts/dump_all_precios.py:algolia-api-key:212

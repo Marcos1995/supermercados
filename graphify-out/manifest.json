@@ -114,9 +114,9 @@
     "semantic_hash": ""
   },
   "docs/PRECIOS.md": {
-    "mtime": 1792692263.111399,
-    "seen": 1792692267.7979093,
-    "ast_hash": "d130c9fe120f3ceddfd17c76510da621",
+    "mtime": 1792693409.6559052,
+    "seen": 1792693426.0712624,
+    "ast_hash": "6d5c88291bfe6a4b77d4ce40948d3f63",
     "semantic_hash": ""
   },
   "scripts/dump_cobertura.py": {
@@ -129,6 +129,18 @@
     "mtime": 1792616683.5049825,
     "seen": 1792616692.2615972,
     "ast_hash": "d53499a6960c7b642d054f2d4d69b498",
+    "semantic_hash": ""
+  },
+  "data/precios-2026-10-22.summary.json": {
+    "mtime": 1792693382.7118342,
+    "seen": 1792693426.0692325,
+    "ast_hash": "bb53a4960d79cb52820a6a8d38069faf",
+    "semantic_hash": ""
+  },
+  "scripts/dump_all_precios.py": {
+    "mtime": 1792692897.2746558,
+    "seen": 1792693426.0692325,
+    "ast_hash": "a1c4ac13c5ac1e9bddcd52d422d9b632",
     "semantic_hash": ""
   }
 }

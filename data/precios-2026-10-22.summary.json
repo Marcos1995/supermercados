@@ -1,0 +1,223 @@
+{
+  "date": "2026-10-22",
+  "file": "data/precios-2026-10-22.json",
+  "per_chain": {
+    "mercadona": {
+      "product_count": 1031,
+      "ok": true,
+      "methods": [
+        "algolia"
+      ],
+      "error_count": 0
+    },
+    "carrefour": {
+      "product_count": 1443,
+      "ok": true,
+      "methods": [
+        "empathy"
+      ],
+      "error_count": 0
+    },
+    "lidl": {
+      "product_count": 376,
+      "ok": true,
+      "methods": [
+        "lidl-api"
+      ],
+      "error_count": 0
+    },
+    "aldi": {
+      "product_count": 671,
+      "ok": true,
+      "methods": [
+        "algolia"
+      ],
+      "error_count": 0
+    },
+    "consum": {
+      "product_count": 2306,
+      "ok": true,
+      "methods": [
+        "consum-api"
+      ],
+      "error_count": 0
+    },
+    "eroski": {
+      "product_count": 737,
+      "ok": true,
+      "methods": [
+        "eroski-html"
+      ],
+      "error_count": 0
+    },
+    "dia": {
+      "product_count": 1619,
+      "ok": true,
+      "methods": [
+        "dia-api-search-back"
+      ],
+      "error_count": 0
+    },
+    "alcampo": {
+      "product_count": 0,
+      "ok": false,
+      "methods": [],
+      "error_count": 51
+    },
+    "ahorramas": {
+      "product_count": 774,
+      "ok": true,
+      "methods": [
+        "ahorramas-html"
+      ],
+      "error_count": 0
+    },
+    "hipercor": {
+      "product_count": 0,
+      "ok": false,
+      "methods": [],
+      "error_count": 1
+    },
+    "supercor": {
+      "product_count": 0,
+      "ok": false,
+      "methods": [],
+      "error_count": 1
+    },
+    "elcorteingles": {
+      "product_count": 0,
+      "ok": false,
+      "methods": [],
+      "error_count": 1
+    },
+    "bm": {
+      "product_count": 0,
+      "ok": false,
+      "methods": [],
+      "error_count": 1
+    },
+    "familycash": {
+      "product_count": 0,
+      "ok": false,
+      "methods": [],
+      "error_count": 1
+    },
+    "gadis": {
+      "product_count": 0,
+      "ok": false,
+      "methods": [],
+      "error_count": 1
+    },
+    "mas": {
+      "product_count": 0,
+      "ok": false,
+      "methods": [],
+      "error_count": 1
+    },
+    "froiz": {
+      "product_count": 0,
+      "ok": false,
+      "methods": [],
+      "error_count": 1
+    },
+    "hiperusera": {
+      "product_count": 0,
+      "ok": false,
+      "methods": [],
+      "error_count": 1
+    },
+    "alimerka": {
+      "product_count": 0,
+      "ok": false,
+      "methods": [],
+      "error_count": 1
+    },
+    "lupa": {
+      "product_count": 0,
+      "ok": false,
+      "methods": [],
+      "error_count": 1
+    },
+    "simply": {
+      "product_count": 0,
+      "ok": false,
+      "methods": [],
+      "error_count": 1
+    },
+    "supeco": {
+      "product_count": 0,
+      "ok": false,
+      "methods": [],
+      "error_count": 1
+    },
+    "spar": {
+      "product_count": 0,
+      "ok": false,
+      "methods": [],
+      "error_count": 1
+    },
+    "eurospar": {
+      "product_count": 0,
+      "ok": false,
+      "methods": [],
+      "error_count": 1
+    },
+    "bonpreu": {
+      "product_count": 0,
+      "ok": false,
+      "methods": [],
+      "error_count": 1
+    },
+    "caprabo": {
+      "product_count": 0,
+      "ok": false,
+      "methods": [],
+      "error_count": 1
+    },
+    "condis": {
+      "product_count": 0,
+      "ok": false,
+      "methods": [],
+      "error_count": 1
+    },
+    "coviran": {
+      "product_count": 0,
+      "ok": false,
+      "methods": [],
+      "error_count": 1
+    }
+  },
+  "with_data": [
+    "mercadona",
+    "carrefour",
+    "lidl",
+    "aldi",
+    "consum",
+    "eroski",
+    "dia",
+    "ahorramas"
+  ],
+  "no_data": [
+    "alcampo",
+    "hipercor",
+    "supercor",
+    "elcorteingles",
+    "bm",
+    "familycash",
+    "gadis",
+    "mas",
+    "froiz",
+    "hiperusera",
+    "alimerka",
+    "lupa",
+    "simply",
+    "supeco",
+    "spar",
+    "eurospar",
+    "bonpreu",
+    "caprabo",
+    "condis",
+    "coviran"
+  ],
+  "total_products": 8957
+}
