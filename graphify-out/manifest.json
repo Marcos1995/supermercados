@@ -84,9 +84,9 @@
     "semantic_hash": ""
   },
   "docs/DECISIONES.md": {
-    "mtime": 1792691805.9422207,
-    "seen": 1792691914.5941467,
-    "ast_hash": "c85d29d52aff954c68afe4871bb618ad",
+    "mtime": 1792692265.2434206,
+    "seen": 1792692267.7979093,
+    "ast_hash": "ded608f3a71f0c523376471dfe4f74c9",
     "semantic_hash": ""
   },
   "index.html": {
@@ -114,9 +114,9 @@
     "semantic_hash": ""
   },
   "docs/PRECIOS.md": {
-    "mtime": 1792691807.7951157,
-    "seen": 1792691914.5941467,
-    "ast_hash": "73d056b7650ff192ecaaec9544919d9b",
+    "mtime": 1792692263.111399,
+    "seen": 1792692267.7979093,
+    "ast_hash": "d130c9fe120f3ceddfd17c76510da621",
     "semantic_hash": ""
   },
   "scripts/dump_cobertura.py": {

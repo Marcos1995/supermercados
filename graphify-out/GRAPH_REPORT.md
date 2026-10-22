@@ -1,17 +1,17 @@
 # Graph Report - supermercados  (2026-10-22)
 
 ## Corpus Check
-- 21 files · ~15,202 words
+- 21 files · ~15,484 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 4 file(s) not represented in the graph (top: .mdc 2, (none) 2)
 
 ## Summary
-- 145 nodes · 166 edges · 19 communities (14 shown, 5 thin omitted)
+- 146 nodes · 167 edges · 19 communities (14 shown, 5 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 2 edges (avg confidence: 0.95)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `4bf4c97c`
+- Built from commit: `36f7a647`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -99,11 +99,11 @@ Nodes (11): Ejecutar a mano, Docs, Setup, supermercados, Arrancar a mano, Compro
 
 ### Community 15 - "Criterio unificado de emparejado"
 Cohesion: 0.33
-Nodes (7): APIs (no scrape), Conteos esperados (Madrid, 28 tipos), Criterio unificado de emparejado, Objetivo, Pipeline (orden fijo), Qué cuenta como “producto base”, pick()
+Nodes (6): APIs (no scrape), Conteos esperados (Madrid, 28 tipos), Criterio unificado de emparejado, Objetivo, Pipeline (orden fijo), Qué cuenta como “producto base”
 
 ### Community 16 - "Precios: fuentes y límites"
-Cohesion: 0.29
-Nodes (6): Caché en el navegador, Causas (resuelto / aceptado), Conteos de referencia (Madrid, 28 tipos), Cómo se obtienen, Precios: fuentes y límites, Qué no se promete
+Cohesion: 0.25
+Nodes (7): Caché en el navegador, Causas (resuelto / aceptado), Conteos de referencia (Madrid, 28 tipos), Cómo se obtienen, Investigación 2026-10-22 (precios de cadenas extra), Precios: fuentes y límites, Qué no se promete
 
 ### Community 17 - "Ficha elegida (si hay X)"
 Cohesion: 0.06
@@ -111,7 +111,7 @@ Nodes (30): aceite de girasol, aceite de oliva, agua, arroz, azúcar, café, car
 
 ### Community 18 - "dump_cobertura.py"
 Cohesion: 0.13
-Nodes (30): json, pathlib, re, fetch_line(), fold(), hit_word(), http_get(), http_post() (+22 more)
+Nodes (31): json, pathlib, re, fetch_line(), fold(), hit_word(), http_get(), http_post() (+23 more)
 
 ## Knowledge Gaps
 - **77 isolated node(s):** `1. Root cause`, `2. Compare`, `3. Hypothesis`, `4. Fix`, `Red flags → back to step 1` (+72 more)
@@ -121,10 +121,10 @@ Nodes (30): json, pathlib, re, fetch_line(), fold(), hit_word(), http_get(), htt
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Criterio unificado de emparejado` connect `Criterio unificado de emparejado` to `Arrancar a mano`?**
-  _High betweenness centrality (0.067) - this node is a cross-community bridge._
-- **Why does `pick()` connect `Criterio unificado de emparejado` to `dump_cobertura.py`?**
-  _High betweenness centrality (0.063) - this node is a cross-community bridge._
+- **Why does `Criterio unificado de emparejado` connect `Criterio unificado de emparejado` to `Arrancar a mano`, `dump_cobertura.py`?**
+  _High betweenness centrality (0.066) - this node is a cross-community bridge._
+- **Why does `pick()` connect `dump_cobertura.py` to `Criterio unificado de emparejado`?**
+  _High betweenness centrality (0.062) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `pick()` (e.g. with `Criterio unificado de emparejado` and `Pipeline (orden fijo)`) actually correct?**
   _`pick()` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `1. Root cause`, `2. Compare`, `3. Hypothesis` to the rest of the system?**
@@ -132,4 +132,4 @@ _Questions this graph is uniquely positioned to answer:_
 - **Should `Ficha elegida (si hay X)` be split into smaller, more focused modules?**
   _Cohesion score 0.06451612903225806 - nodes in this community are weakly interconnected._
 - **Should `dump_cobertura.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.13118279569892474 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.13306451612903225 - nodes in this community are weakly interconnected._

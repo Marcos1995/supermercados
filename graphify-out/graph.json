@@ -4,18 +4,6 @@
   "graph": {},
   "nodes": [
     {
-      "id": "scripts_dump_cobertura_pick",
-      "label": "pick()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 15,
-      "community_name": "Criterio unificado de emparejado",
-      "file_type": "code",
-      "norm_label": "pick()",
-      "source_file": "scripts/dump_cobertura.py",
-      "source_location": "L200"
-    },
-    {
       "id": "scripts_dump_cobertura_fetch_line",
       "label": "fetch_line()",
       "_callable": true,
@@ -158,6 +146,18 @@
       "norm_label": "noisy()",
       "source_file": "scripts/dump_cobertura.py",
       "source_location": "L126"
+    },
+    {
+      "id": "scripts_dump_cobertura_pick",
+      "label": "pick()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "dump_cobertura.py",
+      "file_type": "code",
+      "norm_label": "pick()",
+      "source_file": "scripts/dump_cobertura.py",
+      "source_location": "L200"
     },
     {
       "id": "scripts_dump_cobertura_primary_ok",
@@ -656,7 +656,7 @@
       "node_kind": "heading",
       "norm_label": "cache en el navegador",
       "source_file": "docs/PRECIOS.md",
-      "source_location": "L19"
+      "source_location": "L35"
     },
     {
       "id": "docs_precios_causas_resuelto_aceptado",
@@ -668,7 +668,7 @@
       "node_kind": "heading",
       "norm_label": "causas (resuelto / aceptado)",
       "source_file": "docs/PRECIOS.md",
-      "source_location": "L23"
+      "source_location": "L39"
     },
     {
       "id": "docs_precios_conteos_de_referencia_madrid_28_tipos",
@@ -680,7 +680,7 @@
       "node_kind": "heading",
       "norm_label": "conteos de referencia (madrid, 28 tipos)",
       "source_file": "docs/PRECIOS.md",
-      "source_location": "L30"
+      "source_location": "L46"
     },
     {
       "id": "docs_precios_c\u00f3mo_se_obtienen",
@@ -693,6 +693,18 @@
       "norm_label": "como se obtienen",
       "source_file": "docs/PRECIOS.md",
       "source_location": "L6"
+    },
+    {
+      "id": "docs_precios_investigaci\u00f3n_2026_10_22_precios_de_cadenas_extra",
+      "label": "Investigaci\u00f3n 2026-10-22 (precios de cadenas extra)",
+      "_origin": "ast",
+      "community": 16,
+      "community_name": "Precios: fuentes y l\u00edmites",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "investigacion 2026-10-22 (precios de cadenas extra)",
+      "source_file": "docs/PRECIOS.md",
+      "source_location": "L19"
     },
     {
       "id": "docs_precios_precios_fuentes_y_l\u00edmites",
@@ -716,7 +728,7 @@
       "node_kind": "heading",
       "norm_label": "que no se promete",
       "source_file": "docs/PRECIOS.md",
-      "source_location": "L39"
+      "source_location": "L55"
     },
     {
       "id": "docs_cobertura",
@@ -3080,8 +3092,8 @@
       "weight": 1.0
     },
     {
-      "source": "docs_precios_precios_fuentes_y_l\u00edmites",
-      "target": "docs_precios_cach\u00e9_en_el_navegador",
+      "source": "docs_precios_c\u00f3mo_se_obtienen",
+      "target": "docs_precios_investigaci\u00f3n_2026_10_22_precios_de_cadenas_extra",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -3092,13 +3104,24 @@
     },
     {
       "source": "docs_precios_precios_fuentes_y_l\u00edmites",
+      "target": "docs_precios_cach\u00e9_en_el_navegador",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRECIOS.md",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_precios_precios_fuentes_y_l\u00edmites",
       "target": "docs_precios_causas_resuelto_aceptado",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/PRECIOS.md",
-      "source_location": "L23",
+      "source_location": "L39",
       "weight": 1.0
     },
     {
@@ -3109,7 +3132,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/PRECIOS.md",
-      "source_location": "L30",
+      "source_location": "L46",
       "weight": 1.0
     },
     {
@@ -3120,7 +3143,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/PRECIOS.md",
-      "source_location": "L39",
+      "source_location": "L55",
       "weight": 1.0
     },
     {
@@ -3655,5 +3678,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "4bf4c97cdd649d4efb355a46a1de140e04890079"
+  "built_at_commit": "36f7a6477e873164bcaf56dc793a4308a8cf71b4"
 }
