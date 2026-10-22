@@ -44,9 +44,12 @@ Salida local: `tmp-precios/` (gitignored) + actualiza `docs/COBERTURA.md`.
 
 https://marcos1995.github.io/supermercados/?lat=40.4168&lon=-3.7038
 
-La web en el navegador solo pide en vivo **Mercadona, Carrefour, Lidl y Aldi** (CORS). El resto puede estar en el dump de `data/` o solo en el mapa.
+La web compara **todas las cadenas con precios**:
+- En vivo (CORS): Mercadona, Carrefour, Lidl, Aldi.
+- Desde `data/precios-latest.json` (dump): Consum, Dia, Eroski, Ahorramas (y las que el script haya rellenado).
+- Solo mapa: Alcampo y otras sin fuente.
 
-Al abrir: carga sola; **IndexedDB** guarda catálogos un día calendario. «Actualizar» respeta esa caché del día.
+Al abrir: carga sola; **IndexedDB** guarda las vivas un día. El dump se lee del fichero en cada carga (y queda en la misma entrada de caché). Tras `dump_all_precios.py`, el script actualiza `precios-latest.json`.
 
 ## Local
 

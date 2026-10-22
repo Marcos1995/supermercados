@@ -9,8 +9,8 @@
 ## Estado
 - UI tipo Maps: mapa a pantalla completa + panel/sheet plegable (mobile first).
 - Lista fija **SEMANAL** (28 tipos). Criterio de ficha: `docs/EMPAREJADO.md` (código en `index.html` / scripts; no lo inventa la IA).
-- Web en vivo: Mercadona/Carrefour/Lidl/Aldi + IndexedDB un día. Mapa Overpass: más cadenas.
-- Dump offline de precios (terminal, sin CORS): `python scripts/dump_all_precios.py` → `data/precios-YYYY-MM-DD.json`. Manual: `START.md`. Alcampo sin datos tras agotar vías (ver `docs/PRECIOS.md`).
+- Comparativa: vivas (Mercadona/Carrefour/Lidl/Aldi) + dump `data/precios-latest.json` (Consum/Dia/Eroski/Ahorramas). Mapa Overpass: más cadenas; Alcampo sin precios.
+- Refresco dump: `python scripts/dump_all_precios.py` (manual `START.md`).
 - GPS: alta precisión + círculo; Mi ubicación / centro del mapa. Sin GPS → Madrid centro.
 - Concurrencia 8. Sin folletos ni Gemini.
 

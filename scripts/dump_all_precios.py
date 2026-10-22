@@ -692,8 +692,12 @@ def main() -> None:
     }
     out_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     summary_path.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+    # Puntero fijo que lee la web (index.html)
+    latest = DATA / "precios-latest.json"
+    latest.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps(summary, ensure_ascii=False, indent=2))
     print(f"Wrote {out_path}")
+    print(f"Wrote {latest}")
 
 
 if __name__ == "__main__":

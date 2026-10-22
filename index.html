@@ -329,7 +329,11 @@ const OWN = {
   mercadona: ["hacendado","deliplus","bosque verde","compy"],
   carrefour: ["carrefour","simpl"],
   lidl: ["milbona","alesto","freshona","dulano","nixe","sondey","crownfield","chef select","freeway","cien","deluxe"],
-  aldi: ["milsani","grandessa","lacura","tandil"]
+  aldi: ["milsani","grandessa","lacura","tandil"],
+  consum: ["consum"],
+  dia: ["dia","dia lactea","delicious"],
+  eroski: ["eroski"],
+  ahorramas: ["ahorramas","ahorra mas"]
 };
 const WEB = {
   mercadona: "https://www.mercadona.es",
@@ -496,7 +500,9 @@ const EXPECT = {
   agua: "l", "carne picada": "kg", pollo: "kg"
 };
 
-const CHAINS = ["mercadona", "carrefour", "lidl", "aldi"];
+const LIVE_CHAINS = ["mercadona", "carrefour", "lidl", "aldi"];
+let CHAINS = LIVE_CHAINS.slice();
+const DUMP_URL = "data/precios-latest.json";
 const LABEL = {
   mercadona: "Mercadona", carrefour: "Carrefour", lidl: "Lidl", aldi: "Aldi",
   dia: "Dia", alcampo: "Alcampo", eroski: "Eroski", consum: "Consum",
@@ -512,9 +518,10 @@ let map, layer, markers = {}, here = null, catalogs = null, moving = false;
 let shopsNow = [], linesNow = [], selected = new Set(SEMANAL);
 let accuracyCircle = null, youMarker = null;
 let cacheFromDay = false;
+let dumpMeta = null; // { date, chains: string[] }
 
 /* —— IndexedDB daily cache —— */
-const IDB_NAME = "supermercados-cache";
+const IDB_NAME = "supermercados-cache-v2";
 const IDB_STORE = "kv";
 function idbOpen() {
   return new Promise((resolve, reject) => {
@@ -737,7 +744,7 @@ function paint(shops, lines) {
   $("hero-tag").textContent = best ? (best.basket.missing.length ? best.basket.items.length + "/" + need : "Completa") : "Sin dato";
   $("hero-cap").textContent = best
     ? best.basket.items.map((it) => it.name + (it.unitLabel ? " (" + it.unitLabel + ")" : "")).join(" · ") + (best.basket.missing.length ? ". No trae: " + best.basket.missing.join(", ") + "." : ". ") + "Orden: más tipos, luego precio. No es el lineal."
-    : "Marca la compra y compara. Precios de las 4 cadenas con catálogo online.";
+    : "Marca la compra y compara. Vivas + dump (Consum, Dia, Eroski, Ahorramas…).";
 
   const box = $("lista");
   box.replaceChildren();
@@ -752,9 +759,15 @@ function paint(shops, lines) {
     p.textContent = "No hay supermercados cerca todavía.";
     box.appendChild(p);
   }
-  $("nota").textContent = (mapOnly.length ? mapOnly.length + " del mapa sin catálogo online (Dia, Alcampo, Consum…). " : "") +
-    "Cada tipo: ficha más barata por litro, kilo o docena. " +
-    (cacheFromDay ? "Precios de hoy (caché local)." : "Precios recién descargados.");
+  const dumpNote = dumpMeta && dumpMeta.chains.length
+    ? "Dump " + dumpMeta.date + ": " + dumpMeta.chains.map((c) => LABEL[c] || c).join(", ") + ". "
+    : "";
+  const pricedSet = new Set(CHAINS);
+  const soloMapa = mapOnly.filter((s) => !pricedSet.has(s.chain));
+  $("nota").textContent = dumpNote +
+    (soloMapa.length ? soloMapa.length + " del mapa sin catálogo (p. ej. Alcampo). " : "") +
+    "Comparativa: " + CHAINS.length + " cadenas · ficha más barata por litro/kilo/docena. " +
+    (cacheFromDay ? "Vivas en caché del día." : "Vivas recién descargadas.");
 
   try {
     ensureMap(here.lat, here.lon);
@@ -982,10 +995,11 @@ async function searchLineMerged(chain, line, lat, lon) {
   return out;
 }
 async function searchCatalogs(lines, lat, lon, fail) {
-  const cats = { mercadona: {}, carrefour: {}, lidl: {}, aldi: {} };
+  const cats = {};
+  LIVE_CHAINS.forEach((c) => { cats[c] = {}; });
   const jobs = [];
   lines.forEach((line) => {
-    CHAINS.forEach((chain) => {
+    LIVE_CHAINS.forEach((chain) => {
       jobs.push({ chain, line });
     });
   });
@@ -999,6 +1013,60 @@ async function searchCatalogs(lines, lat, lon, fail) {
     ));
   }
   return cats;
+}
+
+async function loadDumpFile() {
+  try {
+    const r = await fetch(DUMP_URL, { cache: "no-cache" });
+    if (!r.ok) return null;
+    return await r.json();
+  } catch (e) {
+    return null;
+  }
+}
+
+/** Convierte data/precios-*.json → cats[chain][line] = hits (mismo shape que las APIs vivas). */
+function catalogsFromDump(dump) {
+  const cats = {};
+  const dumpChains = [];
+  const blocks = (dump && dump.chains) || {};
+  Object.keys(blocks).forEach((chain) => {
+    const block = blocks[chain];
+    if (!block || !block.ok || !Array.isArray(block.products) || !block.products.length) return;
+    if (LIVE_CHAINS.includes(chain)) return; // las 4 vivas van por API
+    cats[chain] = {};
+    block.products.forEach((p) => {
+      const line = p.line;
+      if (!line || !(p.price > 0) || !p.name) return;
+      if (!cats[chain][line]) cats[chain][line] = [];
+      cats[chain][line].push({
+        name: p.name,
+        brand: p.brand || "",
+        price: Number(p.price),
+        unit: Number(p.unit) > 0 ? Number(p.unit) : Number(p.price),
+        unitRaw: "",
+        unitLabel: "",
+        image: p.image || "",
+        url: p.url || ""
+      });
+    });
+    if (Object.keys(cats[chain]).length) dumpChains.push(chain);
+  });
+  return { cats, dumpChains, date: (dump && dump.date) || "" };
+}
+
+function mergeLiveAndDump(liveCats, dump) {
+  const out = Object.assign({}, liveCats);
+  if (!dump) {
+    CHAINS = LIVE_CHAINS.slice();
+    dumpMeta = null;
+    return out;
+  }
+  const { cats, dumpChains, date } = catalogsFromDump(dump);
+  dumpChains.forEach((chain) => { out[chain] = cats[chain]; });
+  CHAINS = LIVE_CHAINS.concat(dumpChains);
+  dumpMeta = { date, chains: dumpChains.slice() };
+  return out;
 }
 function blancaOn() {
   return $("opt-blanca").getAttribute("aria-pressed") === "true";
@@ -1162,7 +1230,7 @@ function paintFichas(lines) {
     const det = document.createElement("details");
     det.className = "ficha";
     const sum = document.createElement("summary");
-    sum.textContent = line.charAt(0).toUpperCase() + line.slice(1) + " · " + ok + "/4 cadenas";
+    sum.textContent = line.charAt(0).toUpperCase() + line.slice(1) + " · " + ok + "/" + CHAINS.length + " cadenas";
     const scroll = document.createElement("div");
     scroll.className = "hit-scroll";
     CHAINS.forEach((chain) => {
@@ -1217,14 +1285,35 @@ function redraw() {
 async function getCatalogsCached(lat, lon, fail) {
   const key = catalogsCacheKey(lat, lon);
   const hit = await idbGet(key);
-  if (hit && hit.day === dayKey() && hit.data) {
+  if (hit && hit.day === dayKey() && hit.data && hit.chains) {
     cacheFromDay = true;
+    CHAINS = hit.chains.slice();
+    dumpMeta = hit.dumpMeta || null;
     return hit.data;
   }
-  setEstado("Descargando catálogos (una vez al día)…");
+  setEstado("Descargando catálogos + dump…");
   cacheFromDay = false;
-  const cats = await searchCatalogs(SEMANAL, lat, lon, fail);
-  await idbPut(key, { day: dayKey(), wh: warehouseKey(lat, lon), data: cats, ts: Date.now() });
+  const [live, dump] = await Promise.all([
+    searchCatalogs(SEMANAL, lat, lon, fail),
+    loadDumpFile()
+  ]);
+  if (!dump && fail.indexOf("dump") < 0) {
+    /* dump opcional: la web sigue con las 4 vivas */
+  }
+  const cats = mergeLiveAndDump(live, dump);
+  if (dump && dumpMeta) {
+    setEstado("Vivas OK · dump " + dumpMeta.date + " (" + dumpMeta.chains.length + " cadenas)");
+  } else if (!dump) {
+    fail.push("dump");
+  }
+  await idbPut(key, {
+    day: dayKey(),
+    wh: warehouseKey(lat, lon),
+    data: cats,
+    chains: CHAINS.slice(),
+    dumpMeta: dumpMeta,
+    ts: Date.now()
+  });
   return cats;
 }
 async function getShopsCached(lat, lon) {
@@ -1267,8 +1356,10 @@ async function buscar() {
     catalogs = cats;
     paintFichas(lines);
     paint(attach(shops, catalogs, lines, blancaOn(), here.lat, here.lon), lines);
-    const src = cacheFromDay ? "Precios de hoy (caché)" : "Precios nuevos de hoy";
-    setEstado(src + " · " + here.note + (fail.length ? " · sin " + fail.join(", ") : ""));
+    const src = cacheFromDay ? "Precios de hoy (caché)" : "Precios nuevos";
+    const n = CHAINS.length + " cadenas";
+    const dumpBit = dumpMeta ? " · dump " + dumpMeta.date : "";
+    setEstado(src + " · " + n + dumpBit + " · " + here.note + (fail.length ? " · sin " + fail.join(", ") : ""));
   } catch (e) {
     $("hallazgo").textContent = "No se han podido leer los catálogos";
     $("hero-n").textContent = "Sin dato";

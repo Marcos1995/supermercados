@@ -72,9 +72,9 @@
     "semantic_hash": ""
   },
   "PROJECT.md": {
-    "mtime": 1792693718.1382542,
-    "seen": 1792693728.9248543,
-    "ast_hash": "541bdc958117fc93448754abc95a0f77",
+    "mtime": 1792701949.8927217,
+    "seen": 1792701964.074712,
+    "ast_hash": "4cbdaced74e0f77d4d346516ba182400",
     "semantic_hash": ""
   },
   "README.md": {
@@ -90,15 +90,15 @@
     "semantic_hash": ""
   },
   "index.html": {
-    "mtime": 1792691849.9286482,
-    "seen": 1792691914.5941467,
-    "ast_hash": "a78e9a9780f60dd66653a27bf57f7762",
+    "mtime": 1792701941.6970408,
+    "seen": 1792701964.075712,
+    "ast_hash": "ae690171cefb47a03f37279eaaea153b",
     "semantic_hash": ""
   },
   "START.md": {
-    "mtime": 1792693714.3571851,
-    "seen": 1792693728.9248543,
-    "ast_hash": "8affd366e71dae34c42d0ac275dcc672",
+    "mtime": 1792701945.3462887,
+    "seen": 1792701964.074712,
+    "ast_hash": "09c0bea766e82c913cf1a28736384a47",
     "semantic_hash": ""
   },
   "docs/EJECUTAR.md": {
@@ -114,9 +114,9 @@
     "semantic_hash": ""
   },
   "docs/PRECIOS.md": {
-    "mtime": 1792693721.6579037,
-    "seen": 1792693728.9253578,
-    "ast_hash": "f4f532fc0e1b1069c0665c1b668cb04a",
+    "mtime": 1792701947.208357,
+    "seen": 1792701964.075712,
+    "ast_hash": "f01a3b1d4df8a3aa891f91280feec635",
     "semantic_hash": ""
   },
   "scripts/dump_cobertura.py": {
@@ -138,9 +138,9 @@
     "semantic_hash": ""
   },
   "scripts/dump_all_precios.py": {
-    "mtime": 1792692897.2746558,
-    "seen": 1792693426.0692325,
-    "ast_hash": "a1c4ac13c5ac1e9bddcd52d422d9b632",
+    "mtime": 1792701880.0577166,
+    "seen": 1792701964.0737133,
+    "ast_hash": "4aae58669d84013695636121ead43272",
     "semantic_hash": ""
   }
 }

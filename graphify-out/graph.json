@@ -1251,6 +1251,114 @@
       "source_location": "L2"
     },
     {
+      "id": "docs_ejecutar",
+      "label": "EJECUTAR.md",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "Arrancar a mano",
+      "file_type": "document",
+      "node_kind": "page",
+      "norm_label": "ejecutar.md",
+      "source_file": "docs/EJECUTAR.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_ejecutar_ejecutar_a_mano",
+      "label": "Ejecutar a mano",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "Arrancar a mano",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "ejecutar a mano",
+      "source_file": "docs/EJECUTAR.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_emparejado",
+      "label": "EMPAREJADO.md",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "Arrancar a mano",
+      "file_type": "document",
+      "node_kind": "page",
+      "norm_label": "emparejado.md",
+      "source_file": "docs/EMPAREJADO.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_precios",
+      "label": "PRECIOS.md",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "Arrancar a mano",
+      "file_type": "document",
+      "node_kind": "page",
+      "norm_label": "precios.md",
+      "source_file": "docs/PRECIOS.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "readme",
+      "label": "README.md",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "Arrancar a mano",
+      "file_type": "document",
+      "node_kind": "page",
+      "norm_label": "readme.md",
+      "source_file": "README.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "readme_docs",
+      "label": "Docs",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "Arrancar a mano",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "docs",
+      "source_file": "README.md",
+      "source_location": "L20"
+    },
+    {
+      "id": "readme_setup",
+      "label": "Setup",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "Arrancar a mano",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "setup",
+      "source_file": "README.md",
+      "source_location": "L10"
+    },
+    {
+      "id": "readme_supermercados",
+      "label": "supermercados",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "Arrancar a mano",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "supermercados",
+      "source_file": "README.md",
+      "source_location": "L2"
+    },
+    {
+      "id": "start",
+      "label": "START.md",
+      "_origin": "ast",
+      "community": 19,
+      "community_name": "Arrancar a mano",
+      "file_type": "document",
+      "node_kind": "page",
+      "norm_label": "start.md",
+      "source_file": "START.md",
+      "source_location": "L1"
+    },
+    {
       "id": "start_arrancar_a_mano",
       "label": "Arrancar a mano",
       "_origin": "ast",
@@ -1284,7 +1392,7 @@
       "node_kind": "heading",
       "norm_label": "comprobar conteos (devtools, tras carga web)",
       "source_file": "START.md",
-      "source_location": "L65"
+      "source_location": "L68"
     },
     {
       "id": "start_criterio_unificado_c\u00f3digo_no_la_ia",
@@ -1308,7 +1416,7 @@
       "node_kind": "heading",
       "norm_label": "local",
       "source_file": "START.md",
-      "source_location": "L51"
+      "source_location": "L54"
     },
     {
       "id": "start_producci\u00f3n_web",
@@ -1344,7 +1452,7 @@
       "node_kind": "heading",
       "norm_label": "ui",
       "source_file": "START.md",
-      "source_location": "L61"
+      "source_location": "L64"
     },
     {
       "id": "cursor_skills_web_design_dashboard",
@@ -1752,42 +1860,6 @@
       "source_location": "L7"
     },
     {
-      "id": "docs_ejecutar",
-      "label": "EJECUTAR.md",
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "pick",
-      "file_type": "document",
-      "node_kind": "page",
-      "norm_label": "ejecutar.md",
-      "source_file": "docs/EJECUTAR.md",
-      "source_location": "L1"
-    },
-    {
-      "id": "docs_ejecutar_ejecutar_a_mano",
-      "label": "Ejecutar a mano",
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "pick",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "ejecutar a mano",
-      "source_file": "docs/EJECUTAR.md",
-      "source_location": "L1"
-    },
-    {
-      "id": "docs_emparejado",
-      "label": "EMPAREJADO.md",
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "pick",
-      "file_type": "document",
-      "node_kind": "page",
-      "norm_label": "emparejado.md",
-      "source_file": "docs/EMPAREJADO.md",
-      "source_location": "L1"
-    },
-    {
       "id": "docs_emparejado_apis_no_scrape",
       "label": "APIs (no scrape)",
       "_origin": "ast",
@@ -1858,18 +1930,6 @@
       "norm_label": "que cuenta como \u201cproducto base\u201d",
       "source_file": "docs/EMPAREJADO.md",
       "source_location": "L26"
-    },
-    {
-      "id": "docs_precios",
-      "label": "PRECIOS.md",
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "pick",
-      "file_type": "document",
-      "node_kind": "page",
-      "norm_label": "precios.md",
-      "source_file": "docs/PRECIOS.md",
-      "source_location": "L1"
     },
     {
       "id": "docs_precios_cach\u00e9_en_el_navegador",
@@ -1954,66 +2014,6 @@
       "norm_label": "que no se promete",
       "source_file": "docs/PRECIOS.md",
       "source_location": "L60"
-    },
-    {
-      "id": "readme",
-      "label": "README.md",
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "pick",
-      "file_type": "document",
-      "node_kind": "page",
-      "norm_label": "readme.md",
-      "source_file": "README.md",
-      "source_location": "L1"
-    },
-    {
-      "id": "readme_docs",
-      "label": "Docs",
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "pick",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "docs",
-      "source_file": "README.md",
-      "source_location": "L20"
-    },
-    {
-      "id": "readme_setup",
-      "label": "Setup",
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "pick",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "setup",
-      "source_file": "README.md",
-      "source_location": "L10"
-    },
-    {
-      "id": "readme_supermercados",
-      "label": "supermercados",
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "pick",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "supermercados",
-      "source_file": "README.md",
-      "source_location": "L2"
-    },
-    {
-      "id": "start",
-      "label": "START.md",
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "pick",
-      "file_type": "document",
-      "node_kind": "page",
-      "norm_label": "start.md",
-      "source_file": "START.md",
-      "source_location": "L1"
     },
     {
       "id": "datetime",
@@ -4520,7 +4520,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "START.md",
-      "source_location": "L51",
+      "source_location": "L54",
       "weight": 1.0
     },
     {
@@ -4531,7 +4531,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "START.md",
-      "source_location": "L61",
+      "source_location": "L64",
       "weight": 1.0
     },
     {
@@ -4542,7 +4542,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "START.md",
-      "source_location": "L65",
+      "source_location": "L68",
       "weight": 1.0
     },
     {
@@ -4702,6 +4702,18 @@
       "weight": 1.0
     },
     {
+      "source": "docs_precios_dump_terminal_2026_10_22_sin_cors",
+      "target": "scripts_dump_cobertura_pick",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "context": "pick",
+      "source_file": "docs/PRECIOS.md",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
       "source": "docs_precios_precios_fuentes_y_l\u00edmites",
       "target": "scripts_dump_cobertura_pick",
       "relation": "references",
@@ -4715,5 +4727,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "d2b0e1ba1ff58ac3f25671f66135bab49626ddbf"
+  "built_at_commit": "9a32e02dcd3d548db8e8dd94025c2ed9e87873e3"
 }

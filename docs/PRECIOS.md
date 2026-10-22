@@ -33,7 +33,7 @@ Script: `python scripts/dump_all_precios.py` → [`data/precios-2026-10-22.json`
 | **Alcampo** | **0** | A search 202 vacío; B home con `retailerProductId` (también `73514-FILETES`); C API `bop` 202 vacío — **sin precios tras agotar** |
 | Resto mapa (Hipercor, BM, Gadis…) | 0 | Sin fuente JSON/HTML usable conocida |
 
-**Browser (`index.html`)**: sigue solo Mercadona/Carrefour/Lidl/Aldi (CORS). El dump en `data/` es para uso offline / despliegue posterior.
+**Browser (`index.html`)**: Mercadona/Carrefour/Lidl/Aldi en vivo (CORS) + el resto con datos desde `data/precios-latest.json` (mismo criterio `EMPAREJADO` / `pick`). Sin datos en dump → solo mapa.
 
 ## Caché en el navegador
 
