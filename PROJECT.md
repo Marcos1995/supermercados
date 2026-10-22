@@ -7,11 +7,12 @@
 - Vista local: `index.html` (con red: catálogos de las cadenas y OpenStreetMap)
 
 ## Estado
-- Lista fija **SEMANAL** (28 tipos). Al abrir **dispara sola** la búsqueda (como Ver precios); no espera al GPS.
+- UI tipo Maps: mapa a pantalla completa + panel/sheet plegable (mobile first).
+- Lista fija **SEMANAL** (28 tipos). Al abrir carga sola; catálogos se guardan en **IndexedDB** con clave de día local (una descarga de precios por día y zona de almacén).
 - Criterio: `docs/EMPAREJADO.md`. Manual: `START.md`. Cobertura: `python scripts/dump_cobertura.py` → `docs/COBERTURA.md` + `tmp-precios/`.
-- JSON en vivo (no HTML). Fuentes/huecos: `docs/PRECIOS.md`.
-- Mercadona/Carrefour ~28/28; Aldi sin huevos ni girasol en Algolia; Lidl indexa pocos básicos. Dia/Alcampo/Eroski: solo mapa.
-- Concurrencia 8. Sin GPS → Madrid centro. Sin folletos ni Gemini.
+- Precios: Mercadona/Carrefour/Lidl/Aldi. Mapa Overpass: muchas más cadenas (Dia, Alcampo, Consum…); sin catálogo = solo mapa.
+- GPS: alta precisión + círculo de accuracy; botones Mi ubicación / centro del mapa. Sin GPS → Madrid centro.
+- Concurrencia 8. Sin folletos ni Gemini. No hay precios en el repo (solo caché del navegador).
 
 ## Stack
 - Un `index.html` (CSS y JS dentro). Leaflet 1.9.4 y teselas de OpenStreetMap. Sin build y sin API de pago.
@@ -24,4 +25,4 @@
 
 ## Notas para el agente
 - Emparejado = `docs/EMPAREJADO.md`. No reinventar filtros en cada sesión; si hace falta una regla, se añade al doc y a `lineBan`/`QUERY` en el mismo cambio.
-- No inventar importes. No cachear precios en el repo. Lean kit (ver AGENTS.md).
+- No inventar importes. No cachear precios en el repo (sí IndexedDB en el cliente, un día). Lean kit (ver AGENTS.md).

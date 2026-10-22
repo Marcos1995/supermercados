@@ -66,15 +66,15 @@
     "semantic_hash": ""
   },
   "DESIGN.md": {
-    "mtime": 1791992198.0798538,
-    "seen": 1791992765.6431315,
-    "ast_hash": "4d2190c8392cce1d47e8d6a998737bbb",
+    "mtime": 1792691629.0597713,
+    "seen": 1792691914.5941467,
+    "ast_hash": "412a14bb39ec6f1be9cc9b7ec7206d72",
     "semantic_hash": ""
   },
   "PROJECT.md": {
-    "mtime": 1792621567.8280435,
-    "seen": 1792621572.2732763,
-    "ast_hash": "1be4c0f2947cc008dd69b5c533e02f64",
+    "mtime": 1792691803.9797716,
+    "seen": 1792691914.5941467,
+    "ast_hash": "460789153f23b240c94741e489fbdf58",
     "semantic_hash": ""
   },
   "README.md": {
@@ -84,21 +84,21 @@
     "semantic_hash": ""
   },
   "docs/DECISIONES.md": {
-    "mtime": 1792615014.1666133,
-    "seen": 1792615685.3240674,
-    "ast_hash": "804efb50ec9ffaf736710177af5bfe01",
+    "mtime": 1792691805.9422207,
+    "seen": 1792691914.5941467,
+    "ast_hash": "c85d29d52aff954c68afe4871bb618ad",
     "semantic_hash": ""
   },
   "index.html": {
-    "mtime": 1792621811.3084784,
-    "seen": 1792621814.2962766,
-    "ast_hash": "2a0ec1ec8188c5979370bdfb10ed7279",
+    "mtime": 1792691849.9286482,
+    "seen": 1792691914.5941467,
+    "ast_hash": "a78e9a9780f60dd66653a27bf57f7762",
     "semantic_hash": ""
   },
   "START.md": {
-    "mtime": 1792621566.5516407,
-    "seen": 1792621572.2732763,
-    "ast_hash": "60da461ea77e371d3b82163f9f32196c",
+    "mtime": 1792691813.2528613,
+    "seen": 1792691914.5941467,
+    "ast_hash": "f0a227aeaa4a584583941094a22dac0d",
     "semantic_hash": ""
   },
   "docs/EJECUTAR.md": {
@@ -114,9 +114,9 @@
     "semantic_hash": ""
   },
   "docs/PRECIOS.md": {
-    "mtime": 1792615014.1666133,
-    "seen": 1792615685.3240674,
-    "ast_hash": "5a485eb4133cca5cd6c564a446b03111",
+    "mtime": 1792691807.7951157,
+    "seen": 1792691914.5941467,
+    "ast_hash": "73d056b7650ff192ecaaec9544919d9b",
     "semantic_hash": ""
   },
   "scripts/dump_cobertura.py": {

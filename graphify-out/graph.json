@@ -389,7 +389,7 @@
       "node_kind": "heading",
       "norm_label": "comandos utiles",
       "source_file": "PROJECT.md",
-      "source_location": "L19"
+      "source_location": "L20"
     },
     {
       "id": "project_contexto_del_proyecto",
@@ -425,7 +425,7 @@
       "node_kind": "heading",
       "norm_label": "notas para el agente",
       "source_file": "PROJECT.md",
-      "source_location": "L25"
+      "source_location": "L26"
     },
     {
       "id": "project_produccion",
@@ -449,7 +449,7 @@
       "node_kind": "heading",
       "norm_label": "stack",
       "source_file": "PROJECT.md",
-      "source_location": "L16"
+      "source_location": "L17"
     },
     {
       "id": "cursor_skills_tablas_skill",
@@ -647,6 +647,18 @@
       "source_location": "L1"
     },
     {
+      "id": "docs_precios_cach\u00e9_en_el_navegador",
+      "label": "Cach\u00e9 en el navegador",
+      "_origin": "ast",
+      "community": 16,
+      "community_name": "Precios: fuentes y l\u00edmites",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "cache en el navegador",
+      "source_file": "docs/PRECIOS.md",
+      "source_location": "L19"
+    },
+    {
       "id": "docs_precios_causas_resuelto_aceptado",
       "label": "Causas (resuelto / aceptado)",
       "_origin": "ast",
@@ -656,7 +668,7 @@
       "node_kind": "heading",
       "norm_label": "causas (resuelto / aceptado)",
       "source_file": "docs/PRECIOS.md",
-      "source_location": "L19"
+      "source_location": "L23"
     },
     {
       "id": "docs_precios_conteos_de_referencia_madrid_28_tipos",
@@ -668,7 +680,7 @@
       "node_kind": "heading",
       "norm_label": "conteos de referencia (madrid, 28 tipos)",
       "source_file": "docs/PRECIOS.md",
-      "source_location": "L26"
+      "source_location": "L30"
     },
     {
       "id": "docs_precios_c\u00f3mo_se_obtienen",
@@ -704,7 +716,7 @@
       "node_kind": "heading",
       "norm_label": "que no se promete",
       "source_file": "docs/PRECIOS.md",
-      "source_location": "L35"
+      "source_location": "L39"
     },
     {
       "id": "docs_cobertura",
@@ -1623,7 +1635,7 @@
       "node_kind": "heading",
       "norm_label": "comprobar conteos (devtools)",
       "source_file": "START.md",
-      "source_location": "L26"
+      "source_location": "L31"
     },
     {
       "id": "start_criterio_de_fichas_no_reinventar",
@@ -1647,7 +1659,7 @@
       "node_kind": "heading",
       "norm_label": "local",
       "source_file": "START.md",
-      "source_location": "L16"
+      "source_location": "L17"
     },
     {
       "id": "start_producci\u00f3n",
@@ -1662,6 +1674,18 @@
       "source_location": "L9"
     },
     {
+      "id": "start_ui",
+      "label": "UI",
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "Arrancar a mano",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "ui",
+      "source_file": "START.md",
+      "source_location": "L27"
+    },
+    {
       "id": "start_volcar_json_tabla_de_cobertura",
       "label": "Volcar JSON + tabla de cobertura",
       "_origin": "ast",
@@ -1671,7 +1695,7 @@
       "node_kind": "heading",
       "norm_label": "volcar json + tabla de cobertura",
       "source_file": "START.md",
-      "source_location": "L47"
+      "source_location": "L52"
     },
     {
       "id": "json",
@@ -3057,7 +3081,7 @@
     },
     {
       "source": "docs_precios_precios_fuentes_y_l\u00edmites",
-      "target": "docs_precios_causas_resuelto_aceptado",
+      "target": "docs_precios_cach\u00e9_en_el_navegador",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -3068,13 +3092,24 @@
     },
     {
       "source": "docs_precios_precios_fuentes_y_l\u00edmites",
+      "target": "docs_precios_causas_resuelto_aceptado",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/PRECIOS.md",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_precios_precios_fuentes_y_l\u00edmites",
       "target": "docs_precios_conteos_de_referencia_madrid_28_tipos",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/PRECIOS.md",
-      "source_location": "L26",
+      "source_location": "L30",
       "weight": 1.0
     },
     {
@@ -3085,7 +3120,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/PRECIOS.md",
-      "source_location": "L35",
+      "source_location": "L39",
       "weight": 1.0
     },
     {
@@ -3118,7 +3153,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "PROJECT.md",
-      "source_location": "L16",
+      "source_location": "L17",
       "weight": 1.0
     },
     {
@@ -3129,7 +3164,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "PROJECT.md",
-      "source_location": "L19",
+      "source_location": "L20",
       "weight": 1.0
     },
     {
@@ -3140,7 +3175,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "PROJECT.md",
-      "source_location": "L25",
+      "source_location": "L26",
       "weight": 1.0
     },
     {
@@ -3470,7 +3505,18 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "START.md",
-      "source_location": "L16",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "start_arrancar_a_mano",
+      "target": "start_ui",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "START.md",
+      "source_location": "L27",
       "weight": 1.0
     },
     {
@@ -3481,18 +3527,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "START.md",
-      "source_location": "L26",
-      "weight": 1.0
-    },
-    {
-      "source": "start_arrancar_a_mano",
-      "target": "start_volcar_json_tabla_de_cobertura",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "START.md",
-      "source_location": "L47",
+      "source_location": "L31",
       "weight": 1.0
     },
     {
@@ -3504,6 +3539,17 @@
       "confidence_score": 1.0,
       "source_file": "START.md",
       "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "start_arrancar_a_mano",
+      "target": "start_volcar_json_tabla_de_cobertura",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "START.md",
+      "source_location": "L52",
       "weight": 1.0
     },
     {
@@ -3609,5 +3655,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "b4b37113bbfe8786f6d2efbed8a053f1f4539b6b"
+  "built_at_commit": "4bf4c97cdd649d4efb355a46a1de140e04890079"
 }

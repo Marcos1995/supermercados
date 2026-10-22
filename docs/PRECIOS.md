@@ -14,7 +14,11 @@ No hay scraping de HTML ni folletos. El navegador pide JSON público:
 | Lidl | `lidl.es/q/api/search` | 200 OK, pero indexa mal lácteos/huevos/azúcar; hogar solo en tipos limpieza |
 | Aldi | Algolia `an_prd_es_es_*_products2` | Estable; **sin huevos frescos** ni **aceite de girasol** embotellado en el índice |
 
-Dia, Alcampo, Eroski, etc. solo mapa (OpenStreetMap). Sin conector de precios.
+Dia, Alcampo, Eroski, Consum, Hipercor, BM, etc. solo mapa (OpenStreetMap). Sin conector de precios (fase posterior si hay JSON+CORS).
+
+## Caché en el navegador
+
+Los catálogos de las 4 cadenas se guardan en IndexedDB con clave `día + almacén Mercadona/Aldi`. Misma visita o recarga el mismo día → no se vuelven a pedir. Al cambiar el día calendario local se recalcula una vez. No hay JSON de precios en el repo.
 
 ## Causas (resuelto / aceptado)
 

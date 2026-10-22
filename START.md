@@ -10,8 +10,9 @@ Sin install. Hace falta red (APIs de las cadenas + mapa).
 
 https://marcos1995.github.io/supermercados/?lat=40.4168&lon=-3.7038
 
-Al abrir (con tipos marcados, por defecto todos) **carga sola** mapa y precios, sin pulsar Ver precios.
-Puedes cambiar tipos/marca y pulsar **Ver precios** de nuevo.
+Al abrir (con tipos marcados, por defecto todos) **carga sola** mapa y precios.
+La primera vez del día descarga catálogos; el resto del día usa **caché IndexedDB** (estado: «Precios de hoy (caché)»). Cambiar tipos o marca blanca **no** vuelve a descargar.
+Pulsa **Actualizar** solo si quieres forzar el flujo (sigue respetando caché del día).
 
 ## Local
 
@@ -21,11 +22,15 @@ python -m http.server 8766
 
 Abre: http://127.0.0.1:8766/index.html?lat=40.4168&lon=-3.7038
 
-(En Windows también: `start index.html` — algunas APIs pueden fallar con `file://`; preferible el servidor.)
+(En Windows también: `start index.html` — algunas APIs pueden fallar con `file://`; preferible el servidor. IndexedDB tampoco es fiable en `file://`.)
+
+## UI
+
+Mapa a pantalla completa. Panel/sheet plegable (handle o chevron): compra semanal, resumen, ranking. Botones del mapa: Mi ubicación / Usar centro del mapa.
 
 ## Comprobar conteos (DevTools)
 
-Tras **Ver precios**, en la consola:
+Tras la carga, en la consola:
 
 ```js
 Object.fromEntries(
@@ -51,5 +56,3 @@ Desde la raíz del repo (deja los JSON en `tmp-precios/` para inspección):
 ```bash
 python scripts/dump_cobertura.py
 ```
-
-Salida: `tmp-precios/<cadena>/<producto>.json` y tabla `docs/COBERTURA.md` (X = ficha válida al 100% según `docs/EMPAREJADO.md`).

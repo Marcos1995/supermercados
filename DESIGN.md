@@ -1,7 +1,7 @@
 # Diseño
 
-Expresivo y verde. Titular display grande (Public Sans, muy negro). La cifra principal va sobre un bloque sólido `#18E667` con texto `#032612`. El botón principal es `#0A3D22` con texto claro. Tarjetas claras, esquinas amplias. Cada sección cambia de gesto (tipo, bloque de color o imagen) y entra con transición. La fila del ranking lleva nombre, una descripción y miniatura. Ver mapa y Ruta: fondo `#18E667`, texto `#032612`, en claro y en oscuro. Interruptor sol/luna (el punto en el lado activo). Un mapa, teselas OpenStreetMap.
+App cartográfica tipo Maps. Mapa full-bleed OpenStreetMap. Panel plegable (sheet móvil / columna desktop) con compra semanal, resumen y ranking. Sin hero de landing. Expresivo y verde: Public Sans, acento `#18E667` texto `#032612`, CTA `#0A3D22`. Ver mapa y Ruta: `#18E667` / `#032612`. Interruptor sol/luna (punto al lado activo).
 
 - Proyecto Stitch: `13896912301023905915`
 - Sistema: `assets/3822808587626161484`
-- Pantalla: `5aeea3dc139446798f1089de853e99c2`
+- Pantalla: (Stitch no disponible en esta sesión; layout a mano desde este brief)

@@ -1,214 +1,328 @@
 <!DOCTYPE html>
-
-<html lang="es"><head>
+<html lang="es">
+<head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover" name="viewport"/>
 <title>Supermercados</title>
-<!-- Google Fonts: Public Sans -->
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&amp;display=swap" rel="stylesheet"/>
-<!-- Material Symbols Outlined -->
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<!-- Tailwind CSS v3 with Plugins -->
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script id="tailwind-config">
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            primary: "#18E667",
-            "background-light": "#f6f8f7",
-            "background-dark": "#112117",
-            brand: {
-              vibrant: '#18E667',
-              deeptext: '#032612',
-              forest: '#0A3D22',
-            }
-          },
-          fontFamily: {
-            display: ["Public Sans", "sans-serif"],
-            body: ["Public Sans", "sans-serif"]
-          },
-          borderRadius: {
-            DEFAULT: "0.5rem",
-            lg: "1rem",
-            xl: "1.5rem",
-            "2xl": "1.75rem",
-            full: "9999px"
-          }
-        },
-      },
-    }
-  </script>
 <style>
-    body {
-      font-family: 'Public Sans', sans-serif;
-      background-color: #F8FAF9;
-      color: #032612;
-      -webkit-font-smoothing: antialiased;
-      min-height: 100dvh;
-    }
+  :root {
+    --green: #18E667;
+    --ink: #032612;
+    --forest: #0A3D22;
+    --muted: #4F6E5A;
+    --line: #CCE0D3;
+    --panel: #F8FAF9;
+    --card: #ffffff;
+    --map-h: 100dvh;
+    --sheet-peek: 48%;
+    --panel-w: 360px;
+  }
+  html.dark {
+    --panel: #112117;
+    --card: #173026;
+    --ink: #e7f6ec;
+    --muted: #b7d4c4;
+    --line: #1c3a2c;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body {
+    margin: 0; height: 100%; overflow: hidden;
+    font-family: "Public Sans", sans-serif;
+    color: var(--ink);
+    background: var(--panel);
+    -webkit-font-smoothing: antialiased;
+  }
+  .material-symbols-outlined {
+    font-family: "Material Symbols Outlined";
+    font-weight: normal; font-style: normal; font-size: 20px; line-height: 1;
+    display: inline-block; white-space: nowrap;
+  }
+  a.go, button.go {
+    background: #18E667 !important; color: #032612 !important; font-weight: 700 !important;
+    border: 0; border-radius: 0.75rem; padding: 0.5rem 0.85rem; font-size: 0.75rem;
+    text-decoration: none; cursor: pointer; display: inline-flex; align-items: center; gap: 0.25rem;
+  }
+  .tema {
+    position: relative; width: 3.4rem; height: 1.8rem;
+    border: 1px solid var(--forest); border-radius: 999px; background: #EAF7EE; padding: 0; cursor: pointer;
+  }
+  html.dark .tema { background: #1c3a2c; }
+  .tema .material-symbols-outlined { position: absolute; top: 50%; transform: translateY(-50%); font-size: 16px; color: #032612; }
+  html.dark .tema .material-symbols-outlined { color: #e7f6ec; }
+  .tema .sun { left: 3px; } .tema .moon { right: 3px; }
+  .tema-thumb {
+    position: absolute; top: 2px; left: 2px; width: 1.45rem; height: 1.45rem;
+    border-radius: 999px; background: #18E667; border: 1px solid #032612; z-index: 1;
+    transition: left .2s ease;
+  }
+  html.dark .tema-thumb { left: calc(100% - 1.45rem - 2px); }
+  :focus-visible { outline: 2px solid var(--forest); outline-offset: 2px; }
+  .name-jump { background: none; border: 0; padding: 0; font: inherit; font-weight: 900; color: inherit; cursor: pointer; text-align: left; }
+  .is-on { box-shadow: inset 0 0 0 2px #18E667; }
 
-    .material-symbols-outlined {
-      font-family: 'Material Symbols Outlined';
-      font-weight: normal;
-      font-style: normal;
-      font-size: 20px;
-      line-height: 1;
-      letter-spacing: normal;
-      text-transform: none;
-      display: inline-block;
-      white-space: nowrap;
-      word-wrap: normal;
-      direction: ltr;
-      -webkit-font-feature-settings: 'liga';
-      -webkit-font-smoothing: antialiased;
-    }
+  #app { position: relative; width: 100%; height: 100dvh; overflow: hidden; }
+  #mapa {
+    position: absolute; inset: 0; z-index: 0;
+    background: #e7efe9;
+  }
+  .leaflet-container { font-family: inherit; width: 100%; height: 100%; }
+  .leaflet-popup-content { margin: 10px 12px; }
 
-    /* Estilo cartográfico esquemático limpio para el mapa */
-    html, body { overflow-x: clip; }
-    h1, h2, h3, p { overflow-wrap: break-word; }
-    a.go, button.go { background: #18E667 !important; color: #032612 !important; font-weight: 700 !important; }
-    .tema { position: relative; width: 3.4rem; height: 1.8rem; border: 1px solid #0A3D22; border-radius: 999px; background: #EAF7EE; padding: 0; cursor: pointer; }
-    .tema .material-symbols-outlined { position: absolute; top: 50%; transform: translateY(-50%); font-size: 16px; color: #032612; }
-    .tema .sun { left: 3px; } .tema .moon { right: 3px; }
-    .tema-thumb { position: absolute; top: 2px; left: 2px; width: 1.45rem; height: 1.45rem; border-radius: 999px; background: #18E667; border: 1px solid #032612; z-index: 1; }
-    html.dark .tema-thumb { left: calc(100% - 1.45rem - 2px); }
-    #mapa { min-height: 320px; height: 58vh; background: #e7efe9; }
-    .leaflet-container { font-family: inherit; max-width: 100%; }
-    .leaflet-popup-content { margin: 10px 12px; }
-    .name-jump { background: none; border: 0; padding: 0; font: inherit; font-weight: 900; color: inherit; cursor: pointer; text-align: left; }
-    .is-on { box-shadow: inset 0 0 0 2px #18E667; }
-    :focus-visible { outline: 2px solid #0A3D22; outline-offset: 2px; }
-    .reveal.in { animation: enter .4s ease; }
-    @keyframes enter { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
-    html.dark body { background: #112117; color: #e7f6ec; }
-    html.dark .bg-white { background: #173026 !important; color: #e7f6ec; }
-    html.dark h1, html.dark h2, html.dark .bg-white h3, html.dark header .text-\[\#0A3D22\] { color: #e7f6ec; }
-    html.dark .bg-white p, html.dark #nota, html.dark #estado { color: #b7d4c4; }
-    html.dark input, html.dark .bg-\[\#EEF5F0\] { background: #0c1a12 !important; color: #e7f6ec !important; }
-    html.dark .bg-\[\#E2F5E9\], html.dark .bg-\[\#EAF7EE\] { background: #1c3a2c !important; color: #c9ecd6; }
-    html.dark div[style*="18E667"], html.dark div[style*="18E667"] p { color: #032612; }
-    html.dark #brand-selector .bg-white { background: #fff !important; color: #032612 !important; }
-    html.dark #brand-selector button[aria-pressed="false"] { color: #d7f5e4 !important; }
-    html.dark .line-name { color: #b7d4c4; }
-    html.dark .line-miss { color: #c9ecd6; }
-    .ficha summary { cursor: pointer; list-style: none; }
-    .ficha summary::-webkit-details-marker { display: none; }
-    .hit-scroll { max-height: 12rem; overflow: auto; }
-    #semanal-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.35rem 0.75rem; max-height: 14rem; overflow: auto; }
-    @media (min-width: 640px) { #semanal-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); max-height: none; } }
-    #semanal-grid label { display: flex; align-items: flex-start; gap: 0.4rem; font-size: 0.75rem; line-height: 1.25; font-weight: 600; color: #415C4B; }
-    html.dark .ficha summary { color: #e7f6ec; }
-    html.dark .ficha label, html.dark #semanal-grid label { color: #b7d4c4; }
-    @media (prefers-reduced-motion: reduce) { .reveal.in, .tema-thumb { animation: none; } }
-  </style>
+  #float-bar {
+    position: absolute; top: max(0.75rem, env(safe-area-inset-top));
+    left: 0.75rem; right: 0.75rem; z-index: 30;
+    display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+    pointer-events: none;
+  }
+  #float-bar > * { pointer-events: auto; }
+  .brand-pill {
+    display: flex; align-items: center; gap: 0.5rem;
+    background: var(--card); border: 1px solid var(--line); border-radius: 1rem;
+    padding: 0.4rem 0.75rem 0.4rem 0.45rem;
+    box-shadow: 0 4px 16px rgba(3, 38, 18, 0.12);
+  }
+  .brand-pill .ico {
+    width: 2rem; height: 2rem; border-radius: 0.7rem;
+    background: rgba(24, 230, 103, 0.25); color: var(--forest);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .brand-pill strong { font-size: 0.9rem; font-weight: 900; letter-spacing: -0.02em; }
+
+  #map-tools {
+    position: absolute; right: 0.75rem; bottom: calc(var(--sheet-peek) + 0.75rem);
+    z-index: 25; display: flex; flex-direction: column; gap: 0.4rem;
+    transition: bottom .25s ease;
+  }
+  #app.panel-collapsed #map-tools { bottom: 4.5rem; }
+  .map-fab {
+    width: 2.75rem; height: 2.75rem; border-radius: 0.85rem;
+    border: 1px solid var(--line); background: var(--card); color: var(--ink);
+    box-shadow: 0 4px 14px rgba(3, 38, 18, 0.14);
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+  }
+  .map-fab:active { transform: scale(0.96); }
+
+  #panel {
+    position: absolute; z-index: 20;
+    left: 0; right: 0; bottom: 0;
+    height: var(--sheet-peek); max-height: 88dvh;
+    background: var(--panel);
+    border-radius: 1.25rem 1.25rem 0 0;
+    border: 1px solid var(--line);
+    border-bottom: 0;
+    box-shadow: 0 -8px 28px rgba(3, 38, 18, 0.14);
+    display: flex; flex-direction: column;
+    transition: height .28s ease, transform .28s ease;
+  }
+  #app.panel-collapsed #panel { height: 3.5rem; }
+  #panel-handle {
+    flex: 0 0 auto; display: flex; flex-direction: column; align-items: center;
+    padding: 0.45rem 0.75rem 0.25rem; cursor: pointer; user-select: none;
+    border: 0; background: transparent; color: inherit; width: 100%;
+  }
+  #panel-handle .grip {
+    width: 2.5rem; height: 0.28rem; border-radius: 99px; background: #94a89c; margin-bottom: 0.35rem;
+  }
+  #panel-handle .row {
+    width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+  }
+  #panel-handle .title { font-weight: 900; font-size: 0.8rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+  #panel-body {
+    flex: 1 1 auto; overflow: auto; padding: 0 0.85rem 1.25rem;
+    -webkit-overflow-scrolling: touch;
+  }
+  #app.panel-collapsed #panel-body { display: none; }
+
+  .kpi {
+    background: #18E667; color: #032612; border-radius: 1rem; padding: 0.85rem 1rem; margin-bottom: 0.75rem;
+  }
+  .kpi .tag { font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.85; }
+  .kpi .n { font-size: 1.75rem; font-weight: 900; letter-spacing: -0.03em; line-height: 1.1; margin-top: 0.15rem; }
+  .kpi .cap { font-size: 0.7rem; font-weight: 600; margin-top: 0.35rem; line-height: 1.35; color: #032612; }
+
+  .block { background: var(--card); border: 1px solid var(--line); border-radius: 1rem; padding: 0.75rem; margin-bottom: 0.65rem; }
+  .block h2 {
+    margin: 0 0 0.5rem; font-size: 0.7rem; font-weight: 900; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--muted);
+  }
+  #semanal-grid {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.3rem 0.55rem; max-height: 9.5rem; overflow: auto;
+  }
+  #semanal-grid label {
+    display: flex; align-items: flex-start; gap: 0.35rem;
+    font-size: 0.72rem; line-height: 1.25; font-weight: 600; color: var(--muted);
+  }
+  .seg {
+    display: flex; padding: 0.2rem; background: #EEF5F0; border: 1px solid var(--line); border-radius: 0.75rem;
+  }
+  html.dark .seg { background: #0c1a12; }
+  .seg button {
+    flex: 1; border: 0; background: transparent; cursor: pointer;
+    padding: 0.45rem 0.35rem; font-size: 0.7rem; font-weight: 600; color: var(--muted);
+    border-radius: 0.55rem; line-height: 1.2;
+  }
+  .seg button[aria-pressed="true"] {
+    background: #fff; color: #0A3D22; font-weight: 900; box-shadow: 0 1px 3px rgba(0,0,0,.08);
+  }
+  html.dark .seg button[aria-pressed="true"] { background: #fff; color: #0A3D22; }
+  .btn-main {
+    width: 100%; margin-top: 0.55rem; border: 0; border-radius: 0.85rem;
+    padding: 0.7rem 0.75rem; font-size: 0.8rem; font-weight: 900;
+    background: #0A3D22; color: #fff; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 0.35rem;
+  }
+  .btn-main:disabled { opacity: 0.55; cursor: wait; }
+  .linkish {
+    background: none; border: 0; padding: 0; font: inherit; font-size: 0.7rem; font-weight: 700;
+    color: var(--forest); cursor: pointer; text-decoration: underline; text-underline-offset: 2px;
+  }
+  html.dark .linkish { color: #18E667; }
+  #estado { font-size: 0.7rem; font-weight: 600; color: var(--muted); margin: 0.35rem 0 0; }
+  #cuenta { font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin: 0 0 0.45rem; }
+  #lista { display: flex; flex-direction: column; gap: 0.55rem; }
+  .store-row {
+    background: var(--card); border: 1px solid var(--line); border-radius: 1rem;
+    padding: 0.75rem; display: flex; flex-direction: column; gap: 0.55rem;
+  }
+  .store-row.best { border: 2px solid #18E667; }
+  .store-row h3 { margin: 0; font-size: 0.95rem; font-weight: 900; }
+  .store-row .meta { margin: 0.15rem 0 0; font-size: 0.7rem; color: var(--muted); }
+  .store-row ul { margin: 0.35rem 0 0; padding: 0; list-style: none; }
+  .store-row li { font-size: 0.7rem; line-height: 1.3; color: var(--muted); word-break: break-word; }
+  .store-row li.miss { font-weight: 700; color: var(--forest); }
+  html.dark .store-row li.miss { color: #18E667; }
+  .store-acts { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .thumb {
+    width: 2.5rem; height: 2.5rem; border-radius: 0.65rem; object-fit: cover;
+    border: 1px solid var(--line); flex-shrink: 0; background: #EAF7EE;
+  }
+  .row-top { display: flex; gap: 0.55rem; align-items: flex-start; min-width: 0; }
+  .row-top .body { min-width: 0; flex: 1; }
+  #nota { font-size: 0.65rem; color: var(--muted); margin: 0.5rem 0 0; line-height: 1.4; }
+  .ficha { background: var(--card); border: 1px solid var(--line); border-radius: 0.85rem; margin-bottom: 0.4rem; }
+  .ficha summary {
+    cursor: pointer; list-style: none; padding: 0.65rem 0.75rem;
+    font-weight: 900; font-size: 0.8rem;
+  }
+  .ficha summary::-webkit-details-marker { display: none; }
+  .hit-scroll { max-height: 10rem; overflow: auto; padding: 0 0.75rem 0.65rem; }
+  .hit-scroll p { margin: 0 0 0.25rem; font-size: 0.7rem; line-height: 1.3; word-break: break-word; color: var(--muted); }
+  .hit-scroll p.miss { font-weight: 700; color: var(--forest); }
+  html.dark .hit-scroll p.miss { color: #18E667; }
+  .map-only-badge {
+    display: inline-block; font-size: 0.65rem; font-weight: 800;
+    padding: 0.15rem 0.45rem; border-radius: 999px; background: #EAF7EE; color: #0A3D22;
+  }
+  html.dark .map-only-badge { background: #1c3a2c; color: #c9ecd6; }
+
+  @media (min-width: 768px) {
+    #float-bar { left: calc(var(--panel-w) + 1rem); right: 1rem; }
+    #app.panel-collapsed #float-bar { left: 4.25rem; }
+    #map-tools {
+      bottom: 1rem; right: 1rem;
+    }
+    #app.panel-collapsed #map-tools { bottom: 1rem; }
+    #panel {
+      top: 0; bottom: 0; left: 0; right: auto;
+      width: var(--panel-w); height: 100% !important;
+      border-radius: 0; border: 0; border-right: 1px solid var(--line);
+      box-shadow: 6px 0 24px rgba(3, 38, 18, 0.1);
+      transition: width .28s ease, transform .28s ease;
+    }
+    #app.panel-collapsed #panel { width: 3.25rem; }
+    #panel-handle { padding: 0.85rem 0.65rem 0.35rem; cursor: pointer; }
+    #panel-handle .grip { display: none; }
+    #app.panel-collapsed #panel-handle .title,
+    #app.panel-collapsed #estado-mini { writing-mode: vertical-rl; transform: rotate(180deg); }
+    #app.panel-collapsed #panel-body { display: none; }
+    #semanal-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); max-height: 11rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #panel, .tema-thumb, #map-tools { transition: none; }
+  }
+</style>
 </head>
-<body class="bg-[#F8FAF9] text-[#032612] min-h-screen p-3 sm:p-5 antialiased">
-<div class="max-w-5xl mx-auto space-y-4">
-<!-- BARRA SUPERIOR COMPACTA -->
-<header class="flex items-center justify-between py-1 px-1">
-<div class="flex items-center gap-2">
-<span class="p-1.5 rounded-xl bg-[#18E667]/20 text-[#0A3D22] flex items-center justify-center">
-<span class="material-symbols-outlined text-[20px]" data-icon="shopping_basket">shopping_basket</span>
-</span>
-<span class="font-display font-black text-base tracking-tight text-[#0A3D22]">Supermercados</span>
-</div>
-<button id="tema" class="tema" type="button" role="switch" aria-checked="false" aria-label="Tema claro u oscuro">
-<span class="material-symbols-outlined sun" aria-hidden="true">sunny</span>
-<span class="material-symbols-outlined moon" aria-hidden="true">dark_mode</span>
-<span class="tema-thumb"></span>
-</button>
-</header>
-<!-- 1. CABECERA / HERO -->
-<section class="space-y-3">
-<!-- Kicker superior -->
-<div>
-<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-[#E2F5E9] text-[#0A3D22]">
-          España · supermercados
-        </span>
-</div>
-<!-- Titular Display H1 grande y contundente -->
-<h1 id="hallazgo" class="font-display text-3xl sm:text-4xl md:text-5xl font-black text-[#032612] tracking-tight leading-[1.1]">
-        El más barato sale donde el catálogo de la cadena tiene el producto
-      </h1>
-<!-- Bloque destacado con fondo sólido #18E667 y texto #032612 -->
-<div class="rounded-2xl sm:rounded-3xl p-5 sm:p-6 flex items-center justify-between shadow-sm" style="background-color: #18E667; color: #032612;">
-<div>
-<span id="hero-tag" class="text-xs font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#032612]/15 inline-block">
-            Catálogo
+<body>
+<div id="app">
+  <div id="mapa" role="region" aria-label="Mapa de supermercados"></div>
+
+  <div id="float-bar">
+    <div class="brand-pill">
+      <span class="ico"><span class="material-symbols-outlined">shopping_basket</span></span>
+      <strong>Supermercados</strong>
+    </div>
+    <button id="tema" class="tema" type="button" role="switch" aria-checked="false" aria-label="Tema claro u oscuro">
+      <span class="material-symbols-outlined sun" aria-hidden="true">sunny</span>
+      <span class="material-symbols-outlined moon" aria-hidden="true">dark_mode</span>
+      <span class="tema-thumb"></span>
+    </button>
+  </div>
+
+  <div id="map-tools">
+    <button type="button" class="map-fab" id="btn-locate" title="Mi ubicación" aria-label="Mi ubicación">
+      <span class="material-symbols-outlined">my_location</span>
+    </button>
+    <button type="button" class="map-fab" id="btn-map-center" title="Usar centro del mapa" aria-label="Usar centro del mapa">
+      <span class="material-symbols-outlined">pin_drop</span>
+    </button>
+  </div>
+
+  <aside id="panel" aria-label="Panel de filtros y resultados">
+    <button type="button" id="panel-handle" aria-expanded="true" aria-controls="panel-body">
+      <span class="grip" aria-hidden="true"></span>
+      <span class="row">
+        <span class="title">Compra · mapa</span>
+        <span id="estado-mini" class="title" style="font-weight:600;text-transform:none;letter-spacing:0"></span>
+        <span class="material-symbols-outlined" id="panel-chevron" aria-hidden="true">expand_more</span>
+      </span>
+    </button>
+    <div id="panel-body">
+      <div class="kpi">
+        <div class="tag" id="hero-tag">Catálogo</div>
+        <div class="n" id="hero-n">—</div>
+        <div class="cap" id="hero-cap">Elige tipos de la lista semanal. Precios del catálogo online, no del lineal.</div>
+      </div>
+      <p id="hallazgo" style="margin:0 0 0.65rem;font-size:0.85rem;font-weight:800;line-height:1.3"></p>
+
+      <div class="block">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:0.5rem;margin-bottom:0.35rem">
+          <h2 style="margin:0">Compra semanal</h2>
+          <span>
+            <button type="button" class="linkish" id="todo-on">Todo</button>
+            ·
+            <button type="button" class="linkish" id="todo-off">Nada</button>
           </span>
-<div id="hero-n" class="font-display text-5xl sm:text-6xl font-black tracking-tight leading-none mt-2">
-            —
-          </div>
-<p id="hero-cap" class="text-xs sm:text-sm font-bold mt-2 text-[#032612]/90">
-            Precio del catálogo online, no del lineal de esa tienda
-          </p>
+        </div>
+        <div id="semanal-grid" aria-label="Tipos de la compra semanal"></div>
+        <div class="seg" id="brand-selector" style="margin-top:0.55rem">
+          <button type="button" id="opt-cualquier" aria-pressed="true">Cualquier marca</button>
+          <button type="button" id="opt-blanca" aria-pressed="false">Solo marca blanca</button>
+        </div>
+        <button type="button" class="btn-main" id="buscar">
+          <span class="material-symbols-outlined" style="font-size:16px">refresh</span>
+          <span>Actualizar</span>
+        </button>
+        <p id="estado">Cargando…</p>
+      </div>
+
+      <div class="block">
+        <h2 id="cuenta">Supermercados</h2>
+        <div id="lista"></div>
+        <p id="nota"></p>
+      </div>
+
+      <div id="fichas" aria-label="Qué eligió cada cadena"></div>
+    </div>
+  </aside>
 </div>
-<div class="p-3 bg-[#032612] text-[#18E667] rounded-2xl flex items-center justify-center shadow-xs">
-<span class="material-symbols-outlined text-3xl" data-icon="shopping_basket">shopping_basket</span>
-</div>
-</div>
-</section>
-<!-- 2. LISTA SEMANAL + MARCA + BUSCAR -->
-<section class="bg-white rounded-2xl p-3.5 sm:p-4 border border-[#D2E3D8] shadow-sm space-y-3">
-<div class="flex items-center justify-between gap-2 px-1">
-<h2 class="font-display text-sm font-black uppercase tracking-wider text-[#476652]">Compra semanal</h2>
-<div class="flex gap-2 text-[11px] font-bold">
-<button id="todo-on" class="text-[#0A3D22] underline-offset-2 hover:underline" type="button">Todo</button>
-<button id="todo-off" class="text-[#4F6E5A] underline-offset-2 hover:underline" type="button">Nada</button>
-</div>
-</div>
-<div id="semanal-grid" aria-label="Tipos de la compra semanal"></div>
-<div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-center">
-<div class="sm:col-span-8">
-<div class="flex p-1 bg-[#EEF5F0] rounded-xl border border-[#CCE0D3]" id="brand-selector">
-<button class="flex-1 py-1.5 px-2 text-xs font-black rounded-lg bg-white text-[#0A3D22] shadow-xs transition-all text-center whitespace-normal leading-tight" id="opt-cualquier" type="button">
-              Cualquier marca
-            </button>
-<button class="flex-1 py-1.5 px-2 text-xs font-semibold rounded-lg text-[#4B6856] hover:text-[#0A3D22] transition-all text-center whitespace-normal leading-tight" id="opt-blanca" type="button">
-              Solo marca blanca
-            </button>
-</div>
-</div>
-<div class="sm:col-span-4">
-<button id="buscar" class="w-full py-2.5 px-3 rounded-xl flex items-center justify-center gap-1.5 text-xs sm:text-sm font-black tracking-tight shadow-sm hover:brightness-110 active:scale-95 transition-all cursor-pointer" style="background-color: #0A3D22; color: #FFFFFF;" type="button">
-<span class="material-symbols-outlined text-[16px]" data-icon="map">map</span>
-<span>Ver precios</span>
-</button>
-</div>
-</div>
-<p class="text-[11px] leading-snug text-[#4F6E5A] px-1">Marca los tipos de la lista. En cada súper se elige sola la ficha más barata por litro, kilo o docena. No se mezclan productos entre cadenas.</p>
-</section>
-<!-- 3. LISTA DE SÚPERS: más completos primero, luego precio -->
-<section class="space-y-2.5">
-<div class="flex items-center justify-between px-1">
-<h2 class="font-display text-sm font-black uppercase tracking-wider text-[#476652]">
-          <span id="cuenta">Supermercados</span>
-        </h2>
-<span class="text-xs font-bold text-[#0A3D22]">Completos · luego más barato</span>
-</div>
-<div id="lista" class="space-y-2.5"></div>
-<p id="nota" class="text-[11px] text-[#4F6E5A] px-1"></p>
-</section>
-<!-- 4. MAPA -->
-<section class="bg-white rounded-2xl sm:rounded-3xl p-3 border border-[#D2E3D8] shadow-sm space-y-2">
-<div class="flex items-center justify-between px-1">
-<div class="flex items-center gap-1.5 font-display font-black text-sm text-[#032612]">
-<span class="material-symbols-outlined text-[18px] text-[#0A3D22]" data-icon="explore">explore</span>
-<span>Mapa</span>
-</div>
-<span id="estado" class="text-[11px] font-semibold text-[#4F6E5A]">8 km · Mercadona, Carrefour, Lidl y Aldi</span>
-</div>
-<div id="mapa" role="region" aria-label="Mapa de supermercados"></div>
-</section>
-<!-- 5. PRODUCTO A PRODUCTO (abajo): 4/4 → 0/4 -->
-<section id="fichas" class="space-y-2" aria-label="Qué eligió cada cadena"></section>
-<!-- Script interactivo simple para alternar el control segmentado -->
+
 <script>
 const STOP = new Set(["de","la","el","los","las","un","una","y","con","en","del","al","para"]);
 const OWN = {
@@ -230,8 +344,61 @@ const WEB = {
   bonpreu: "https://www.bonpreu.cat",
   caprabo: "https://www.caprabo.com",
   condis: "https://www.condis.es",
-  coviran: "https://www.coviran.es"
+  coviran: "https://www.coviran.es",
+  hipercor: "https://www.hipercor.es",
+  supercor: "https://www.supercor.es",
+  elcorteingles: "https://www.elcorteingles.es",
+  bm: "https://www.bmsupermercados.com",
+  familycash: "https://www.familycash.es",
+  gadis: "https://www.gadis.es",
+  mas: "https://www.supermercadosmas.com",
+  froiz: "https://www.froiz.com",
+  hiperusera: "https://www.hiperusera.com",
+  alimerka: "https://www.alimerka.es",
+  lupa: "https://www.supermercadoslupa.com",
+  simply: "https://www.simply.es",
+  supeco: "https://www.supeco.es",
+  spar: "https://www.spar.es",
+  eurospar: "https://www.spar.es"
 };
+const CHAIN_ALIASES = [
+  ["el corte ingles", "elcorteingles"],
+  ["elcorteingles", "elcorteingles"],
+  ["family cash", "familycash"],
+  ["familycash", "familycash"],
+  ["hiper usera", "hiperusera"],
+  ["hiperusera", "hiperusera"],
+  ["carrefour express", "carrefour"],
+  ["carrefour market", "carrefour"],
+  ["carrefour", "carrefour"],
+  ["mercadona", "mercadona"],
+  ["hipercor", "hipercor"],
+  ["supercor", "supercor"],
+  ["alcampo", "alcampo"],
+  ["eroski", "eroski"],
+  ["consum", "consum"],
+  ["ahorramas", "ahorramas"],
+  ["ahorra mas", "ahorramas"],
+  ["bonpreu", "bonpreu"],
+  ["caprabo", "caprabo"],
+  ["condis", "condis"],
+  ["coviran", "coviran"],
+  ["gadis", "gadis"],
+  ["alimerka", "alimerka"],
+  ["eurospar", "eurospar"],
+  ["simply", "simply"],
+  ["supeco", "supeco"],
+  ["froiz", "froiz"],
+  ["aldi", "aldi"],
+  ["lidl", "lidl"],
+  ["spar", "spar"],
+  ["lupa", "lupa"],
+  ["dia & go", "dia"],
+  ["dia go", "dia"],
+  ["dia", "dia"],
+  [" bm ", "bm"],
+  ["mas ", "mas"]
+];
 const $ = (id) => document.getElementById(id);
 const fold = (s) => (s || "").normalize("NFD").replace(/\p{M}/gu, "").toLowerCase();
 const eur = (n) => Number(n).toLocaleString("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " \u20ac";
@@ -253,8 +420,10 @@ function isOwn(p, chain) {
   return (OWN[chain] || []).some((w) => b.includes(w));
 }
 function chainOf(name, brand) {
-  const n = fold((brand || "") + " " + (name || ""));
-  for (const k of Object.keys(WEB)) if (n.includes(k)) return k;
+  const n = " " + fold((brand || "") + " " + (name || "")) + " ";
+  for (const [alias, key] of CHAIN_ALIASES) {
+    if (n.includes(alias)) return key;
+  }
   return "";
 }
 function siteFor(chain, explicit) {
@@ -277,6 +446,17 @@ function aldiRegion(lat, lon) {
   if (lat > 38.6 && lat < 40.2 && lon > 1) return "bal";
   return "pen";
 }
+function warehouseKey(lat, lon) {
+  return mercaWh(lat, lon) + "-" + aldiRegion(lat, lon);
+}
+function shopCell(lat, lon) {
+  return lat.toFixed(3) + ":" + lon.toFixed(3);
+}
+function dayKey() {
+  const d = new Date();
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+
 const SEMANAL = [
   "aceite de oliva", "aceite de girasol", "huevos", "leche", "pan", "mantequilla", "yogurt", "queso",
   "jamón", "pollo", "carne picada", "arroz", "pasta", "legumbres", "azúcar", "café", "agua",
@@ -315,36 +495,101 @@ const EXPECT = {
   mantequilla: "kg", yogurt: "kg", arroz: "kg", pasta: "kg", azúcar: "kg",
   agua: "l", "carne picada": "kg", pollo: "kg"
 };
+
+const CHAINS = ["mercadona", "carrefour", "lidl", "aldi"];
+const LABEL = {
+  mercadona: "Mercadona", carrefour: "Carrefour", lidl: "Lidl", aldi: "Aldi",
+  dia: "Dia", alcampo: "Alcampo", eroski: "Eroski", consum: "Consum",
+  ahorramas: "Ahorramas", bonpreu: "Bonpreu", caprabo: "Caprabo", condis: "Condis",
+  coviran: "Coviran", hipercor: "Hipercor", supercor: "Supercor",
+  elcorteingles: "El Corte Inglés", bm: "BM", familycash: "Family Cash",
+  gadis: "Gadis", mas: "MAS", froiz: "Froiz", hiperusera: "Hiper Usera",
+  alimerka: "Alimerka", lupa: "Lupa", simply: "Simply", supeco: "Supeco",
+  spar: "Spar", eurospar: "Eurospar"
+};
+
 let map, layer, markers = {}, here = null, catalogs = null, moving = false;
 let shopsNow = [], linesNow = [], selected = new Set(SEMANAL);
+let accuracyCircle = null, youMarker = null;
+let cacheFromDay = false;
+
+/* —— IndexedDB daily cache —— */
+const IDB_NAME = "supermercados-cache";
+const IDB_STORE = "kv";
+function idbOpen() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(IDB_NAME, 1);
+    req.onupgradeneeded = () => { req.result.createObjectStore(IDB_STORE); };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+async function idbGet(key) {
+  try {
+    const db = await idbOpen();
+    return await new Promise((resolve, reject) => {
+      const tx = db.transaction(IDB_STORE, "readonly");
+      const r = tx.objectStore(IDB_STORE).get(key);
+      r.onsuccess = () => resolve(r.result);
+      r.onerror = () => reject(r.error);
+    });
+  } catch (e) { return undefined; }
+}
+async function idbPut(key, value) {
+  try {
+    const db = await idbOpen();
+    await new Promise((resolve, reject) => {
+      const tx = db.transaction(IDB_STORE, "readwrite");
+      tx.objectStore(IDB_STORE).put(value, key);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+  } catch (e) { /* ignore */ }
+}
+function catalogsCacheKey(lat, lon) {
+  return "catalogs:" + dayKey() + ":" + warehouseKey(lat, lon);
+}
+function shopsCacheKey(lat, lon) {
+  return "shops:" + dayKey() + ":" + shopCell(lat, lon);
+}
+
+function setEstado(msg) {
+  $("estado").textContent = msg;
+  $("estado-mini").textContent = msg.length > 42 ? msg.slice(0, 40) + "…" : msg;
+}
 
 function ensureMap(lat, lon) {
   if (!map) {
-    map = L.map("mapa", { scrollWheelZoom: false }).setView([lat, lon], 14);
+    map = L.map("mapa", { zoomControl: false, scrollWheelZoom: true }).setView([lat, lon], 14);
+    L.control.zoom({ position: "topright" }).addTo(map);
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
     layer = L.layerGroup().addTo(map);
-    map.on("moveend", () => {
-      if (moving || !here) return;
-      const c = map.getCenter();
-      if (dist(here.lat, here.lon, c.lat, c.lng) < 2) return;
-      here = { lat: c.lat, lon: c.lng, note: "Centro del mapa" };
-      reloadShops();
-    });
   }
   markers = {};
   layer.clearLayers();
-  setTimeout(() => map.invalidateSize(), 200);
+  setTimeout(() => map.invalidateSize(), 120);
+}
+
+function setYou(lat, lon, accuracy) {
+  if (!map) return;
+  if (youMarker) map.removeLayer(youMarker);
+  if (accuracyCircle) map.removeLayer(accuracyCircle);
+  youMarker = L.circleMarker([lat, lon], {
+    radius: 7, color: "#032612", weight: 2, fillColor: "#4285F4", fillOpacity: 1
+  }).addTo(map);
+  if (accuracy && accuracy > 0) {
+    accuracyCircle = L.circle([lat, lon], {
+      radius: accuracy, color: "#4285F4", weight: 1, fillColor: "#4285F4", fillOpacity: 0.12
+    }).addTo(map);
+  }
 }
 
 function goBtn(label, click) {
   const b = document.createElement(click ? "button" : "a");
-  b.className = "go px-3.5 py-2 rounded-xl text-xs inline-flex items-center gap-1";
-  b.style.backgroundColor = "#18E667";
-  b.style.color = "#032612";
-  b.style.fontWeight = "700";
+  b.className = "go";
   b.textContent = label;
   if (click) { b.type = "button"; b.addEventListener("click", click); }
   return b;
@@ -355,7 +600,7 @@ function nameNode(store) {
     a.href = store.web;
     a.target = "_blank";
     a.rel = "noopener noreferrer";
-    a.className = "hover:underline";
+    a.style.color = "inherit";
     a.textContent = store.name;
     return a;
   }
@@ -369,61 +614,82 @@ function nameNode(store) {
 function showOnMap(id) {
   const m = markers[id];
   if (!m) return;
-  $("mapa").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center" });
+  const app = $("app");
+  if (app.classList.contains("panel-collapsed") === false && matchMedia("(max-width: 767px)").matches) {
+    /* keep sheet; map already visible behind */
+  }
   m.openPopup();
+  map.panTo(m.getLatLng());
   document.querySelectorAll(".is-on").forEach((n) => n.classList.remove("is-on"));
   const row = document.getElementById("row-" + id);
-  if (row) row.classList.add("is-on");
+  if (row) {
+    row.classList.add("is-on");
+    row.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "nearest" });
+  }
 }
 
 function rowOf(store, bestId) {
   const b = store.basket;
   const art = document.createElement("article");
   art.id = "row-" + store.id;
-  art.className = "bg-white rounded-2xl p-3 sm:p-4 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 " + (store.id === bestId ? "border-2 border-[#18E667]" : "border border-[#CCE0D3]");
-  const left = document.createElement("div");
-  left.className = "flex items-start gap-3 min-w-0";
-  const shot = b.items.find((it) => it.image);
-  if (shot) {
-    const img = document.createElement("img");
-    img.className = "w-11 h-11 rounded-xl object-cover shrink-0 border border-emerald-200";
-    img.alt = shot.name;
-    img.src = shot.image;
-    left.appendChild(img);
-  } else {
-    const ph = document.createElement("div");
-    ph.className = "w-11 h-11 rounded-xl bg-[#EAF7EE] shrink-0";
-    left.appendChild(ph);
+  art.className = "store-row" + (store.id === bestId ? " best" : "");
+  const top = document.createElement("div");
+  top.className = "row-top";
+  if (b && b.items && b.items.length) {
+    const shot = b.items.find((it) => it.image);
+    if (shot) {
+      const img = document.createElement("img");
+      img.className = "thumb";
+      img.alt = shot.name;
+      img.src = shot.image;
+      top.appendChild(img);
+    } else {
+      const ph = document.createElement("div");
+      ph.className = "thumb";
+      top.appendChild(ph);
+    }
   }
   const body = document.createElement("div");
-  body.className = "min-w-0";
+  body.className = "body";
   const h = document.createElement("h3");
-  h.className = "font-display font-black text-base text-[#032612] truncate";
   h.appendChild(nameNode(store));
   const p = document.createElement("p");
-  p.className = "text-xs text-[#415C4B]";
-  const cov = b.items.length + "/" + (b.items.length + b.missing.length);
-  const bits = [cov + " tipos", eur(b.total)];
-  if (!store.catalogOnly) bits.push(kmf(store.km));
-  p.textContent = bits.join(" · ");
-  const ul = document.createElement("ul");
-  ul.className = "mt-1 space-y-0.5";
-  b.items.forEach((it) => {
-    const li = document.createElement("li");
-    li.className = "line-name text-xs text-[#415C4B] leading-snug break-words";
-    li.textContent = it.name + " · " + eur(it.price) + (it.unitLabel ? " · " + it.unitLabel : "");
-    ul.appendChild(li);
-  });
-  if (b.missing.length) {
-    const li = document.createElement("li");
-    li.className = "line-miss text-xs font-bold text-[#0A3D22] leading-snug break-words";
-    li.textContent = "No trae: " + b.missing.join(", ");
-    ul.appendChild(li);
+  p.className = "meta";
+  if (b) {
+    const cov = b.items.length + "/" + (b.items.length + b.missing.length);
+    const bits = [cov + " tipos", eur(b.total)];
+    if (!store.catalogOnly) bits.push(kmf(store.km));
+    p.textContent = bits.join(" · ");
+  } else {
+    p.innerHTML = "";
+    const badge = document.createElement("span");
+    badge.className = "map-only-badge";
+    badge.textContent = "Solo mapa · sin catálogo online";
+    p.appendChild(badge);
+    if (!store.catalogOnly) {
+      p.appendChild(document.createTextNode(" · " + kmf(store.km)));
+    }
   }
-  body.append(h, p, ul);
-  left.appendChild(body);
+  body.append(h, p);
+  if (b) {
+    const ul = document.createElement("ul");
+    b.items.forEach((it) => {
+      const li = document.createElement("li");
+      li.textContent = it.name + " · " + eur(it.price) + (it.unitLabel ? " · " + it.unitLabel : "");
+      ul.appendChild(li);
+    });
+    if (b.missing.length) {
+      const li = document.createElement("li");
+      li.className = "miss";
+      li.textContent = "No trae: " + b.missing.join(", ");
+      ul.appendChild(li);
+    }
+    body.appendChild(ul);
+  }
+  top.appendChild(body);
+  art.appendChild(top);
   const acts = document.createElement("div");
-  acts.className = "flex items-center gap-2 shrink-0 self-end sm:self-center";
+  acts.className = "store-acts";
   if (!store.catalogOnly) {
     acts.appendChild(goBtn("Ver mapa", () => showOnMap(store.id)));
     const ruta = goBtn("Ruta");
@@ -432,19 +698,20 @@ function rowOf(store, bestId) {
     ruta.rel = "noopener noreferrer";
     acts.appendChild(ruta);
   }
-  art.append(left, acts);
+  art.appendChild(acts);
   return art;
 }
 
 function paint(shops, lines) {
-  const priced = shops.filter((s) => s.basket);
+  const withBasket = shops.filter((s) => s.basket);
+  const mapOnly = shops.filter((s) => !s.basket && !s.catalogOnly);
   const by = new Map();
-  priced.filter((s) => !s.catalogOnly).forEach((s) => {
+  withBasket.filter((s) => !s.catalogOnly).forEach((s) => {
     const key = s.chain || s.id;
     const prev = by.get(key);
     if (!prev || s.km < prev.km) by.set(key, s);
   });
-  priced.filter((s) => s.catalogOnly).forEach((s) => {
+  withBasket.filter((s) => s.catalogOnly).forEach((s) => {
     const key = s.chain || s.id;
     if (!by.has(key)) by.set(key, s);
   });
@@ -455,7 +722,6 @@ function paint(shops, lines) {
     const bm = (b.basket.missing && b.basket.missing.length) || 0;
     const ai = (a.basket.items && a.basket.items.length) || 0;
     const bi = (b.basket.items && b.basket.items.length) || 0;
-    // Más artículos cubiertos arriba; a igualdad, precio menor; luego distancia
     if (bi !== ai) return bi - ai;
     if (am !== bm) return am - bm;
     if (ai && bi && a.basket.total !== b.basket.total) return a.basket.total - b.basket.total;
@@ -463,61 +729,69 @@ function paint(shops, lines) {
   });
   const complete = shown.filter((s) => s.basket.items.length === need && need > 0);
   const best = complete[0] || shown.find((s) => s.basket.items.length) || null;
-  const title = lines.length > 1 ? "La cesta" : lines[0].charAt(0).toUpperCase() + lines[0].slice(1);
+  const title = lines.length > 1 ? "La cesta" : (lines[0] ? lines[0].charAt(0).toUpperCase() + lines[0].slice(1) : "Cesta");
   $("hallazgo").textContent = best
     ? title + " sale a " + eur(best.basket.total) + " en " + best.name + (best.basket.missing.length ? " (" + best.basket.items.length + "/" + need + ")" : "")
-    : "Elige tipos y pulsa Ver precios";
+    : "Elige tipos de la lista semanal";
   $("hero-n").textContent = best ? eur(best.basket.total) : "—";
   $("hero-tag").textContent = best ? (best.basket.missing.length ? best.basket.items.length + "/" + need : "Completa") : "Sin dato";
   $("hero-cap").textContent = best
-    ? best.basket.items.map((it) => it.name + (it.unitLabel ? " (" + it.unitLabel + ")" : "")).join(" · ") + (best.basket.missing.length ? ". No trae: " + best.basket.missing.join(", ") + "." : ". ") + "Orden: más tipos cubiertos, luego precio. No es el lineal."
-    : "Marca la compra semanal y pulsa Ver precios.";
+    ? best.basket.items.map((it) => it.name + (it.unitLabel ? " (" + it.unitLabel + ")" : "")).join(" · ") + (best.basket.missing.length ? ". No trae: " + best.basket.missing.join(", ") + "." : ". ") + "Orden: más tipos, luego precio. No es el lineal."
+    : "Marca la compra y compara. Precios de las 4 cadenas con catálogo online.";
+
   const box = $("lista");
   box.replaceChildren();
-  $("cuenta").textContent = best ? "Más completos arriba, luego más baratos (" + shown.length + ")" : "Sin cesta todavía";
+  $("cuenta").textContent = best
+    ? "Con precios (" + shown.length + ") · mapa " + (shown.length + mapOnly.length)
+    : "Mapa · " + mapOnly.length + " tiendas";
   shown.forEach((s) => box.appendChild(rowOf(s, best && best.id)));
-  if (!shown.length) {
+  mapOnly.slice(0, 12).forEach((s) => box.appendChild(rowOf(s, null)));
+  if (!shown.length && !mapOnly.length) {
     const p = document.createElement("p");
-    p.className = "text-sm text-[#415C4B] px-1";
-    p.textContent = "Las tiendas siguen en el mapa. No hay productos con esos nombres.";
+    p.style.cssText = "font-size:0.8rem;color:var(--muted);margin:0";
+    p.textContent = "No hay supermercados cerca todavía.";
     box.appendChild(p);
   }
-  const sin = shops.filter((s) => !s.basket && !s.catalogOnly).length;
-  $("nota").textContent = (sin ? sin + " supermercados del mapa no tienen este catálogo (Dia, Alcampo y otras). " : "") + "Cada tipo: la ficha más barata por litro, kilo o docena. No es el precio del lineal.";
+  $("nota").textContent = (mapOnly.length ? mapOnly.length + " del mapa sin catálogo online (Dia, Alcampo, Consum…). " : "") +
+    "Cada tipo: ficha más barata por litro, kilo o docena. " +
+    (cacheFromDay ? "Precios de hoy (caché local)." : "Precios recién descargados.");
 
   try {
-  ensureMap(here.lat, here.lon);
-  moving = true;
-  shops.filter((s) => !s.catalogOnly).forEach((s) => {
-    const hot = best && s.id === best.id;
-    const icon = L.divIcon({
-      className: "",
-      html: '<div style="width:14px;height:14px;border-radius:99px;background:' + (hot ? "#18E667" : s.basket ? "#0A3D22" : "#94a89c") + ';border:2px solid #032612"></div>',
-      iconSize: [14, 14], iconAnchor: [7, 7]
+    ensureMap(here.lat, here.lon);
+    setYou(here.lat, here.lon, here.accuracy);
+    moving = true;
+    shops.filter((s) => !s.catalogOnly).forEach((s) => {
+      const hot = best && s.id === best.id;
+      const has = s.basket && s.basket.items && s.basket.items.length;
+      const icon = L.divIcon({
+        className: "",
+        html: '<div style="width:14px;height:14px;border-radius:99px;background:' + (hot ? "#18E667" : has ? "#0A3D22" : "#94a89c") + ';border:2px solid #032612"></div>',
+        iconSize: [14, 14], iconAnchor: [7, 7]
+      });
+      const pop = document.createElement("div");
+      const t = nameNode(s);
+      t.style.fontWeight = "700";
+      pop.appendChild(t);
+      const line = document.createElement("div");
+      line.style.fontSize = "12px";
+      line.style.marginTop = "4px";
+      line.textContent = s.basket && s.basket.items.length
+        ? eur(s.basket.total) + " · " + s.basket.items.map((it) => it.name).join(" · ")
+        : (s.basket ? "Sin productos de la lista" : "Solo mapa · sin catálogo online");
+      pop.appendChild(line);
+      const ruta = goBtn("Ruta");
+      ruta.href = "https://www.google.com/maps/dir/?api=1&destination=" + s.lat + "," + s.lon;
+      ruta.target = "_blank";
+      ruta.rel = "noopener noreferrer";
+      ruta.style.marginTop = "8px";
+      pop.appendChild(ruta);
+      markers[s.id] = L.marker([s.lat, s.lon], { icon }).addTo(layer).bindPopup(pop);
     });
-    const pop = document.createElement("div");
-    const title = nameNode(s);
-    title.style.fontWeight = "700";
-    pop.appendChild(title);
-    const line = document.createElement("div");
-    line.textContent = s.basket && s.basket.items.length
-      ? eur(s.basket.total) + " · " + s.basket.items.map((it) => it.name).join(" · ")
-      : (s.basket ? "Sin productos de la lista" : "Sin catálogo");
-    pop.appendChild(line);
-    const ruta = goBtn("Ruta");
-    ruta.href = "https://www.google.com/maps/dir/?api=1&destination=" + s.lat + "," + s.lon;
-    ruta.target = "_blank";
-    ruta.rel = "noopener noreferrer";
-    ruta.style.display = "inline-block";
-    ruta.style.marginTop = "8px";
-    pop.appendChild(ruta);
-    markers[s.id] = L.marker([s.lat, s.lon], { icon }).addTo(layer).bindPopup(pop);
-  });
-  if (Object.keys(markers).length) map.fitBounds(L.featureGroup(Object.values(markers)).getBounds().pad(0.25));
-  else map.setView([here.lat, here.lon], 14);
-  setTimeout(() => { moving = false; }, 400);
+    if (Object.keys(markers).length) map.fitBounds(L.featureGroup(Object.values(markers)).getBounds().pad(0.25));
+    else map.setView([here.lat, here.lon], 14);
+    setTimeout(() => { moving = false; }, 400);
   } catch (err) {
-    $("estado").textContent = "El mapa no se ha podido dibujar.";
+    setEstado("El mapa no se ha podido dibujar.");
   }
 }
 
@@ -531,7 +805,6 @@ async function jpost(url, body) {
   if (!r.ok) throw new Error(String(r.status));
   return r.json();
 }
-
 function dedupe(list) {
   const seen = new Set();
   const out = [];
@@ -672,16 +945,13 @@ async function loadShops(lat, lon) {
       km: dist(lat, lon, lat2, lon2)
     };
   }).filter((s) => Number.isFinite(s.lat) && s.km <= 8).sort((a, b) => a.km - b.km);
-  const capped = all.slice(0, 40);
-  const have = new Set(capped.map((s) => s.chain));
+  const capped = all.slice(0, 50);
+  const have = new Set(capped.map((s) => s.chain).filter(Boolean));
   all.forEach((s) => {
     if (s.chain && !have.has(s.chain)) { capped.push(s); have.add(s.chain); }
   });
   return capped;
 }
-
-const CHAINS = ["mercadona", "carrefour", "lidl", "aldi"];
-const LABEL = { mercadona: "Mercadona", carrefour: "Carrefour", lidl: "Lidl", aldi: "Aldi" };
 
 function selectedLines() {
   return SEMANAL.filter((line) => selected.has(line));
@@ -765,7 +1035,6 @@ function matchToks(line) {
   if (line === "carne picada") return ["picada"];
   return tokens(line);
 }
-/* Criterio unificado: docs/EMPAREJADO.md — no improvisar reglas nuevas aquí sin actualizar ese doc. */
 function lineBan(name, line) {
   const n = fold(name);
   if (line === "leche") {
@@ -854,11 +1123,14 @@ function paintSemanal() {
     const label = document.createElement("label");
     const cb = document.createElement("input");
     cb.type = "checkbox";
-    cb.className = "mt-0.5 shrink-0";
     cb.checked = selected.has(line);
     cb.addEventListener("change", () => {
       if (cb.checked) selected.add(line);
       else selected.delete(line);
+      if (catalogs) {
+        linesNow = selectedLines();
+        redraw();
+      }
     });
     const span = document.createElement("span");
     span.textContent = line.charAt(0).toUpperCase() + line.slice(1);
@@ -872,7 +1144,7 @@ function paintFichas(lines) {
   if (!catalogs || !lines.length) return;
   const blanca = blancaOn();
   const head = document.createElement("h2");
-  head.className = "font-display text-sm font-black uppercase tracking-wider text-[#476652] px-1";
+  head.style.cssText = "font-size:0.7rem;font-weight:900;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin:0.75rem 0 0.45rem";
   head.textContent = "Producto a producto";
   box.appendChild(head);
   const rows = lines.map((line) => {
@@ -888,16 +1160,15 @@ function paintFichas(lines) {
   rows.sort((a, b) => b.ok - a.ok || a.line.localeCompare(b.line, "es"));
   rows.forEach(({ line, picks, ok }) => {
     const det = document.createElement("details");
-    det.className = "ficha bg-white rounded-2xl border border-[#CCE0D3] shadow-sm";
+    det.className = "ficha";
     const sum = document.createElement("summary");
-    sum.className = "px-3 py-2.5 font-display font-black text-sm text-[#032612]";
     sum.textContent = line.charAt(0).toUpperCase() + line.slice(1) + " · " + ok + "/4 cadenas";
     const scroll = document.createElement("div");
-    scroll.className = "hit-scroll px-3 pb-3 space-y-1";
+    scroll.className = "hit-scroll";
     CHAINS.forEach((chain) => {
       const p = picks[chain];
       const row = document.createElement("p");
-      row.className = "text-xs leading-snug break-words " + (p ? "line-name text-[#415C4B]" : "line-miss text-[#0A3D22] font-bold");
+      row.className = p ? "" : "miss";
       row.textContent = p
         ? LABEL[chain] + " · " + p.name + " · " + eur(p.price) + (p.unitLabel ? " · " + p.unitLabel : "")
         : LABEL[chain] + " · no trae " + line;
@@ -933,64 +1204,137 @@ function attach(shops, cats, lines, blanca, lat, lon) {
 }
 
 function redraw() {
-  if (!catalogs || !here || !linesNow.length) return;
+  if (!catalogs || !here || !linesNow.length) {
+    if (catalogs && here && shopsNow.length) {
+      paint(attach(shopsNow, catalogs, [], blancaOn(), here.lat, here.lon), []);
+    }
+    return;
+  }
   paintFichas(linesNow);
   paint(attach(shopsNow, catalogs, linesNow, blancaOn(), here.lat, here.lon), linesNow);
 }
-async function reloadShops() {
-  if (!catalogs || !here || !linesNow.length) return;
-  $("estado").textContent = "Actualizando el mapa…";
+
+async function getCatalogsCached(lat, lon, fail) {
+  const key = catalogsCacheKey(lat, lon);
+  const hit = await idbGet(key);
+  if (hit && hit.day === dayKey() && hit.data) {
+    cacheFromDay = true;
+    return hit.data;
+  }
+  setEstado("Descargando catálogos (una vez al día)…");
+  cacheFromDay = false;
+  const cats = await searchCatalogs(SEMANAL, lat, lon, fail);
+  await idbPut(key, { day: dayKey(), wh: warehouseKey(lat, lon), data: cats, ts: Date.now() });
+  return cats;
+}
+async function getShopsCached(lat, lon) {
+  const key = shopsCacheKey(lat, lon);
+  const hit = await idbGet(key);
+  if (hit && hit.day === dayKey() && hit.data) return hit.data;
+  const shops = await loadShops(lat, lon);
+  await idbPut(key, { day: dayKey(), cell: shopCell(lat, lon), data: shops, ts: Date.now() });
+  return shops;
+}
+
+async function reloadShopsOnly() {
+  if (!catalogs || !here) return;
+  setEstado("Actualizando el mapa…");
   try {
-    shopsNow = await loadShops(here.lat, here.lon);
+    shopsNow = await getShopsCached(here.lat, here.lon);
+    linesNow = selectedLines();
+    paintFichas(linesNow);
     paint(attach(shopsNow, catalogs, linesNow, blancaOn(), here.lat, here.lon), linesNow);
-    $("estado").textContent = here.note + " · " + shopsNow.length + " supermercados";
+    setEstado((cacheFromDay ? "Precios de hoy (caché) · " : "") + here.note + " · " + shopsNow.length + " súpers");
   } catch (e) {
-    $("estado").textContent = "No se ha podido leer el mapa.";
+    setEstado("No se ha podido leer el mapa.");
   }
 }
 
 async function buscar() {
   const lines = selectedLines();
-  if (!lines.length) { $("estado").textContent = "Marca al menos un tipo de la lista."; return; }
+  if (!lines.length) { setEstado("Marca al menos un tipo de la lista."); return; }
   $("buscar").disabled = true;
-  $("estado").textContent = "Buscando " + lines.length + " tipos…";
+  setEstado("Preparando…");
   try {
     if (!here) here = await locate();
     const fail = [];
     const [shops, cats] = await Promise.all([
-      loadShops(here.lat, here.lon).catch(() => { fail.push("mapa"); return []; }),
-      searchCatalogs(lines, here.lat, here.lon, fail)
+      getShopsCached(here.lat, here.lon).catch(() => { fail.push("mapa"); return []; }),
+      getCatalogsCached(here.lat, here.lon, fail)
     ]);
     linesNow = lines;
     shopsNow = shops;
     catalogs = cats;
     paintFichas(lines);
     paint(attach(shops, catalogs, lines, blancaOn(), here.lat, here.lon), lines);
-    $("estado").textContent = here.note + (fail.length ? " · sin " + fail.join(", ") : " · más barato por unidad en cada tipo");
+    const src = cacheFromDay ? "Precios de hoy (caché)" : "Precios nuevos de hoy";
+    setEstado(src + " · " + here.note + (fail.length ? " · sin " + fail.join(", ") : ""));
   } catch (e) {
     $("hallazgo").textContent = "No se han podido leer los catálogos";
     $("hero-n").textContent = "Sin dato";
-    $("estado").textContent = "Fallo de red.";
+    setEstado("Fallo de red.");
   }
   $("buscar").disabled = false;
 }
 
 function pointFromUrl() {
   const params = new URLSearchParams(location.search);
-  if (params.get("lat") && params.get("lon")) return { lat: +params.get("lat"), lon: +params.get("lon"), note: "Punto de la dirección" };
+  if (params.get("lat") && params.get("lon")) {
+    return { lat: +params.get("lat"), lon: +params.get("lon"), note: "Punto de la dirección", accuracy: 0 };
+  }
   return null;
 }
 function locate() {
   const fromUrl = pointFromUrl();
   if (fromUrl) return Promise.resolve(fromUrl);
   return new Promise((res) => {
-    if (!navigator.geolocation) { res({ lat: 40.4168, lon: -3.7038, note: "Sin GPS: Madrid centro" }); return; }
+    if (!navigator.geolocation) {
+      res({ lat: 40.4168, lon: -3.7038, note: "Sin GPS: Madrid centro", accuracy: 0 });
+      return;
+    }
     navigator.geolocation.getCurrentPosition(
-      (p) => res({ lat: p.coords.latitude, lon: p.coords.longitude, note: "Tu ubicación" }),
-      () => res({ lat: 40.4168, lon: -3.7038, note: "Sin GPS: Madrid centro" }),
-      { enableHighAccuracy: false, timeout: 8000, maximumAge: 120000 }
+      (p) => res({
+        lat: p.coords.latitude,
+        lon: p.coords.longitude,
+        note: "Tu ubicación",
+        accuracy: p.coords.accuracy || 0
+      }),
+      () => res({ lat: 40.4168, lon: -3.7038, note: "Sin GPS: Madrid centro", accuracy: 0 }),
+      { enableHighAccuracy: true, timeout: 14000, maximumAge: 0 }
     );
   });
+}
+
+async function applyLocation(pos, opts) {
+  const forceShops = opts && opts.forceShops;
+  const prevWh = here ? warehouseKey(here.lat, here.lon) : null;
+  const prevCell = here ? shopCell(here.lat, here.lon) : null;
+  const nextWh = warehouseKey(pos.lat, pos.lon);
+  const nextCell = shopCell(pos.lat, pos.lon);
+  here = pos;
+  if (!catalogs) {
+    await buscar();
+    return;
+  }
+  if (prevWh !== nextWh) {
+    await buscar();
+    return;
+  }
+  if (forceShops || prevCell !== nextCell) {
+    await reloadShopsOnly();
+    return;
+  }
+  setYou(here.lat, here.lon, here.accuracy);
+  setEstado((cacheFromDay ? "Precios de hoy (caché) · " : "") + here.note);
+}
+
+function togglePanel() {
+  const app = $("app");
+  const collapsed = app.classList.toggle("panel-collapsed");
+  $("panel-handle").setAttribute("aria-expanded", collapsed ? "false" : "true");
+  $("panel-chevron").textContent = collapsed ? "expand_less" : "expand_more";
+  try { sessionStorage.setItem("panel", collapsed ? "0" : "1"); } catch (e) {}
+  setTimeout(() => { if (map) map.invalidateSize(); }, 300);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -1004,41 +1348,64 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("tema", on ? "dark" : "light");
     $("tema").setAttribute("aria-checked", on ? "true" : "false");
   });
+
+  try {
+    if (sessionStorage.getItem("panel") === "0") {
+      $("app").classList.add("panel-collapsed");
+      $("panel-handle").setAttribute("aria-expanded", "false");
+      $("panel-chevron").textContent = "expand_less";
+    }
+  } catch (e) {}
+
+  $("panel-handle").addEventListener("click", togglePanel);
+
   const a = $("opt-cualquier"), b = $("opt-blanca");
-  a.setAttribute("aria-pressed", "true");
-  b.setAttribute("aria-pressed", "false");
   function mark(on) {
-    const yes = "flex-1 py-1.5 px-2 text-xs font-black rounded-lg bg-white text-[#0A3D22] shadow-xs text-center whitespace-normal leading-tight";
-    const no = "flex-1 py-1.5 px-2 text-xs font-semibold rounded-lg text-[#4B6856] text-center whitespace-normal leading-tight";
-    a.className = on ? no : yes;
-    b.className = on ? yes : no;
     a.setAttribute("aria-pressed", on ? "false" : "true");
     b.setAttribute("aria-pressed", on ? "true" : "false");
   }
   a.addEventListener("click", () => { mark(false); redraw(); });
   b.addEventListener("click", () => { mark(true); redraw(); });
-  $("todo-on").addEventListener("click", () => { selected = new Set(SEMANAL); paintSemanal(); });
-  $("todo-off").addEventListener("click", () => { selected = new Set(); paintSemanal(); });
+  $("todo-on").addEventListener("click", () => {
+    selected = new Set(SEMANAL);
+    paintSemanal();
+    if (catalogs) { linesNow = selectedLines(); redraw(); }
+  });
+  $("todo-off").addEventListener("click", () => {
+    selected = new Set();
+    paintSemanal();
+    linesNow = [];
+    if (catalogs) redraw();
+  });
   $("buscar").addEventListener("click", buscar);
-  paintSemanal();
-  if (!matchMedia("(prefers-reduced-motion: reduce)").matches && "IntersectionObserver" in window) {
-    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) e.target.classList.add("in"); }), { threshold: 0.15 });
-    document.querySelectorAll("section").forEach((n) => { n.classList.add("reveal"); io.observe(n); });
-  }
-  $("hallazgo").textContent = "Elige la compra semanal y compara";
-  $("hero-cap").textContent = "Una ficha por tipo: la más barata por litro, kilo o docena";
-  $("estado").textContent = "Cargando mapa y precios…";
-  // No esperar al GPS (el permiso puede colgarse): arrancar ya como Ver precios.
-  here = pointFromUrl() || { lat: 40.4168, lon: -3.7038, note: "Sin GPS: Madrid centro" };
-  buscar();
-  if (!pointFromUrl() && navigator.geolocation) {
-    locate().then((pos) => {
-      if (!here || (Math.abs(pos.lat - here.lat) < 0.001 && Math.abs(pos.lon - here.lon) < 0.001)) return;
-      here = pos;
-      buscar();
-    });
-  }
-});
 
+  $("btn-locate").addEventListener("click", async () => {
+    setEstado("Localizando…");
+    const pos = await locate();
+    await applyLocation(pos, { forceShops: true });
+    if (map) map.setView([pos.lat, pos.lon], 15);
+  });
+  $("btn-map-center").addEventListener("click", async () => {
+    if (!map) return;
+    const c = map.getCenter();
+    await applyLocation({ lat: c.lat, lon: c.lng, note: "Centro del mapa", accuracy: 0 }, { forceShops: true });
+  });
+
+  paintSemanal();
+  $("hallazgo").textContent = "Comparando supermercados cerca de ti";
+  setEstado("Cargando mapa y precios…");
+
+  here = pointFromUrl() || { lat: 40.4168, lon: -3.7038, note: "Sin GPS: Madrid centro", accuracy: 0 };
+  ensureMap(here.lat, here.lon);
+  setYou(here.lat, here.lon, here.accuracy);
+  setTimeout(() => { if (map) map.invalidateSize(); }, 100);
+
+  buscar().then(() => {
+    if (!pointFromUrl() && navigator.geolocation) {
+      locate().then((pos) => applyLocation(pos));
+    }
+  });
+});
 </script>
-</body></html>
+</body>
+</html>
