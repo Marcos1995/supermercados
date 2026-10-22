@@ -1,7 +1,7 @@
 # Precios: fuentes y límites
 
-Detalle del **criterio de ficha** (qué producto vale): `docs/EMPAREJADO.md`.  
-Cómo reejecutar a mano: `START.md`.
+Detalle del **criterio de ficha** (qué producto vale): `docs/EMPAREJADO.md` — implementado en código (`lineBan` / `pick` / `QUERY`), no lo elige la IA al vuelo.  
+Refresco manual de todos los precios: `START.md` → `python scripts/dump_all_precios.py`.
 
 ## Cómo se obtienen
 
@@ -37,7 +37,9 @@ Script: `python scripts/dump_all_precios.py` → [`data/precios-2026-10-22.json`
 
 ## Caché en el navegador
 
-Los catálogos de las **4** cadenas con precios se guardan en IndexedDB con clave `día + almacén Mercadona/Aldi`. Misma visita o recarga el mismo día → no se vuelven a pedir. Al cambiar el día calendario local se recalcula una vez. No hay JSON de precios en el repo. La caché **no** incluye Consum/Dia/etc. (no hay conector).
+Los catálogos de las **4** cadenas de la web se guardan en IndexedDB con clave `día + almacén Mercadona/Aldi`. Misma visita o recarga el mismo día → no se vuelven a pedir.
+
+El dump offline (`data/precios-*.json`) sí vive en el repo: lo genera el script Python, no la IA. Incluye Consum/Dia/Eroski/Ahorramas cuando la red responde.
 
 ## Causas (resuelto / aceptado)
 
@@ -59,4 +61,5 @@ Los catálogos de las **4** cadenas con precios se guardan en IndexedDB con clav
 
 - Catálogo completo de Lidl/Aldi si su API no lo indexa.
 - Precio del lineal de una tienda concreta.
-- Dia/Alcampo/Eroski hasta tener JSON usable.
+- Precio de **Alcampo** en el dump hasta que deje de devolver HTTP 202 vacío (búsqueda y `bop`).
+- Conectores CORS en el navegador para Consum/Dia/Eroski (hoy solo dump terminal).

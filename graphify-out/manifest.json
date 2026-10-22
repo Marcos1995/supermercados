@@ -72,9 +72,9 @@
     "semantic_hash": ""
   },
   "PROJECT.md": {
-    "mtime": 1792691803.9797716,
-    "seen": 1792691914.5941467,
-    "ast_hash": "460789153f23b240c94741e489fbdf58",
+    "mtime": 1792693718.1382542,
+    "seen": 1792693728.9248543,
+    "ast_hash": "541bdc958117fc93448754abc95a0f77",
     "semantic_hash": ""
   },
   "README.md": {
@@ -96,9 +96,9 @@
     "semantic_hash": ""
   },
   "START.md": {
-    "mtime": 1792691813.2528613,
-    "seen": 1792691914.5941467,
-    "ast_hash": "f0a227aeaa4a584583941094a22dac0d",
+    "mtime": 1792693714.3571851,
+    "seen": 1792693728.9248543,
+    "ast_hash": "8affd366e71dae34c42d0ac275dcc672",
     "semantic_hash": ""
   },
   "docs/EJECUTAR.md": {
@@ -114,9 +114,9 @@
     "semantic_hash": ""
   },
   "docs/PRECIOS.md": {
-    "mtime": 1792693409.6559052,
-    "seen": 1792693426.0712624,
-    "ast_hash": "6d5c88291bfe6a4b77d4ce40948d3f63",
+    "mtime": 1792693721.6579037,
+    "seen": 1792693728.9253578,
+    "ast_hash": "f4f532fc0e1b1069c0665c1b668cb04a",
     "semantic_hash": ""
   },
   "scripts/dump_cobertura.py": {

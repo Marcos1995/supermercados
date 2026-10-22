@@ -8,21 +8,24 @@
 
 ## Estado
 - UI tipo Maps: mapa a pantalla completa + panel/sheet plegable (mobile first).
-- Lista fija **SEMANAL** (28 tipos). Al abrir carga sola; catálogos se guardan en **IndexedDB** con clave de día local (una descarga de precios por día y zona de almacén).
-- Criterio: `docs/EMPAREJADO.md`. Manual: `START.md`. Cobertura: `python scripts/dump_cobertura.py` → `docs/COBERTURA.md` + `tmp-precios/`.
-- Precios: Mercadona/Carrefour/Lidl/Aldi. Mapa Overpass: muchas más cadenas (Dia, Alcampo, Consum…); sin catálogo = solo mapa.
-- GPS: alta precisión + círculo de accuracy; botones Mi ubicación / centro del mapa. Sin GPS → Madrid centro.
-- Concurrencia 8. Sin folletos ni Gemini. No hay precios en el repo (solo caché del navegador).
+- Lista fija **SEMANAL** (28 tipos). Criterio de ficha: `docs/EMPAREJADO.md` (código en `index.html` / scripts; no lo inventa la IA).
+- Web en vivo: Mercadona/Carrefour/Lidl/Aldi + IndexedDB un día. Mapa Overpass: más cadenas.
+- Dump offline de precios (terminal, sin CORS): `python scripts/dump_all_precios.py` → `data/precios-YYYY-MM-DD.json`. Manual: `START.md`. Alcampo sin datos tras agotar vías (ver `docs/PRECIOS.md`).
+- GPS: alta precisión + círculo; Mi ubicación / centro del mapa. Sin GPS → Madrid centro.
+- Concurrencia 8. Sin folletos ni Gemini.
 
 ## Stack
 - Un `index.html` (CSS y JS dentro). Leaflet 1.9.4 y teselas de OpenStreetMap. Sin build y sin API de pago.
+- Scripts Python: `scripts/dump_all_precios.py`, `scripts/dump_cobertura.py`.
 
 ## Comandos utiles
 - Instalar: nada
 - Local: `python -m http.server 8766` → http://127.0.0.1:8766/index.html?lat=40.4168&lon=-3.7038
+- Refresco precios (todas las cadenas con fuente): `python scripts/dump_all_precios.py`
+- Cobertura 4 cadenas: `python scripts/dump_cobertura.py`
 - Manual: `START.md`
 - Criterio: `docs/EMPAREJADO.md`
 
 ## Notas para el agente
-- Emparejado = `docs/EMPAREJADO.md`. No reinventar filtros en cada sesión; si hace falta una regla, se añade al doc y a `lineBan`/`QUERY` en el mismo cambio.
-- No inventar importes. No cachear precios en el repo (sí IndexedDB en el cliente, un día). Lean kit (ver AGENTS.md).
+- Emparejado = `docs/EMPAREJADO.md`. No reinventar filtros; regla nueva → doc + código.
+- No inventar importes. Dump en `data/` solo con lo que devolvió la red. Lean kit (ver AGENTS.md).

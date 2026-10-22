@@ -1,17 +1,17 @@
 # Graph Report - supermercados  (2026-10-22)
 
 ## Corpus Check
-- 24 files · ~232,365 words
+- 24 files · ~232,532 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 4 file(s) not represented in the graph (top: .mdc 2, (none) 2)
 
 ## Summary
-- 174 nodes · 225 edges · 20 communities (15 shown, 5 thin omitted)
-- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 2 edges (avg confidence: 0.95)
+- 175 nodes · 227 edges · 19 communities (14 shown, 5 thin omitted)
+- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 3 edges (avg confidence: 0.95)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `5c3ae11a`
+- Built from commit: `d2b0e1ba`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -25,12 +25,11 @@
 - Build judgments with Laya
 - Laya
 - Review
-- Criterio unificado de emparejado
+- pick
 - tablas/SKILL.md
 - DESIGN.md
 - DECISIONES.md
 - dump_all_precios.py
-- Precios: fuentes y límites
 - Ficha elegida (si hay X)
 - dump_cobertura.py
 - Arrancar a mano
@@ -40,23 +39,25 @@
 2. `fold()` - 10 edges
 3. `http_json()` - 8 edges
 4. `visible()` - 8 edges
-5. `fetch_line()` - 8 edges
-6. `pick()` - 7 edges
+5. `pick()` - 8 edges
+6. `fetch_line()` - 8 edges
 7. `Arrancar a mano` - 7 edges
 8. `Criterio unificado de emparejado` - 7 edges
-9. `fold()` - 6 edges
-10. `http_text()` - 6 edges
+9. `Precios: fuentes y límites` - 7 edges
+10. `fold()` - 6 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Pipeline (orden fijo)` --references--> `pick()`  [INFERRED]
   docs/EMPAREJADO.md → scripts/dump_cobertura.py
 - `Criterio unificado de emparejado` --references--> `pick()`  [INFERRED]
   docs/EMPAREJADO.md → scripts/dump_cobertura.py
+- `Precios: fuentes y límites` --references--> `pick()`  [INFERRED]
+  docs/PRECIOS.md → scripts/dump_cobertura.py
 
 ## Import Cycles
 - None detected.
 
-## Communities (20 total, 5 thin omitted)
+## Communities (19 total, 5 thin omitted)
 
 ### Community 0 - "Debug"
 Cohesion: 0.29
@@ -94,17 +95,13 @@ Nodes (3): Laya, Reply (decision-only requests), Steps
 Cohesion: 0.50
 Nodes (3): Check, Do, Review
 
-### Community 9 - "Criterio unificado de emparejado"
-Cohesion: 0.16
-Nodes (11): Ejecutar a mano, APIs (no scrape), Conteos esperados (Madrid, 28 tipos), Criterio unificado de emparejado, Objetivo, Pipeline (orden fijo), Qué cuenta como “producto base”, Docs (+3 more)
+### Community 9 - "pick"
+Cohesion: 0.10
+Nodes (18): Ejecutar a mano, APIs (no scrape), Conteos esperados (Madrid, 28 tipos), Criterio unificado de emparejado, Objetivo, Pipeline (orden fijo), Qué cuenta como “producto base”, Caché en el navegador (+10 more)
 
 ### Community 15 - "dump_all_precios.py"
 Cohesion: 0.13
 Nodes (27): datetime, http_cookiejar, dia_session(), extract_alcampo_ids(), fold(), http_json(), http_text(), lidl_cat_ok() (+19 more)
-
-### Community 16 - "Precios: fuentes y límites"
-Cohesion: 0.25
-Nodes (7): Caché en el navegador, Causas (resuelto / aceptado), Conteos de referencia (Madrid, 28 tipos), Cómo se obtienen, Dump terminal 2026-10-22 (sin CORS), Precios: fuentes y límites, Qué no se promete
 
 ### Community 17 - "Ficha elegida (si hay X)"
 Cohesion: 0.06
@@ -115,23 +112,25 @@ Cohesion: 0.13
 Nodes (30): json, pathlib, re, fetch_line(), fold(), hit_word(), http_get(), http_post() (+22 more)
 
 ### Community 19 - "Arrancar a mano"
-Cohesion: 0.29
-Nodes (7): Arrancar a mano, Comprobar conteos (DevTools), Criterio de fichas (no reinventar), Local, Producción, UI, Volcar JSON + tabla de cobertura
+Cohesion: 0.25
+Nodes (8): Arrancar a mano, Cobertura de emparejado (las 4 del navegador), Comprobar conteos (DevTools, tras carga web), Criterio unificado (código, no la IA), Local, Producción (web), Refresco manual de TODOS los precios (dump), UI
 
 ## Knowledge Gaps
 - **77 isolated node(s):** `1. Root cause`, `2. Compare`, `3. Hypothesis`, `4. Fix`, `Red flags → back to step 1` (+72 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 102 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 101 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **5 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `pick()` connect `Criterio unificado de emparejado` to `dump_cobertura.py`?**
-  _High betweenness centrality (0.083) - this node is a cross-community bridge._
-- **Why does `Arrancar a mano` connect `Arrancar a mano` to `Criterio unificado de emparejado`?**
-  _High betweenness centrality (0.031) - this node is a cross-community bridge._
+- **Why does `pick()` connect `pick` to `dump_cobertura.py`?**
+  _High betweenness centrality (0.122) - this node is a cross-community bridge._
+- **Are the 3 inferred relationships involving `pick()` (e.g. with `Criterio unificado de emparejado` and `Pipeline (orden fijo)`) actually correct?**
+  _`pick()` has 3 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `1. Root cause`, `2. Compare`, `3. Hypothesis` to the rest of the system?**
   _77 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `pick` be split into smaller, more focused modules?**
+  _Cohesion score 0.09881422924901186 - nodes in this community are weakly interconnected._
 - **Should `dump_all_precios.py` be split into smaller, more focused modules?**
   _Cohesion score 0.1349206349206349 - nodes in this community are weakly interconnected._
 - **Should `Ficha elegida (si hay X)` be split into smaller, more focused modules?**

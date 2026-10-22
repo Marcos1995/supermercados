@@ -2,17 +2,51 @@
 
 Sin install. Hace falta red (APIs de las cadenas + mapa).
 
-## Criterio de fichas (no reinventar)
+## Criterio unificado (código, no la IA)
 
-[`docs/EMPAREJADO.md`](docs/EMPAREJADO.md) — qué producto vale, pipeline de filtros, huecos Lidl/Aldi.
+Qué ficha vale y qué se descarta está **implementado** en el repo, no lo decide un agente al vuelo:
 
-## Producción
+| Qué | Dónde |
+|-----|--------|
+| Lista de tipos | `SEMANAL` en `index.html` y en `scripts/dump_*.py` |
+| Consultas / fallbacks | `QUERY`, `FALLBACKS` |
+| Filtros de emparejado | `docs/EMPAREJADO.md` → `lineBan` / `primaryOk` / `NOISE` en `index.html` y `dump_cobertura.py` |
+| Fuentes por cadena | `docs/PRECIOS.md` + funciones `search_*` en los scripts |
+
+Si hace falta una regla nueva: se añade al doc **y** al código en el mismo cambio. No inventar precios.
+
+## Refresco manual de TODOS los precios (dump)
+
+Desde la raíz del repo:
+
+```bash
+python scripts/dump_all_precios.py
+```
+
+- Recorre la lista **SEMANAL** × cada cadena con fuente (Mercadona, Carrefour, Lidl, Aldi, Consum, Dia, Eroski, Ahorramas; intenta Alcampo).
+- Solo guarda hits con `price > 0`. Si una cadena no responde, queda a 0 con errores en el JSON (no se rellenan datos falsos).
+- Escribe:
+  - `data/precios-YYYY-MM-DD.json` — productos
+  - `data/precios-YYYY-MM-DD.summary.json` — conteos por cadena
+- Último dump de referencia: [`data/precios-2026-10-22.json`](data/precios-2026-10-22.json).
+
+Detalle de fuentes / huecos (p. ej. **Alcampo = 0** tras agotar API y HTML): [`docs/PRECIOS.md`](docs/PRECIOS.md).
+
+### Cobertura de emparejado (las 4 del navegador)
+
+```bash
+python scripts/dump_cobertura.py
+```
+
+Salida local: `tmp-precios/` (gitignored) + actualiza `docs/COBERTURA.md`.
+
+## Producción (web)
 
 https://marcos1995.github.io/supermercados/?lat=40.4168&lon=-3.7038
 
-Al abrir (con tipos marcados, por defecto todos) **carga sola** mapa y precios.
-La primera vez del día descarga catálogos; el resto del día usa **caché IndexedDB** (estado: «Precios de hoy (caché)»). Cambiar tipos o marca blanca **no** vuelve a descargar.
-Pulsa **Actualizar** solo si quieres forzar el flujo (sigue respetando caché del día).
+La web en el navegador solo pide en vivo **Mercadona, Carrefour, Lidl y Aldi** (CORS). El resto puede estar en el dump de `data/` o solo en el mapa.
+
+Al abrir: carga sola; **IndexedDB** guarda catálogos un día calendario. «Actualizar» respeta esa caché del día.
 
 ## Local
 
@@ -20,17 +54,15 @@ Pulsa **Actualizar** solo si quieres forzar el flujo (sigue respetando caché de
 python -m http.server 8766
 ```
 
-Abre: http://127.0.0.1:8766/index.html?lat=40.4168&lon=-3.7038
+http://127.0.0.1:8766/index.html?lat=40.4168&lon=-3.7038
 
-(En Windows también: `start index.html` — algunas APIs pueden fallar con `file://`; preferible el servidor. IndexedDB tampoco es fiable en `file://`.)
+Preferible el servidor frente a `file://`.
 
 ## UI
 
-Mapa a pantalla completa. Panel/sheet plegable (handle o chevron): compra semanal, resumen, ranking. Botones del mapa: Mi ubicación / Usar centro del mapa.
+Mapa a pantalla completa. Panel/sheet plegable. Mi ubicación / Usar centro del mapa.
 
-## Comprobar conteos (DevTools)
-
-Tras la carga, en la consola:
+## Comprobar conteos (DevTools, tras carga web)
 
 ```js
 Object.fromEntries(
@@ -47,12 +79,4 @@ Object.fromEntries(
 );
 ```
 
-Esperado (Madrid, 28 tipos): Mercadona/Carrefour 28; Aldi ~24–26 (sin huevos ni girasol); Lidl ~6 (límite del buscador). Detalle: `docs/EMPAREJADO.md`.
-
-## Volcar JSON + tabla de cobertura
-
-Desde la raíz del repo (deja los JSON en `tmp-precios/` para inspección):
-
-```bash
-python scripts/dump_cobertura.py
-```
+Esperado (Madrid, 28 tipos): Mercadona/Carrefour 28; Aldi ~24–26; Lidl ~6. Detalle: `docs/EMPAREJADO.md`.
